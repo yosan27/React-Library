@@ -1,7 +1,77 @@
 import React, { Component } from 'react';
 
 export default class Cart extends Component {
+    constructor(props) {
+        super(props);
+        this.state = { value: '' };
+
+        this.handleChange = this.handleChange.bind(this);
+    }
+
+    componentDidMount() {
+        this.getTglNow()
+    }
+
+    async getTglNow() {
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; //January is 0!
+        var yyyy = today.getFullYear();
+        if (dd < 10) {
+            dd = "0" + dd;
+        }
+        if (mm < 10) {
+            mm = "0" + mm;
+        }
+
+        today = yyyy + "-" + mm + "-" + dd;
+        document.getElementById("tgl_pinjam").setAttribute("min", today);
+        document.getElementById("date-now").innerHTML = "Date : " + today;
+    }
+
+    handleChange(event) {
+        this.setState({ value: event.target.value });
+        // alert('Date: ' + event.target.value);
+        var val = event.target.value;
+        var tahun = val.substr(0, 4);
+        var bulan = val.substr(5, 2) - 1;
+        var tanggal = val.substr(8, 2);
+        var datePick = new Date(tahun, bulan, tanggal);
+
+        var dateToAdd = 7;
+
+        datePick.setDate(datePick.getDate() + dateToAdd);
+        document.getElementById("tgl_kembali").value = datePick.format("yy-m-d");
+        document.getElementById("btn-confirmPinjam").classList.remove("disabled");
+    }
+
+    handleSubmit(event) {
+
+    }
+
     render() {
+        const mystyleBtn = {
+            color: "white",
+            cursor: 'pointer',
+        };
+        const deleteBtn1 = () => {
+            document.getElementById("data1").style.display = "none";
+            document.getElementById("cartCount").innerHTML = "1";
+        };
+        const deleteBtn2 = () => {
+            document.getElementById("data2").style.display = "none";
+            document.getElementById("cartCount").innerHTML = "1";
+        };
+        const borrowBtn = () => {
+            document.getElementById("wait").style.display = "";
+            setTimeout(function () {
+                document.getElementById("wait").style.opacity = "0";
+            }, 500);
+            document.getElementById("data1").style.display = "none";
+            document.getElementById("data2").style.display = "none";
+            document.getElementById("foot-card").style.display = "none";
+            document.getElementById("cartCount").innerHTML = "0";
+        };
         return (
             <div className="right_col" role="main" style={{ minHeight: '100vh' }}>
                 <section className="mt-5 pt-5">
@@ -18,19 +88,19 @@ export default class Cart extends Component {
                                                 <div className="callout callout-info">
                                                     <h5>Profile Peminjam</h5>
                                                     <p>
-                                                        Name :
+                                                        Name : User Baginda
                                                     </p>
                                                     <p>
-                                                        ID Number :
+                                                        ID Number : 123
                                                     </p>
-                                                    <p>Date : November, 16 2020</p>
+                                                    <p id="date-now"></p>
                                                 </div>
                                             </div>
                                         </div>
                                         <h5 className="text-center">Book List</h5>
                                         <div className="table-responsive">
                                             <table id="example" className="table table-striped table-white"
-                                                style={{width:"100%"}}>
+                                                style={{ width: "100%" }}>
                                                 <thead>
                                                     <tr>
                                                         <th>#</th>
@@ -47,7 +117,7 @@ export default class Cart extends Component {
                                                         <td>Selena</td>
                                                         <td>Tere Liye</td>
                                                         <td>
-                                                            <a id="btn-data1" href="#" className="btn btn-sm btn-danger"><i
+                                                            <a id="btn-data1" style={mystyleBtn} onClick={deleteBtn1} className="btn btn-sm btn-danger"><i
                                                                 className="fa fa-trash"></i></a>
                                                         </td>
                                                     </tr>
@@ -57,7 +127,7 @@ export default class Cart extends Component {
                                                         <td>Nebula</td>
                                                         <td>Tere Liye</td>
                                                         <td>
-                                                            <a id="btn-data2" href="#" className="btn btn-sm btn-danger"><i
+                                                            <a id="btn-data2" style={mystyleBtn} onClick={deleteBtn2} className="btn btn-sm btn-danger"><i
                                                                 className="fa fa-trash"></i></a>
                                                         </td>
                                                     </tr>
@@ -77,7 +147,7 @@ export default class Cart extends Component {
                                                 <div className="col-lg-6">
                                                     <div className="form-group">
                                                         <label>Tanggal Pinjam</label>
-                                                        <input required onchange="pickDatePinjam(event)" id="tgl_pinjam"
+                                                        <input required value={this.state.value} onChange={this.handleChange} id="tgl_pinjam"
                                                             type="date" name="tanggal_pinjam" className="form-control" />
                                                     </div>
                                                 </div>
@@ -91,8 +161,7 @@ export default class Cart extends Component {
                                                 <div className="col-lg-12">
                                                     <div className="form-group">
                                                         <label className="text-success">*Ajukan Peminjaman</label>
-                                                        <a id="btn-confirmPinjam" href="#"
-                                                            className="btn shadow disabled btn-sm btn-success btn-block">
+                                                        <a id="btn-confirmPinjam" style={mystyleBtn} onClick={borrowBtn} className="btn shadow disabled btn-sm btn-success btn-block">
                                                             Borrow
                                                         </a>
                                                     </div>
