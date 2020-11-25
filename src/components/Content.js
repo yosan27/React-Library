@@ -100,7 +100,7 @@ export default class Content extends Component {
       ],
     };
     return (
-      <div className="right_col" role="main" style={{ minHeight: "100vh" }}>
+      <div className="right_col" role="main" style={{ height: "100%" }}>
         <div className="mt-5 jumbotron jumbotron-fluid">
           <div className="container">
             <h1 className="display-4 jumbotron-text">A Book Is</h1>
@@ -110,7 +110,7 @@ export default class Content extends Component {
           </div>
         </div>
 
-        <section className="mt-5 pt-5">
+        <section>
           <Slider {...settings}>
             <div className="item item1">
               <div className="item-inner">
