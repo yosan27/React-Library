@@ -1,6 +1,53 @@
 import React, { Component } from 'react';
 
 export default class ProfileUser extends Component {
+
+    cekPass1 = (e) => {
+        // alert(e);
+        if (document.getElementById("password2").value === e) {
+            document.getElementById("pwmatch").classList.remove("fa-close");
+            document.getElementById("pwmatch").classList.add("fa-check");
+            document.getElementById("btn-save").setAttribute("disabled", false);
+            document.getElementById("pwmatch").style.color = "#00A41E";
+        } else {
+            document.getElementById("pwmatch").classList.remove("fa-check");
+            document.getElementById("pwmatch").classList.add("fa-close");
+            document.getElementById("btn-save").setAttribute("disabled", true);
+            document.getElementById("pwmatch").style.color = "#FF0004";
+        }
+    };
+
+    cekPass2 = (e) => {
+        // alert(e);
+        document.getElementById("passmatch").style.display = "";
+        if (document.getElementById("password1").value === e) {
+            document.getElementById("pwmatch").classList.remove("fa-close");
+            document.getElementById("pwmatch").classList.add("fa-check");
+            document.getElementById("btn-save").setAttribute("disabled", false);
+            document.getElementById("pwmatch").style.color = "#00A41E";
+        } else {
+            document.getElementById("pwmatch").classList.remove("fa-check");
+            document.getElementById("pwmatch").classList.add("fa-close");
+            document.getElementById("btn-save").setAttribute("disabled", true);
+            document.getElementById("pwmatch").style.color = "#FF0004";
+        }
+    };
+
+    previewImg = () => {
+        var sampul = document.querySelector("#foto"); //input type file
+        var sampulLabel = document.querySelector(".custom-file-label");
+        var imgPreview = document.querySelector(".img-preview");
+
+        sampulLabel.textContent = sampul.files[0].name;
+
+        var fileSampul = new FileReader();
+        fileSampul.readAsDataURL(sampul.files[0]);
+
+        fileSampul.onload = function(e) {
+            imgPreview.src = e.target.result;
+        };
+      };
+
     render() {
         return (
             <div className="right_col" role="main" style={{ minHeight: '100vh' }}>
@@ -31,26 +78,26 @@ export default class ProfileUser extends Component {
                                                     <div className="tab-pane text-left fade active show" id="vert-tabs-home"
                                                         role="tabpanel" aria-labelledby="vert-tabs-home-tab">
                                                         <form className="form-horizontal" action="" method="post"
-                                                            enctype="multipart/form-data">
+                                                            encType="multipart/form-data">
                                                             <div className="form-group row">
-                                                                <label for="nama"
+                                                                <label htmlFor="nama"
                                                                     className="col-sm-2 col-form-label">Name</label>
                                                                 <div className="col-sm-10">
                                                                     <input type="text" className="form-control" id="nama"
-                                                                        name="nama" value="User Baginda" readonly />
+                                                                        name="nama" value="User Baginda" readOnly />
                                                                 </div>
                                                             </div>
                                                             <div className="form-group row">
-                                                                <label for="id"
+                                                                <label htmlFor="id"
                                                                     className="col-sm-2 col-form-label">ID</label>
                                                                 <div className="col-sm-10">
                                                                     <input type="text" name="id" className="form-control"
                                                                         id="id" placeholder="masukan id..." value="123"
-                                                                        readonly />
+                                                                        readOnly />
                                                                 </div>
                                                             </div>
                                                             <div className="form-group row">
-                                                                <label for="email"
+                                                                <label htmlFor="email"
                                                                     className="col-sm-2 col-form-label">Email</label>
                                                                 <div className="col-sm-10">
                                                                     <input type="text" name="email" className="form-control"
@@ -59,7 +106,7 @@ export default class ProfileUser extends Component {
                                                                 </div>
                                                             </div>
                                                             <div className="form-group row">
-                                                                <label for="username"
+                                                                <label htmlFor="username"
                                                                     className="col-sm-2 col-form-label">Username</label>
                                                                 <div className="col-sm-10">
                                                                     <input type="text" name="username"
@@ -67,25 +114,25 @@ export default class ProfileUser extends Component {
                                                                         placeholder="masukan username..." value="user" />
                                                                 </div>
                                                             </div>
-                                                            <div class="form-group row">
-                                                                <label for="alamat"
-                                                                    class="col-sm-2 col-form-label">Address</label>
-                                                                <div class="col-sm-10">
-                                                                    <textarea name="alamat" class="form-control"
+                                                            <div className="form-group row">
+                                                                <label htmlFor="alamat"
+                                                                    className="col-sm-2 col-form-label">Address</label>
+                                                                <div className="col-sm-10">
+                                                                    <textarea name="alamat" className="form-control"
                                                                         id="alamat">Jl. Patriot Kp.2 No.50</textarea>
                                                                 </div>
                                                             </div>
-                                                            <div class=" form-group row">
-                                                                <label for="no_hp" class="col-sm-2 col-form-label">No
+                                                            <div className=" form-group row">
+                                                                <label htmlFor="no_hp" className="col-sm-2 col-form-label">No
                                                                     Hp</label>
-                                                                <div class="col-sm-10">
-                                                                    <input type="tel" name="no_hp" class="form-control"
+                                                                <div className="col-sm-10">
+                                                                    <input type="tel" name="no_hp" className="form-control"
                                                                         id="no_hp" placeholder="masukan nomer hp..."
                                                                         pattern="[0-9]+" value="088290332283" />
                                                                 </div>
                                                             </div>
                                                             <div className="form-group row">
-                                                                <label for="inputEmail3"
+                                                                <label htmlFor="inputEmail3"
                                                                     className="col-sm-2 col-form-label">Profile
                                                                     Picture</label>
                                                                 <div className="col-sm-2">
@@ -94,11 +141,10 @@ export default class ProfileUser extends Component {
                                                                 </div>
                                                                 <div className="col-sm-8">
                                                                     <div className="custom-file">
-                                                                        <input id="foto" name="foto"
-                                                                            onchange="previewImg()" type="file"
+                                                                        <input id="foto" name="foto" onChange={(e) => this.previewImg(e.target.value)} type="file"
                                                                             className="custom-file-input" />
                                                                         <label className="custom-file-label"
-                                                                            for="foto">Choose file</label>
+                                                                            htmlFor="foto">Choose file</label>
                                                                     </div>
                                                                     <small>*format gambar berupa .jpg dengan ukuran
                                                                         maksimal 1MB</small>
@@ -117,18 +163,18 @@ export default class ProfileUser extends Component {
                                                         <form action="" method="post">
                                                             <div className="card-body">
                                                                 <div className="form-group">
-                                                                    <label for="password1" className="">
+                                                                    <label htmlFor="password1" className="">
                                                                         New Password
                                                                     </label>
-                                                                    <input type="password" name="password" required
-                                                                        autocomplete="off" id="password1"
+                                                                    <input type="password" onChange={(e) => this.cekPass1(e.target.value)} name="password" required
+                                                                        autoComplete="off" id="password1"
                                                                         className="form-control simm-inv" />
                                                                 </div>
                                                                 <div className="form-group">
-                                                                    <label for="password2" className="">Confirm
+                                                                    <label htmlFor="password2" className="">Confirm
                                                                         Password</label><br />
-                                                                    <input type="password" name="password_confirm"
-                                                                        required autocomplete="off" id="password2"
+                                                                    <input onChange={(e) => this.cekPass2(e.target.value)} type="password" name="password_confirm"
+                                                                        required autoComplete="off" id="password2"
                                                                         className="form-control simm-inv" />
                                                                     <small id="passmatch" style={{ display: 'none' }}><i
                                                                         id="pwmatch" className="fa fa-close"
