@@ -52,7 +52,7 @@ export default class Content extends Component {
             ]
         };
         return (
-            <div className="right_col" role="main" style={{ height: '100vh' }}>
+            <div className="right_col" role="main" style={{ minHeight: '100vh' }}>
                 <section className="mt-5 pt-5">
                     <Slider {...settings}>
                         <div className="item item1">
@@ -149,10 +149,10 @@ export default class Content extends Component {
                 </section>
 
                 <section className="pt-5">
-                    <div class="card" style={{width: '12rem'}}>
-                        <img src={avatar} alt="avatar" class="card-img-top" />
-                        <div class="card-body">
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <div className="card" style={{ width: '12rem' }}>
+                        <img src={avatar} alt="avatar" className="card-img-top" />
+                        <div className="card-body">
+                            <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                         </div>
                     </div>
                 </section>
