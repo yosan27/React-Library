@@ -1065,7 +1065,7 @@
 }
 
 .left_col {
-	background: #2A3F54
+	background: #060b26
 }
 
 .container {
@@ -1343,7 +1343,7 @@ body .container.body .right_col {
 .nav_title {
 	width: 230px;
 	float: left;
-	background: #2A3F54;
+	background: #060b26;
 	border-radius: 0;
 	height: 57px;
 	padding: 0px
@@ -1510,7 +1510,7 @@ body .container.body .right_col {
 
 body {
 	color: #73879C;
-	background: #2A3F54;
+	background: #060b26;
 	font-family: "Helvetica Neue", Roboto, Arial, "Droid Sans", sans-serif;
 	font-size: 13px;
 	font-weight: 400;

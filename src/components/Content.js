@@ -1,7 +1,23 @@
 import React, { Component } from "react";
 import "./Slidertop.style.css";
 import Slider from "react-slick";
-import avatar from "./img/avatar.png";
+
+// img book
+import after from "./img/after.jpg";
+import ibuk from "./img/ibuk.jpg";
+import defending from "./img/defending.jpg";
+import laut from "./img/laut.jpg";
+import metro from "./img/metro.jpg";
+import nebula from "./img/nebula.jpg";
+import segitiga from "./img/segitiga.jpg";
+import selena from "./img/selena.jpg";
+import tokyo from "./img/tokyo.jpg";
+import misteri from "./img/misteri.jpg";
+import kim from "./img/kim.jpg";
+import ibu from "./img/ibu.jpg";
+
+// css
+import "./Content.css";
 
 function SampleNextArrow(props) {
   const { className, style, onClick } = props;
@@ -63,8 +79,17 @@ export default class Content extends Component {
       ],
     };
     return (
-      <div className="right_col" role="main" style={{ height: "200vh" }}>
-        <section className="mt-5 pt-5">
+      <div className="right_col" role="main" style={{ height: "100%" }}>
+        <div className="mt-5 jumbotron jumbotron-fluid">
+          <div className="container">
+            <h1 className="display-4 jumbotron-text">A Book Is</h1>
+            <p className="lead jumbotron-text">
+              A Dream You Hold In Your Hands.
+            </p>
+          </div>
+        </div>
+
+        <section>
           <Slider {...settings}>
             <div className="item item1">
               <div className="item-inner">
@@ -149,25 +174,116 @@ export default class Content extends Component {
           </Slider>
         </section>
 
+        {/* Best Seller */}
         <section className="pt-5">
           <div className="container-fluid">
+            <h3>Best Seller</h3>
+            <p>New Releases</p>
+
+            <div class="card-group">
+              <div class="card mr-2">
+                <img src={nebula} alt="avatar" className="card-img-top" />
+                <div class="card-body garis-top">
+                  <h5 class="card-title">Nebula</h5>
+                </div>
+              </div>
+
+              <div class="card mr-2">
+                <img src={selena} alt="avatar" className="card-img-top" />
+                <div class="card-body garis-top">
+                  <h5 class="card-title">Selena</h5>
+                </div>
+              </div>
+
+              <div class="card mr-2">
+                <img src={laut} alt="avatar" className="card-img-top" />
+                <div class="card-body garis-top">
+                  <h5 class="card-title">Laut Bercerita</h5>
+                </div>
+              </div>
+
+              <div class="card mr-2">
+                <img src={ibuk} alt="avatar" className="card-img-top" />
+                <div class="card-body garis-top">
+                  <h5 class="card-title">Ibuk</h5>
+                </div>
+              </div>
+
+              <div class="card mr-2">
+                <img src={tokyo} alt="avatar" className="card-img-top" />
+                <div class="card-body garis-top">
+                  <h5 class="card-title smaller-font">
+                    Tokyo dan Perayaan Kesedihan
+                  </h5>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        {/* Best Seller */}
+
+        {/* Asian */}
+        <section className="pt-5">
+          <div className="container-fluid">
+            <h3>The Best Asian Books</h3>
+            <p>Top Seller</p>
+
             <div className="row">
-              <div className="col-12 col-lg-12">
-                <div className="row">
-                  <div className="col">
-                    <h3 className="card-title">Your must-read list</h3>
-                    <p>Find your new favorite book</p>
+              <div className="col">
+                <div className="card mt-5 asian-box">
+                  <div className="row no-gutters">
+                    <div className="col-md-4">
+                      <img
+                        src={ibu}
+                        className="card-img recommend-img"
+                        alt="ibu"
+                      />
+                    </div>
+                    <div className="col-md-8">
+                      <div className="card-body asian-box-body">
+                        <h5 className="card-title">
+                          <b>Please Look After Mom</b>
+                        </h5>
+                        <p className="card-text">
+                          Kisah seorang ibu yang menghilang ketika ingin
+                          mengunjungi anaknya di kota. Sejak saat itu, anggota
+                          keluarga yang ditinggalkan mengalami trauma dan
+                          menyadari betapa pentingnya serta kurang mengenal
+                          lebih jauh akan sosok ibu.
+                        </p>
+                        <p class="card-text">
+                          <small class="text-muted">- Kyung Sook Sin -</small>
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
+              </div>
 
-                <div className="row">
-                  <div className="col">
-                    <div class="card" style={{ width: "12rem" }}>
-                      <img src={avatar} alt="avatar" class="card-img-top" />
-                      <div class="card-body">
+              <div className="col">
+                <div className="card mt-5 asian-box">
+                  <div className="row no-gutters">
+                    <div className="col-md-4">
+                      <img
+                        src={kim}
+                        className="card-img recommend-img"
+                        alt="kim"
+                      />
+                    </div>
+                    <div className="col-md-8">
+                      <div className="card-body asian-box-body">
+                        <h5 className="card-title">
+                          <b>Kim Ji Yeong</b>
+                        </h5>
+                        <p className="card-text">
+                          Novel sensasional dari Korea Selatan yang ramai
+                          dibicarakan di seluruh dunia. Telah diadaptasi ke
+                          film, novel karya Cho Nam-joo ini menceritakan kisah
+                          seorang wanita muda yang mendapat perlakuan
+                          diskriminasi gender.
+                        </p>
                         <p class="card-text">
-                          Some quick example text to build on the card title and
-                          make up the bulk of the card's content.
+                          <small class="text-muted">- Cho Nam Joo -</small>
                         </p>
                       </div>
                     </div>
@@ -177,6 +293,55 @@ export default class Content extends Component {
             </div>
           </div>
         </section>
+        {/* Asian */}
+
+        {/* Must Read */}
+        <section className="pt-5">
+          <div className="container-fluid">
+            <h3>Your must-read list</h3>
+            <p>Find your new favorite book</p>
+
+            <div class="card-group pt-3">
+              <div class="card mr-2">
+                <img src={after} alt="avatar" className="card-img-top" />
+                <div class="card-body garis-top">
+                  <h5 class="card-title">After the Funeral</h5>
+                </div>
+              </div>
+
+              <div class="card mr-2">
+                <img src={segitiga} alt="avatar" className="card-img-top" />
+                <div class="card-body garis-top">
+                  <h5 class="card-title">Segi Tiga</h5>
+                </div>
+              </div>
+
+              <div class="card mr-2">
+                <img src={metro} alt="avatar" className="card-img-top" />
+                <div class="card-body garis-top">
+                  <h5 class="card-title smaller-font">
+                    MetroPop : Ganjil Genap
+                  </h5>
+                </div>
+              </div>
+
+              <div class="card mr-2">
+                <img src={defending} alt="avatar" className="card-img-top" />
+                <div class="card-body garis-top">
+                  <h5 class="card-title">Defending Jacob</h5>
+                </div>
+              </div>
+
+              <div class="card mr-2">
+                <img src={misteri} alt="avatar" className="card-img-top" />
+                <div class="card-body garis-top">
+                  <h5 class="card-title">Misteri Terakhir #1</h5>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        {/* Must Read */}
       </div>
     );
   }
