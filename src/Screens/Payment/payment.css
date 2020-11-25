@@ -1,0 +1,257 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
+
+.header-logo-bar .logo{
+  justify-content: center;
+  align-items: center;
+}
+
+.header-logo-bar .logo h4{
+  color: black;
+}
+
+.header-logo-bar .top-up{
+  justify-content: center;
+  align-items: center;
+}
+
+.header-logo-bar .top-up span{
+  font-size: 1.5em;
+  color: green;
+  text-align: center;
+}
+
+.header-logo-bar .top-up p{
+  color: green;
+}
+.header-logo-bar .top-up i{
+  color: green;
+  font-size: 1.5em;
+}
+
+.listBar{
+  color: black;
+}
+
+.list-header{
+  font-weight: bold;
+  background-color: #060b26;
+  color: white;
+  font-size: 1.1em;
+}
+
+.list-box .list-total{
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  font-size: 1.1em;
+  background-color: #e1e1e1;
+}
+
+.top-up-box p{
+  color: #acacac;
+  font-size: smaller;
+}
+
+#input-saldo{
+  background-color: #e4e4e4;
+  border-style: none;
+}
+
+.top-up-box .min-nominal{
+  color: red;
+  font-size: smaller;
+}
+
+.top-up-box .methodPay{
+  background-color: yellow;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.top-up-box .methodPay:hover{
+  border: 1px solid lightgray;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.modal-body .container-fluid{
+  color: white;
+}
+
+.modal .modal-debit{
+  background-color: #060b26;
+  color: #E7E7E7;
+}
+
+.modal .modal-debit .container-fluid .title{
+  font-size: 1.5em;
+}
+
+.modal .modal-debit .container-fluid .title hr{
+  border-color: white;
+}
+
+.modal .modal-debit .container-fluid .close span{
+  color: white;
+}
+
+.modal-sm .modal-debit .container-fluid .total{
+  font-weight: bolder;
+  font-size: 16px;
+  color: white;
+}
+
+.modal-sm .modal-debit .container-fluid .long-input{
+  width: 100%;
+}
+
+.debit-modal-pay-btn{
+  background-color: lightgray;
+  color: black;
+}
+.debit-modal-pay-btn:hover{
+  background-color:yellow;
+}
+
+.method-title{
+  font-size: 1.5em;
+  text-align: center;
+  background-color:#060b26;
+  color: white;
+  padding: 12px;
+}
+
+.footnote{
+  font-size: 0.8em;
+}
+
+.history-payment-title{
+  font-size: 1.5em;
+  color: black;
+}
+
+
+.blackText{
+  color: black;
+}
+
+.payment-date{
+  background-color:#060b26;
+  color: white;
+}
+
+.detail-payment-plus{
+  color: green;
+}
+
+.detail-payment-min{
+  color: red;
+}
+
+.shadow{
+  box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+}
+
+.hide{
+  display: none;
+}
+
+.btn-success{
+  background-color: green;
+}
+
+.atm-box ul{
+  list-style: circle;
+}
+
+.mbank-box ul{
+  list-style: circle;
+}
+
+@media only screen and (max-width: 768px) {
+  .header-logo-bar .logo h4{
+    font-size: 20px;
+  }
+}
+
+@media only screen and (max-width: 425px) {
+  .header-logo-bar .logo{
+    padding-bottom: 30px;
+  }
+
+  .list-box{
+    font-size: smaller;
+  }
+
+  .top-up-box .btn{
+    font-size: smaller;
+  }
+
+  #input-saldo{
+    font-size: smaller;
+  }
+
+  .top-up-box .methodPay{
+    font-size: smaller;
+  }
+
+  .method-title{
+    font-size: 1.1em;
+    padding: 8px;
+  }
+}
+
+@media only screen and (max-width: 320px) {
+  .header-logo-bar .logo h4{
+    font-size: 18px;
+  }
+
+  .saldo-text{
+    margin-left: 5px;
+  }
+  
+  .top-up-btn{
+    font-size: 12px;
+  }
+
+  .modal .modal-debit{
+    width: 305px;
+  }
+
+  .modal .modal-debit .container-fluid .long-input{
+    font-size: smaller;
+  }
+
+  .modal .modal-debit .container-fluid .short-input{
+    width: 100%;
+    font-size: smaller;
+  }
+
+  .modal .modal-debit .container-fluid .total{
+    font-weight: bolder;
+    font-size: 14px;
+    color: black;
+  }
+
+  .history-payment-title{
+    font-size: 16px;
+  }
+
+  .payment-method-btn{
+    display: flex;
+    justify-content: center;
+  }
+
+  .atm-box ul{
+    margin-left: -15px;
+    font-size: 12px;
+  }
+
+  .mbank-box ul{
+    margin-left: -15px;
+    font-size: 12px;
+  }
+  .mbank-box{
+    font-size: 12px;
+  }
+}

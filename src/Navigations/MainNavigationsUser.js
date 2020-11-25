@@ -11,7 +11,7 @@ import Footer from '../components/Footer';
 import ProfileUser from '../Screens/ProfileUser/ProfileUser';
 import Cart from '../Screens/Cart/Cart';
 import Wishlist from '../Screens/Wishlist/Wishlist';
-
+import Payment from '../Screens/Payment/Payment';
 class MainNavigationsUser extends Component {
     render() {
         return (
@@ -38,6 +38,9 @@ class MainNavigationsUser extends Component {
                     </Route>
                     <Route path='/wishlist'>
                         <Wishlist />
+                    </Route>
+                    <Route path='/payment'>
+                        <Payment/>
                     </Route>
                     <Route path='/'>
                         <Footer />
