@@ -74,6 +74,27 @@ export default class Content extends Component {
             centerMode: true,
             centerPadding: "40px",
             slidesToShow: 1,
+            centerPadding: "200px",
+            nextArrow: <SampleNextArrow />,
+            prevArrow: <SamplePrevArrow />,
+            responsive: [
+              {
+                breakpoint: 768,
+                settings: {
+                  centerMode: true,
+                  centerPadding: "100px",
+                  slidesToShow: 1,
+                },
+              },
+              {
+                breakpoint: 480,
+                settings: {
+                  centerMode: true,
+                  centerPadding: "40px",
+                  slidesToShow: 1,
+                },
+              },
+            ],
           },
         },
       ],
