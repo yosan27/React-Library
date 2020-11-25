@@ -77,130 +77,205 @@ export default class Content extends Component {
             centerPadding: "200px",
             nextArrow: <SampleNextArrow />,
             prevArrow: <SamplePrevArrow />,
-            responsive: [{
+            responsive: [
+              {
                 breakpoint: 768,
                 settings: {
-                    centerMode: true,
-                    centerPadding: '100px',
-                    slidesToShow: 1
-                }
-            },
-            {
+                  centerMode: true,
+                  centerPadding: "100px",
+                  slidesToShow: 1,
+                },
+              },
+              {
                 breakpoint: 480,
                 settings: {
-                    centerMode: true,
-                    centerPadding: '40px',
-                    slidesToShow: 1
-                }
-            }
-            ]
-          }
-        }
-      ]
+                  centerMode: true,
+                  centerPadding: "40px",
+                  slidesToShow: 1,
+                },
+              },
+            ],
+          },
+        },
+      ],
     };
-        return (
-            <div className="right_col" role="main" style={{ minHeight: '100vh' }}>
-                <section className="mt-5 pt-5">
-                    <Slider {...settings}>
-                        <div className="item item1">
-                            <div className="item-inner">
-                                <div className="text-slide">
-                                    <span className="title-slide">
-                                        Title Book
-                                    </span>
-                                    <br />
-                                    <span className="author-slide">
-                                        Raditya
-                                    </span>
-                                    <br /><br />
-                                    <span className="detail-slide">
-                                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Maiores obcaecati nemo a architecto,
-                                        reprehenderit delectus nihil omnis recusandae.
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="item item2">
-                            <div className="item-inner">
-                                <div className="text-slide">
-                                    <span className="title-slide">
-                                        Title Book
-                                    </span>
-                                    <br />
-                                    <span className="author-slide">
-                                        Raditya
-                                    </span>
-                                    <br /><br />
-                                    <span className="detail-slide">
-                                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Maiores obcaecati nemo a architecto,
-                                        reprehenderit delectus nihil omnis recusandae.
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="item item3">
-                            <div className="item-inner">
-                                <div className="text-slide">
-                                    <span className="title-slide">
-                                        Title Book
-                                    </span>
-                                    <br />
-                                    <span className="author-slide">
-                                        Raditya
-                                    </span>
-                                    <br /><br />
-                                    <span className="detail-slide">
-                                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Maiores obcaecati nemo a architecto,
-                                        reprehenderit delectus nihil omnis recusandae.
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="item item4">
-                            <div className="item-inner">
-                                <div className="text-slide">
-                                    <span className="title-slide">
-                                        Title Book
-                                    </span>
-                                    <br />
-                                    <span className="author-slide">
-                                        Raditya
-                                    </span>
-                                    <br /><br />
-                                    <span className="detail-slide">
-                                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Maiores obcaecati nemo a architecto,
-                                        reprehenderit delectus nihil omnis recusandae.
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="item item5">
-                            <div className="item-inner">
-                                <div className="text-slide">
-                                    <span className="title-slide">
-                                        Title Book
-                                    </span>
-                                    <br />
-                                    <span className="author-slide">
-                                        Raditya
-                                    </span>
-                                    <br /><br />
-                                    <span className="detail-slide">
-                                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Maiores obcaecati nemo a architecto,
-                                        reprehenderit delectus nihil omnis recusandae.
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </Slider>
-                </section>
+    return (
+      <div className="right_col" role="main" style={{ minHeight: "100vh" }}>
+        <div className="mt-5 jumbotron jumbotron-fluid">
+          <div className="container">
+            <h1 className="display-4 jumbotron-text">A Book Is</h1>
+            <p className="lead jumbotron-text">
+              A Dream You Hold In Your Hands.
+            </p>
+          </div>
+        </div>
 
-                <section className="pt-5">
-                    <div className="card" style={{ width: '12rem' }}>
-                        <img src={avatar} alt="avatar" className="card-img-top" />
-                        <div className="card-body">
-                            <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        </div>
+        <section className="mt-5 pt-5">
+          <Slider {...settings}>
+            <div className="item item1">
+              <div className="item-inner">
+                <div className="text-slide">
+                  <span className="title-slide">Title Book</span>
+                  <br />
+                  <span className="author-slide">Raditya</span>
+                  <br />
+                  <br />
+                  <span className="detail-slide">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                    Maiores obcaecati nemo a architecto, reprehenderit delectus
+                    nihil omnis recusandae.
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="item item2">
+              <div className="item-inner">
+                <div className="text-slide">
+                  <span className="title-slide">Title Book</span>
+                  <br />
+                  <span className="author-slide">Raditya</span>
+                  <br />
+                  <br />
+                  <span className="detail-slide">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                    Maiores obcaecati nemo a architecto, reprehenderit delectus
+                    nihil omnis recusandae.
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="item item3">
+              <div className="item-inner">
+                <div className="text-slide">
+                  <span className="title-slide">Title Book</span>
+                  <br />
+                  <span className="author-slide">Raditya</span>
+                  <br />
+                  <br />
+                  <span className="detail-slide">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                    Maiores obcaecati nemo a architecto, reprehenderit delectus
+                    nihil omnis recusandae.
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="item item4">
+              <div className="item-inner">
+                <div className="text-slide">
+                  <span className="title-slide">Title Book</span>
+                  <br />
+                  <span className="author-slide">Raditya</span>
+                  <br />
+                  <br />
+                  <span className="detail-slide">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                    Maiores obcaecati nemo a architecto, reprehenderit delectus
+                    nihil omnis recusandae.
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="item item5">
+              <div className="item-inner">
+                <div className="text-slide">
+                  <span className="title-slide">Title Book</span>
+                  <br />
+                  <span className="author-slide">Raditya</span>
+                  <br />
+                  <br />
+                  <span className="detail-slide">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                    Maiores obcaecati nemo a architecto, reprehenderit delectus
+                    nihil omnis recusandae.
+                  </span>
+                </div>
+              </div>
+            </div>
+          </Slider>
+        </section>
+
+        {/* Best Seller */}
+        <section className="pt-5">
+          <div className="container-fluid">
+            <h3>Best Seller</h3>
+            <p>New Releases</p>
+
+            <div class="card-group">
+              <div class="card mr-2">
+                <img src={nebula} alt="avatar" className="card-img-top" />
+                <div class="card-body garis-top">
+                  <h5 class="card-title">Nebula</h5>
+                </div>
+              </div>
+
+              <div class="card mr-2">
+                <img src={selena} alt="avatar" className="card-img-top" />
+                <div class="card-body garis-top">
+                  <h5 class="card-title">Selena</h5>
+                </div>
+              </div>
+
+              <div class="card mr-2">
+                <img src={laut} alt="avatar" className="card-img-top" />
+                <div class="card-body garis-top">
+                  <h5 class="card-title">Laut Bercerita</h5>
+                </div>
+              </div>
+
+              <div class="card mr-2">
+                <img src={ibuk} alt="avatar" className="card-img-top" />
+                <div class="card-body garis-top">
+                  <h5 class="card-title">Ibuk</h5>
+                </div>
+              </div>
+
+              <div class="card mr-2">
+                <img src={tokyo} alt="avatar" className="card-img-top" />
+                <div class="card-body garis-top">
+                  <h5 class="card-title smaller-font">
+                    Tokyo dan Perayaan Kesedihan
+                  </h5>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        {/* Best Seller */}
+
+        {/* Asian */}
+        <section className="pt-5">
+          <div className="container-fluid">
+            <h3>The Best Asian Books</h3>
+            <p>Top Seller</p>
+
+            <div className="row">
+              <div className="col">
+                <div className="card mt-5 asian-box">
+                  <div className="row no-gutters">
+                    <div className="col-md-4">
+                      <img
+                        src={ibu}
+                        className="card-img recommend-img"
+                        alt="ibu"
+                      />
+                    </div>
+                    <div className="col-md-8">
+                      <div className="card-body asian-box-body">
+                        <h5 className="card-title">
+                          <b>Please Look After Mom</b>
+                        </h5>
+                        <p className="card-text">
+                          Kisah seorang ibu yang menghilang ketika ingin
+                          mengunjungi anaknya di kota. Sejak saat itu, anggota
+                          keluarga yang ditinggalkan mengalami trauma dan
+                          menyadari betapa pentingnya serta kurang mengenal
+                          lebih jauh akan sosok ibu.
+                        </p>
+                        <p class="card-text">
+                          <small class="text-muted">- Kyung Sook Sin -</small>
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
