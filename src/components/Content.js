@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './Slidertop.style.css';
 import Slider from "react-slick";
+import avatar from "./avatar.png"
 
 function SampleNextArrow(props) {
     const { className, style, onClick } = props;
@@ -145,6 +146,15 @@ export default class Content extends Component {
                             </div>
                         </div>
                     </Slider>
+                </section>
+
+                <section className="pt-5">
+                    <div class="card" style={{width: '12rem'}}>
+                        <img src={avatar} alt="avatar" class="card-img-top" />
+                        <div class="card-body">
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        </div>
+                    </div>
                 </section>
             </div >
         )
