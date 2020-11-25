@@ -1,9 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
 
-/* body{
-  background-color: #f7f7f7;
-} */
-
 .header-logo-bar .logo{
   justify-content: center;
   align-items: center;
@@ -38,7 +34,7 @@
 
 .list-header{
   font-weight: bold;
-  background-color: #3E5367;
+  background-color: #060b26;
   color: white;
   font-size: 1.1em;
 }
@@ -78,8 +74,12 @@
   font-weight: bold;
 }
 
+.modal-body .container-fluid{
+  color: white;
+}
+
 .modal .modal-debit{
-  background-color: #3E5367;
+  background-color: #060b26;
   color: #E7E7E7;
 }
 
@@ -98,17 +98,25 @@
 .modal-sm .modal-debit .container-fluid .total{
   font-weight: bolder;
   font-size: 16px;
-  color: black;
+  color: white;
 }
 
 .modal-sm .modal-debit .container-fluid .long-input{
   width: 100%;
 }
 
+.debit-modal-pay-btn{
+  background-color: lightgray;
+  color: black;
+}
+.debit-modal-pay-btn:hover{
+  background-color:yellow;
+}
+
 .method-title{
   font-size: 1.5em;
   text-align: center;
-  background-color: #3E5367;
+  background-color:#060b26;
   color: white;
   padding: 12px;
 }
@@ -128,7 +136,7 @@
 }
 
 .payment-date{
-  background-color: #3E5367;
+  background-color:#060b26;
   color: white;
 }
 

@@ -846,7 +846,7 @@ export default class Payment extends Component {
                                 <div className="row">
                                   <div className="col">
                                     <button
-                                      className="btn btn-success"
+                                      className="btn debit-modal-pay-btn"
                                       type="button"
                                       data-dismiss="modal"
                                       onClick={() => this.debitPay()}
