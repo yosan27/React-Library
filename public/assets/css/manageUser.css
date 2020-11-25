@@ -1,0 +1,87 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
+
+body {
+  max-height: 500px;
+}
+
+.nav_title a img{
+  width: 40px;
+}
+
+.history h3{
+  padding-top: 70px;
+}
+
+.modal{
+  z-index: 9999;
+}
+
+.profile_name{
+  display: none;
+}
+
+.profile_name h4{
+  margin-top: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: 12px;
+  font-weight: bold;
+  color: darkslategrey;
+  background-color: white;
+  text-align: center;
+}
+
+#detailImg {
+  width: 10%;
+}
+
+
+
+@media only screen and (max-width: 768px) {
+  .profile_name{
+    display: inline;
+  }
+
+  .btn-warning{
+  margin-left: 15%;
+} 
+
+.btn-danger{
+  margin-left: 5%;
+}
+
+}
+
+@media only screen and (max-width: 425px) {
+  footer div{
+    font-size: 11px;
+  }
+
+  .history h3{
+    font-size: 25px;
+  }
+
+  .btn-warning{
+    margin-left: 15%;
+  }
+
+  .btn-danger{
+    margin-left: 5%;
+  }
+
+}
+
+@media only screen and (max-width: 320px) {
+  .history h3{
+    font-size: 25px;
+  }
+
+  .btn-warning{
+    margin-left: 15%;
+  }
+
+  .btn-danger{
+    margin-left: 5%;
+  }
+
+}
