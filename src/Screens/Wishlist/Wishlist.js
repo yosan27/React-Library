@@ -1,7 +1,23 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom'
 
 export default class Wishlist extends Component {
     render() {
+        const mystyleBtn = {
+            color: "white",
+            cursor: 'pointer',
+        };
+        const pinjamBtn = () => {
+            document.getElementById("data2").style.display = "none";
+            document.getElementById("cartCount").innerHTML = "3";
+        };
+        const deleteBtn1 = () => {
+            document.getElementById("data1").style.display = "none";
+        };
+        const deleteBtn2 = () => {
+            document.getElementById("data2").style.display = "none";
+        };
+
         return (
             <div className="right_col" role="main" style={{ minHeight: '100vh' }}>
                 <section className="mt-5 pt-5">
@@ -40,10 +56,10 @@ export default class Wishlist extends Component {
                                                             </span>
                                                         </td>
                                                         <td>
-                                                            <a href="detailpageUser.html"
-                                                                className="btn shadow btn-sm btn-light"><i
-                                                                    className="fa fa-info"></i></a>
-                                                            <a id="btn-data1" href="#"
+                                                            <Link to="/detailPage" className="btn shadow btn-sm btn-light">
+                                                                <i className="fa fa-info"></i>
+                                                            </Link>
+                                                            <a id="btn-data1" onClick={deleteBtn1} style={mystyleBtn}
                                                                 className="btn shadow btn-sm btn-danger"><i
                                                                     className="fa fa-trash"></i></a>
                                                         </td>
@@ -64,10 +80,9 @@ export default class Wishlist extends Component {
                                                             <a href="detailpageUser.html"
                                                                 className="btn shadow btn-sm btn-light"><i
                                                                     className="fa fa-info"></i></a>
-                                                            <a id="btn-data2" href="#" className="btn btn-sm btn-danger"><i
+                                                            <a id="btn-data2" onClick={deleteBtn2} style={mystyleBtn} className="btn btn-sm btn-danger"><i
                                                                 className="fa fa-trash"></i></a>
-                                                            <a id="btn-pinjam2" href="#"
-                                                                className="btn shadow btn-sm btn-success">
+                                                            <a id="btn-pinjam2" onClick={pinjamBtn} style={mystyleBtn} className="btn shadow btn-sm btn-success">
                                                                 Borrow
                                                             </a>
                                                         </td>
