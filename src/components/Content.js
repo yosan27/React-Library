@@ -94,7 +94,10 @@ export default class Content extends Component {
                 }
             }
             ]
-        };
+          }
+        }
+      ]
+    };
         return (
             <div className="right_col" role="main" style={{ minHeight: '100vh' }}>
                 <section className="mt-5 pt-5">
