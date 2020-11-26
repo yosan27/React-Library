@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Table, Container, Form, InputGroup, Pagination, Modal, Button } from 'react-bootstrap';
+import { Table, Container, Form, InputGroup, Modal, Button } from 'react-bootstrap';
 import swal from "sweetalert";
+import Pagination from './components/pagination';
 
 class BookManagement extends Component {
   constructor(props) {
@@ -93,6 +94,11 @@ class BookManagement extends Component {
       showAdd: false,
       showEdit: false,
       showDelete: false,
+      currentPage: 1,
+      postsPerPage: 5,
+      ketiksearch: false,
+      showpagination: true,
+      showsearchresults: false
     }
   }
 
@@ -136,14 +142,48 @@ class BookManagement extends Component {
   }
 
   searchData = event => {
-    this.setState({ search: event.target.value })
+    if (event.target.value) {
+      this.setState({ ketiksearch: true });
+      this.setState({ showpagination: false });
+      this.setState({ showsearchresults: true });
+      this.setState({ search: event.target.value });
+    }
+    if (event.target.value === "") {
+      this.setState({ ketiksearch: false });
+      this.setState({ showpagination: true });
+      this.setState({ showsearchresults: false });
+    }
+  }
+
+  paginate = pagenumber => {
+    // if (pagenumber) {
+    //   this.setState({ ketiksearch: false });
+    //   this.setState({ paginationclicked: true });
+      this.setState({currentPage : pagenumber});
+    // }
+    // if (pagenumber == "") {
+    //   this.setState({ ketiksearch: false });
+    //   this.setState({ datepick: false });
+    //   this.setState({currentPage : pagenumber});
+    // }
   }
 
   render() {
-    const { books, search, showAdd, showEdit, showDelete } = this.state;
+    const { books, search, showAdd, showEdit, showDelete, currentPage, postsPerPage, ketiksearch, showpagination, showsearchresults } = this.state;
     const filteredData = books.filter(book =>
       book.bookTitle.toLowerCase().includes(search.toLowerCase())
-    )
+    );
+
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = books.slice(indexOfFirstPost, indexOfLastPost);
+
+    let returnedTarget;
+    if (ketiksearch === true) {
+      returnedTarget = filteredData;
+    } else {
+      returnedTarget = currentPosts;
+    }
 
     return (
       // page content
@@ -162,11 +202,6 @@ class BookManagement extends Component {
                       <Button variant="success" onClick={this.handleShowAdd}>
                         <i class="fa fa-plus"></i> Add Book
                       </Button>
-                      {/* <button className="btn btn-primary-warning"
-                        // style={{ backgroundColor: "#2A3F54", color: "aliceblue" }}
-                        data-toggle="modal"
-                        data-target="#ModalAdd" onClick={this.handleShowAdd}><i class="fa fa-plus"></i> Add Book
-                      </button> */}
                     </div>
                     {/* title */}
 
@@ -191,6 +226,11 @@ class BookManagement extends Component {
                               {/* {errors.username} */}
                             </Form.Control.Feedback>
                           </InputGroup>
+                          <div className="d-flex justify-content-center">
+                            <div style={{display: showsearchresults ? 'block' : 'none', color:"#444444"}}>
+                              <p>Showing <b>{returnedTarget.length}</b> search results</p>
+                            </div>
+                          </div>
                         </div>
                       </div>
 
@@ -207,7 +247,7 @@ class BookManagement extends Component {
                           </tr>
                         </thead>
                         {
-                          filteredData.map((book, index) => {
+                          returnedTarget.map((book, index) => {
 
                             return (
                               <tbody key={index}>
@@ -218,7 +258,7 @@ class BookManagement extends Component {
                                   <td>{book.publishedDate}</td>
                                   <td>{book.categories}</td>
                                   <td class="text-center">
-                                    <img height="80" src={book.bookCover} />
+                                    <img height="80" src={book.bookCover} alt="bookimage"/>
                                   </td>
                                   <td>
                                     <div class='d-flex justify-content-around mt-4' style={{ border: 'none' }}>
@@ -235,16 +275,13 @@ class BookManagement extends Component {
                           })
                         }
                       </Table>
-                      <Pagination className='justify-content-center'>
-                        <Pagination.First />
-                        <Pagination.Prev />
-                        <Pagination.Item>{2}</Pagination.Item>
-                        <Pagination.Ellipsis />
-                        <Pagination.Item>{10}</Pagination.Item>
-                        <Pagination.Next />
-                        <Pagination.Last />
-                      </Pagination>
-
+                      <div style={{display: showpagination ? 'block' : 'none' }}>
+                      <Pagination
+                        postsPerPage={postsPerPage}
+                        totalPosts={books.length}
+                        paginate={this.paginate}
+                      />
+                      </div>
                     </Container>
 
                     {/* modal add */}
