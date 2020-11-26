@@ -167,7 +167,7 @@ export default class Payment extends Component {
 
   render() {
     return (
-      <div className="right_col" role="main" style={{ minHeight: "100vh" }}>
+      <div className="right_col" role="main">
         <section className="mt-5 pt-5">
           <div className="container-fluid">
             <div className="row">
