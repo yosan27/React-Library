@@ -1,3 +1,5 @@
-.react-bootstrap-table table {
-  table-layout: auto;
+button.buttonaddbook.btn.btn-primary:hover {
+  background-color: "#fff";
+  border-color: "#2A3F54";
+  color: "#2A3F54";
 }

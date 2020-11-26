@@ -1,7 +1,8 @@
 import React, { Component } from "react"
 import {
     BrowserRouter as Router,
-    Route
+    Route,
+    Switch
 } from "react-router-dom"
 
 import HeaderUser from '../components/HeaderUser';
@@ -13,6 +14,8 @@ import HistoryUser from '../Screens/HistoryUser/HistoryUser';
 import Cart from '../Screens/Cart/Cart';
 import Wishlist from '../Screens/Wishlist/Wishlist';
 import Payment from '../Screens/Payment/Payment';
+import Catalog from '../Screens/Catalog/Catalog';
+import DetailPage from '../Screens/DetailPage/detailpage'
 
 class MainNavigationsUser extends Component {
     render() {
@@ -46,6 +49,12 @@ class MainNavigationsUser extends Component {
                     </Route>
                     <Route path='/payment'>
                         <Payment/>
+                    </Route>
+                    <Route path='/catalog'>
+                        <Catalog/>
+                    </Route>
+                    <Route path='/detailpage'>
+                        <DetailPage />
                     </Route>
                     <Route path='/'>
                         <Footer />

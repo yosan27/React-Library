@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Table, Container, Form, InputGroup, Pagination, Modal, Button } from 'react-bootstrap';
+import swal from "sweetalert";
 
 class BookManagement extends Component {
   constructor(props) {
@@ -95,6 +96,11 @@ class BookManagement extends Component {
     }
   }
 
+  handleAddBook = () => {
+    this.setState({ showAdd: false })
+    swal("Success!", "Book Has Been Added", "success");
+  }
+
   handleCloseAdd = () => {
     this.setState({ showAdd: false })
   }
@@ -107,12 +113,22 @@ class BookManagement extends Component {
     this.setState({ showEdit: false })
   }
 
+  handleSaveEdit = () => {
+    this.setState({ showEdit: false })
+    swal("Success!", "Your Data Is Updated", "success");
+  }
+
   handleShowEdit = () => {
     this.setState({ showEdit: true })
   }
 
   handleCloseDelete = () => {
     this.setState({ showDelete: false })
+  }
+
+  handleDelete = () => {
+    this.setState({ showDelete: false })
+    swal("Deleted!", "Book Is Successfully Deleted", "success");
   }
 
   handleShowDelete = () => {
@@ -141,18 +157,21 @@ class BookManagement extends Component {
                     <h3 className="card-title">Book Management</h3>
                   </div>
                   <div className="card-body">
-                    {/* add book button */}
-                    <div class="container">
-                      <button class="btn mt-2 "
-                        style={{ backgroundColor: "#2A3F54", color: "aliceblue" }}
+                    {/* title */}
+                    <div class="">
+                      <Button variant="success" onClick={this.handleShowAdd}>
+                        <i class="fa fa-plus"></i> Add Book
+                      </Button>
+                      {/* <button className="btn btn-primary-warning"
+                        // style={{ backgroundColor: "#2A3F54", color: "aliceblue" }}
                         data-toggle="modal"
-                        data-target="#ModalAdd"  onClick={this.handleShowAdd}><i class="fa fa-plus"></i>
-                        Add Book
-                      </button>
+                        data-target="#ModalAdd" onClick={this.handleShowAdd}><i class="fa fa-plus"></i> Add Book
+                      </button> */}
                     </div>
-                    {/* add book button */}
+                    {/* title */}
+
                     {/* book management table */}
-                    <Container>
+                    <Container className=''>
                       <div className='row justify-content-center'>
                         <div className='col-2-lg m-2'>
                           <InputGroup>
@@ -312,7 +331,7 @@ class BookManagement extends Component {
                         <Button className="btn btn-secondary" variant="secondary" onClick={this.handleCloseAdd}>
                           <i class="fa fa-times-circle"></i> Close
                         </Button>
-                        <Button className="btn btn-success" variant="primary" onClick={this.handleCloseAdd}>
+                        <Button className="btn btn-success" variant="primary" onClick={this.handleAddBook}>
                           <i class="fa fa-plus"></i> Add
                         </Button>
                       </Modal.Footer>
@@ -364,10 +383,10 @@ class BookManagement extends Component {
                       </Modal.Body>
                       <Modal.Footer>
                         <Button className="btn btn-secondary" variant="secondary" onClick={this.handleCloseEdit}>
-                          <i class="fa fa-times-circle"></i> Cancel
+                          Cancel
                         </Button>
-                        <Button className="btn btn-success" variant="primary" onClick={this.handleCloseEdit}>
-                          <i class="fa fa-edit"></i> Save
+                        <Button className="btn btn-success" variant="primary" onClick={this.handleSaveEdit}>
+                          Save
                         </Button>
                       </Modal.Footer>
                     </Modal>
@@ -385,10 +404,10 @@ class BookManagement extends Component {
                       </Modal.Body>
                       <Modal.Footer>
                         <Button className="btn btn-secondary" variant="secondary" onClick={this.handleCloseDelete}>
-                          <i class="fa fa-times-circle"></i> Close
+                          Close
                         </Button>
-                        <Button className="btn btn-warning" variant="primary" onClick={this.handleCloseDelete}>
-                          <i class="fa fa-trash"></i> Delete
+                        <Button className="btn btn-warning" variant="primary" onClick={this.handleDelete}>
+                          Delete
                         </Button>
                       </Modal.Footer>
                     </Modal>
@@ -400,7 +419,6 @@ class BookManagement extends Component {
           </div >
         </section >
       </div >
-
     );
   }
 }
