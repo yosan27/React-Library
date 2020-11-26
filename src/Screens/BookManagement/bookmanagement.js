@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Table, Container, Form, InputGroup, Pagination, Modal, Button } from 'react-bootstrap';
+import swal from "sweetalert";
 
 class BookManagement extends Component {
   constructor(props) {
@@ -95,6 +96,11 @@ class BookManagement extends Component {
     }
   }
 
+  handleAddBook = () => {
+    this.setState({ showAdd: false })
+    swal("Success!", "Book Has Been Added", "success");
+  }
+
   handleCloseAdd = () => {
     this.setState({ showAdd: false })
   }
@@ -107,12 +113,22 @@ class BookManagement extends Component {
     this.setState({ showEdit: false })
   }
 
+  handleSaveEdit = () => {
+    this.setState({ showEdit: false })
+    swal("Success!", "Your Data Is Updated", "success");
+  }
+
   handleShowEdit = () => {
     this.setState({ showEdit: true })
   }
 
   handleCloseDelete = () => {
     this.setState({ showDelete: false })
+  }
+
+  handleDelete = () => {
+    this.setState({ showDelete: false })
+    swal("Deleted!", "Book Is Successfully Deleted", "success");
   }
 
   handleShowDelete = () => {
@@ -303,8 +319,8 @@ class BookManagement extends Component {
           <Button className="btn btn-secondary" variant="secondary" onClick={this.handleCloseAdd}>
           <i class="fa fa-times-circle"></i> Close
           </Button>
-          <Button className="btn btn-success" variant="primary" onClick={this.handleCloseAdd}>
-            <i class="fa fa-plus"></i> Cart
+          <Button className="btn btn-success" variant="primary" onClick={this.handleAddBook}>
+            <i class="fa fa-plus"></i> Add
           </Button>
         </Modal.Footer>
       </Modal>
@@ -357,7 +373,7 @@ class BookManagement extends Component {
           <Button className="btn btn-secondary" variant="secondary" onClick={this.handleCloseEdit}>
             Cancel
           </Button>
-          <Button className="btn btn-success" variant="primary" onClick={this.handleCloseEdit}>
+          <Button className="btn btn-success" variant="primary" onClick={this.handleSaveEdit}>
             Save
           </Button>
         </Modal.Footer>
@@ -378,7 +394,7 @@ class BookManagement extends Component {
           <Button className="btn btn-secondary" variant="secondary" onClick={this.handleCloseDelete}>
             Close
           </Button>
-          <Button className="btn btn-warning" variant="primary" onClick={this.handleCloseDelete}>
+          <Button className="btn btn-warning" variant="primary" onClick={this.handleDelete}>
             Delete
           </Button>
         </Modal.Footer>
