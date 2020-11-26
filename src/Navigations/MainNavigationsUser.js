@@ -14,6 +14,7 @@ import HistoryUser from '../Screens/HistoryUser/HistoryUser';
 import Cart from '../Screens/Cart/Cart';
 import Wishlist from '../Screens/Wishlist/Wishlist';
 import Payment from '../Screens/Payment/Payment';
+import Catalog from '../Screens/Catalog/Catalog';
 import DetailPage from '../Screens/DetailPage/detailpage'
 
 class MainNavigationsUser extends Component {
@@ -49,6 +50,8 @@ class MainNavigationsUser extends Component {
                     <Route path='/payment'>
                         <Payment/>
                     </Route>
+                    <Route path='/catalog'>
+                        <Catalog/>
                     <Route path='/detailpage'>
                         <DetailPage />
                     </Route>
