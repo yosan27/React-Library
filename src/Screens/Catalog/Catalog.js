@@ -34,7 +34,7 @@ class Catalog extends Component {
                             <div className="col-12 col-lg-12">
                                 <div className="card">
                                     <div className="card-header">
-                                        <h3 className="card-title">Borrowed and Returned</h3>
+                                        <h3 className="card-title">Book Catalog</h3>
                                     </div>
                                     <div className="card-body">
                                         <div className="table-responsive">
