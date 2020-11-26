@@ -1,0 +1,70 @@
+.jumbotron{
+  background-image: url("../components/img/chuttersnap-Y94yKEyNjVw-unsplash.jpg");
+  background-size: cover;
+}
+
+/* #060b26 */
+
+.jumbotron-text{
+  color: black;
+  padding-left: 30px;
+}
+
+.container-fluid{
+  color: black;
+}
+
+.card-title-books{
+  text-align: center;
+  font-size: 15px;
+  height: 25px;
+}
+
+.garis-top{
+  border-top: 1px solid darkgray;
+}
+
+.recommend-img{
+  margin-top: -40px;
+  padding-bottom: 30px;
+}
+
+.smaller-font{
+  font-size: small;
+}
+
+@media only screen and (max-width: 1024px){
+  .asian-box{
+    min-height: 320px;
+  }
+}
+
+@media only screen and (max-width: 425px){
+  .jumbotron h1{
+    font-size: 35px;
+  }
+
+  .jumbotron p{
+    background-color: white;
+  }
+  
+  .card-title{
+    font-size: 16px;
+  }
+
+  .recommend-img{
+    margin-top: 0px;
+    padding-bottom: 0px;
+  }
+
+  .asian-box-body{
+    min-height: 250px;
+    min-width: 200px;
+  }
+}
+
+@media only screen and (max-width: 375px){
+  .jumbotron p{
+    font-size: 15px;
+  }
+}

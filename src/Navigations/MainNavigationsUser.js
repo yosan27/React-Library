@@ -9,8 +9,10 @@ import SideBarUser from '../components/SideBarUser';
 import Content from '../components/Content';
 import Footer from '../components/Footer';
 import ProfileUser from '../Screens/ProfileUser/ProfileUser';
+import HistoryUser from '../Screens/HistoryUser/HistoryUser';
 import Cart from '../Screens/Cart/Cart';
 import Wishlist from '../Screens/Wishlist/Wishlist';
+import Payment from '../Screens/Payment/Payment';
 
 class MainNavigationsUser extends Component {
     render() {
@@ -33,11 +35,17 @@ class MainNavigationsUser extends Component {
                     <Route path='/profileUser'>
                         <ProfileUser />
                     </Route>
+                    <Route path='/historyUser'>
+                        <HistoryUser />
+                    </Route>
                     <Route path='/cart'>
                         <Cart />
                     </Route>
                     <Route path='/wishlist'>
                         <Wishlist />
+                    </Route>
+                    <Route path='/payment'>
+                        <Payment/>
                     </Route>
                     <Route path='/'>
                         <Footer />
