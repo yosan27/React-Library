@@ -10,6 +10,7 @@ import Content from '../components/Content';
 import Footer from '../components/Footer';
 import Profile from '../Screens/Profile/Profile';
 import ProfileUser from '../Screens/ProfileUser/ProfileUser';
+import BookManagement from '../Screens/BookManagement/bookmanagement';
 
 class MainNavigation extends Component {
     render() {
@@ -34,6 +35,9 @@ class MainNavigation extends Component {
                     </Route>
                     <Route path='/profileuser'>
                         <ProfileUser />
+                    </Route>
+                    <Route path='/manageBook'>
+                        <BookManagement />
                     </Route>
                     <Route path='/'>
                         <Footer />
