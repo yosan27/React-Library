@@ -52,6 +52,7 @@ class MainNavigationsUser extends Component {
                     </Route>
                     <Route path='/catalog'>
                         <Catalog/>
+                    </Route>
                     <Route path='/detailpage'>
                         <DetailPage />
                     </Route>
