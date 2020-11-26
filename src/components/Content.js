@@ -74,6 +74,27 @@ export default class Content extends Component {
             centerMode: true,
             centerPadding: "40px",
             slidesToShow: 1,
+            centerPadding: "200px",
+            nextArrow: <SampleNextArrow />,
+            prevArrow: <SamplePrevArrow />,
+            responsive: [
+              {
+                breakpoint: 768,
+                settings: {
+                  centerMode: true,
+                  centerPadding: "100px",
+                  slidesToShow: 1,
+                },
+              },
+              {
+                breakpoint: 480,
+                settings: {
+                  centerMode: true,
+                  centerPadding: "40px",
+                  slidesToShow: 1,
+                },
+              },
+            ],
           },
         },
       ],
@@ -184,35 +205,35 @@ export default class Content extends Component {
               <div class="card mr-2">
                 <img src={nebula} alt="avatar" className="card-img-top" />
                 <div class="card-body garis-top">
-                  <h5 class="card-title">Nebula</h5>
+                  <h5 class="card-title-books">Nebula</h5>
                 </div>
               </div>
 
               <div class="card mr-2">
                 <img src={selena} alt="avatar" className="card-img-top" />
                 <div class="card-body garis-top">
-                  <h5 class="card-title">Selena</h5>
+                  <h5 class="card-title-books">Selena</h5>
                 </div>
               </div>
 
               <div class="card mr-2">
                 <img src={laut} alt="avatar" className="card-img-top" />
                 <div class="card-body garis-top">
-                  <h5 class="card-title">Laut Bercerita</h5>
+                  <h5 class="card-title-books">Laut Bercerita</h5>
                 </div>
               </div>
 
               <div class="card mr-2">
                 <img src={ibuk} alt="avatar" className="card-img-top" />
                 <div class="card-body garis-top">
-                  <h5 class="card-title">Ibuk</h5>
+                  <h5 class="card-title-books">Ibuk</h5>
                 </div>
               </div>
 
               <div class="card mr-2">
                 <img src={tokyo} alt="avatar" className="card-img-top" />
                 <div class="card-body garis-top">
-                  <h5 class="card-title smaller-font">
+                  <h5 class="card-title-books smaller-font">
                     Tokyo dan Perayaan Kesedihan
                   </h5>
                 </div>
@@ -241,7 +262,7 @@ export default class Content extends Component {
                     </div>
                     <div className="col-md-8">
                       <div className="card-body asian-box-body">
-                        <h5 className="card-title">
+                        <h5 className="card-title-books">
                           <b>Please Look After Mom</b>
                         </h5>
                         <p className="card-text">
@@ -272,7 +293,7 @@ export default class Content extends Component {
                     </div>
                     <div className="col-md-8">
                       <div className="card-body asian-box-body">
-                        <h5 className="card-title">
+                        <h5 className="card-title-books">
                           <b>Kim Ji Yeong</b>
                         </h5>
                         <p className="card-text">
@@ -305,21 +326,21 @@ export default class Content extends Component {
               <div class="card mr-2">
                 <img src={after} alt="avatar" className="card-img-top" />
                 <div class="card-body garis-top">
-                  <h5 class="card-title">After the Funeral</h5>
+                  <h5 class="card-title-books">After the Funeral</h5>
                 </div>
               </div>
 
               <div class="card mr-2">
                 <img src={segitiga} alt="avatar" className="card-img-top" />
                 <div class="card-body garis-top">
-                  <h5 class="card-title">Segi Tiga</h5>
+                  <h5 class="card-title-books">Segi Tiga</h5>
                 </div>
               </div>
 
               <div class="card mr-2">
                 <img src={metro} alt="avatar" className="card-img-top" />
                 <div class="card-body garis-top">
-                  <h5 class="card-title smaller-font">
+                  <h5 class="card-title-books smaller-font">
                     MetroPop : Ganjil Genap
                   </h5>
                 </div>
@@ -328,14 +349,14 @@ export default class Content extends Component {
               <div class="card mr-2">
                 <img src={defending} alt="avatar" className="card-img-top" />
                 <div class="card-body garis-top">
-                  <h5 class="card-title">Defending Jacob</h5>
+                  <h5 class="card-title-books">Defending Jacob</h5>
                 </div>
               </div>
 
               <div class="card mr-2">
                 <img src={misteri} alt="avatar" className="card-img-top" />
                 <div class="card-body garis-top">
-                  <h5 class="card-title">Misteri Terakhir #1</h5>
+                  <h5 class="card-title-books">Misteri Terakhir #1</h5>
                 </div>
               </div>
             </div>
