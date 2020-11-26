@@ -9,9 +9,11 @@ import SideBarUser from '../components/SideBarUser';
 import Content from '../components/Content';
 import Footer from '../components/Footer';
 import ProfileUser from '../Screens/ProfileUser/ProfileUser';
+import HistoryUser from '../Screens/HistoryUser/HistoryUser';
 import Cart from '../Screens/Cart/Cart';
 import Wishlist from '../Screens/Wishlist/Wishlist';
 import Payment from '../Screens/Payment/Payment';
+
 class MainNavigationsUser extends Component {
     render() {
         return (
@@ -32,6 +34,9 @@ class MainNavigationsUser extends Component {
                     </Route>
                     <Route path='/profileUser'>
                         <ProfileUser />
+                    </Route>
+                    <Route path='/historyUser'>
+                        <HistoryUser />
                     </Route>
                     <Route path='/cart'>
                         <Cart />
