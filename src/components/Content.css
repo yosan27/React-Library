@@ -25,7 +25,8 @@
 }
 
 .recommend-img{
-  margin-top: -40px;
+  margin-top: -50px;
+  margin-left: 10px;
   padding-bottom: 30px;
 }
 
@@ -54,6 +55,7 @@
 
   .recommend-img{
     margin-top: 0px;
+    margin-left: 0px;
     padding-bottom: 0px;
   }
 
