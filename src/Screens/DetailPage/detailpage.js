@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import { Container, Jumbotron, Modal, Button, Row, Col } from 'react-bootstrap'
+import { Container, Jumbotron, Modal, Button} from 'react-bootstrap'
 import axios from 'axios'
 import './detailpage.css'
+import swal from 'sweetalert';
 
 
 class DetailPage extends Component {
@@ -36,7 +37,7 @@ class DetailPage extends Component {
         this.setState({ bookAvailable: 'Not Available' });
       }
 
-      if (bookData.subtitle != undefined) {
+      if (bookData.subtitle !== undefined) {
         this.setState({ subtitle: bookData.subtitle });
       } else {
         this.setState({ subtitle: 'Subtitle not available' });
@@ -57,6 +58,11 @@ class DetailPage extends Component {
 
   handleClose = () => {
     this.setState({ show: false })
+  }
+
+  handleCart = () => {
+    this.setState({ show: false })
+    swal("Success!","Book Has Been Added To Your Cart","success")
   }
 
   handleShow = () => {
@@ -182,7 +188,7 @@ class DetailPage extends Component {
                     {/* modal borrow */}
                     <Modal show={show} onHide={this.handleClose}>
                       <Modal.Header closeButton>
-                        <Modal.Title>Book loan form</Modal.Title>
+                        <Modal.Title>Book Loan Form</Modal.Title>
                       </Modal.Header>
                       <Modal.Body>
                         <div class='container'>
@@ -224,7 +230,7 @@ class DetailPage extends Component {
                         <Button className="btn btn-secondary" variant="secondary" onClick={this.handleClose}>
                           <i class="fa fa-times-circle"></i> Close
                         </Button>
-                        <Button className="btn btn-success" variant="primary" onClick={this.handleClose}>
+                        <Button className="btn btn-success" variant="primary" onClick={this.handleCart}>
                           <i class="fa fa-plus"></i> Cart
                         </Button>
                       </Modal.Footer>
