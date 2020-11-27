@@ -1,8 +1,12 @@
 import React, { Component } from 'react'
-import { Link, withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
+import swal from 'sweetalert'
 import './donation-styles.css'
 
 class DonationForm extends Component {
+    submitClick = () => {
+        swal("Thank You", "Book Donation Successfully Received", "success");
+    }
 
     render() {
         return (
@@ -58,26 +62,11 @@ class DonationForm extends Component {
                     <br /><br />
                     <div class="row justify-content-md-center">
                         <div class="col-lg-2">
-                            <button type="button" class="btn btn-outline-info" data-toggle="modal"
-                                data-target="#deleteSuccessModal" data-dismiss="modal">Submit</button>
+                            <button type="button" class="btn btn-outline-info" onClick={() => this.submitClick()}>Submit</button>
                         </div>
                     </div>
                 </div>
-                // modal
-                <div class="modal fade" id="deleteSuccessModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-body text-center">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                                <i class="fa fa-check-circle mb-2" ></i>
-                                <p>Buku donasi berhasil diterima!</p>
-                            </div>
-                        </div>
-                    </div>
                 </div>
-            </div>
 
 
         )
