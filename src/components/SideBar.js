@@ -81,7 +81,7 @@ class SideBar extends Component {
                                         </Link>
                                     </li>
                                     <li className={(pathCurrent[1] === 'manageDonation' ? "current-page" : "")}>
-                                        <Link to="/manageDonation">
+                                        <Link to="/manage-donation">
                                             Donation
                                         </Link>
                                     </li>

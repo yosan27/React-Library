@@ -1,13 +1,12 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
 
 * {
   padding: 0;
   margin: 0;
   box-sizing: border;
-  font-family: "Poppins", sans-serif !important;
+  font-family: "Poppins", sans-serif;
 }
 
-body {
+.card-login {
   background: rgba(219, 226, 226, alpha);
 }
 
@@ -41,7 +40,6 @@ body {
 .row {
   background: white;
   border-radius: 30px;
-  box-shadow: 12px 12px 22px grey;
 }
 
 .box-input{
