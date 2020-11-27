@@ -9,6 +9,9 @@ import Profile from "../Screens/Profile/Profile";
 import ProfileUser from "../Screens/ProfileUser/ProfileUser";
 import BookManagement from "../Screens/BookManagement/bookmanagement";
 import DetailPage from "../Screens/DetailPage/detailpage";
+import History from '../Screens/History/History';
+import ExtendForm from '../Screens/Form/ExtendForm';
+import ReturnForm from '../Screens/Form/ReturnForm';
 import UserManagement from "../Screens/UserManagement/usermanagement";
 import ManageDonation from "../Screens/ManageDonation/index";
 import Login from "../Screens/Login/Login";
@@ -60,6 +63,15 @@ class MainNavigation extends Component {
             </Route>
             <Route path="/manage-donation">
               <ManageDonation />
+            </Route>
+            <Route path='/history'>
+              <History />
+            </Route>
+            <Route path='/extendForm'>
+              <ExtendForm />
+            </Route>
+            <Route path='/returnForm'>
+              <ReturnForm />
             </Route>
             <Route path="/">
               <Footer />
