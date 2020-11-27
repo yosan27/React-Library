@@ -3,14 +3,21 @@ import * as FaIcons from "react-icons/fa";
 import { IconContext } from "react-icons";
 import swal from "sweetalert";
 
+// CSS
 import "./payment.css";
+import HistoryPayment from "./HistoryPayment";
 
 export default class Payment extends Component {
   constructor(props) {
     super(props);
 
+    let today = new Date();
+    let todayDate = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
+
     this.state = {
-      saldo: 15000,
+      date: todayDate,
+      paymentRecord: [],
+      saldo: 5000,
       denda1: 2000,
       denda2: 2000,
       denda3: 2000,
@@ -94,6 +101,22 @@ export default class Payment extends Component {
 
   pay = () => {
     if (this.state.saldo >= this.state.sum) {
+      this.setState({
+        paymentRecord: [
+          ...this.state.paymentRecord,
+          {
+            // buat property baru
+            id : this.state.paymentRecord.length+1,
+            date: this.state.date,
+            ref : 'PH-' + this.state.paymentRecord.length,
+            class : 'detail-payment-min',
+            desc: 'Payment',
+            price : this.state.sum,
+            icon: '-',
+          }
+        ]
+      })
+
       const kurang = this.state.saldo - this.state.sum;
       this.setState({ saldo: kurang });
       this.state.listBox.classList.toggle("hide");
@@ -152,6 +175,22 @@ export default class Payment extends Component {
   debitPay = () => {
     this.handleClose();
     swal("Thank You", "Your Payment Was Successful!", "success");
+    this.setState({
+      paymentRecord: [
+        ...this.state.paymentRecord,
+        {
+          // buat property baru
+          id : this.state.paymentRecord.length+1,
+          date: this.state.date,
+          ref : 'PH-' + this.state.paymentRecord.length,
+          class : 'detail-payment-plus',
+          desc: 'Top Up',
+          price : this.state.nominalTopUp,
+          icon: '+',
+        }
+      ]
+    })
+
     this.setState({
       saldo: parseInt(this.state.saldo) + parseInt(this.state.nominalTopUp),
       inputNominal: "",
@@ -320,7 +359,9 @@ export default class Payment extends Component {
                       </div>
 
                       {/* Payment List */}
-                      <div className="row">
+                      <HistoryPayment paymentRecord={this.state.paymentRecord}/>
+
+                      {/* <div className="row">
                         <div className="col">
                           <div className="row payment-date m-3 pb-1 pt-1">
                             <div className="col">17 Nov 2020</div>
@@ -373,6 +414,7 @@ export default class Payment extends Component {
                           </div>
                         </div>
                       </div>
+                       */}
                       {/* Payment List */}
                     </div>
                     {/* History Payment */}
