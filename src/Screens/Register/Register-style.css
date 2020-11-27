@@ -40,10 +40,10 @@
   display: none;
 }
 
-/* .rows {
+.rows {
   background: white ;
   border-radius: 30px;
-} */
+}
 
 .box-input{
   box-shadow: 2px 2px 8px grey;

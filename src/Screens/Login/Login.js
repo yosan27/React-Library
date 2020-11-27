@@ -1,9 +1,8 @@
-import React, { Component } from 'react'
-import { Link, withRouter } from 'react-router-dom'
-import './Login-style.css'
+import React, { Component } from "react";
+import { Link, withRouter } from "react-router-dom";
+import "./Login-style.css";
 
 class Login extends Component {
-
     render() {
         return (
             <section className="Form my-5 mx-5 card-login">
@@ -59,10 +58,10 @@ class Login extends Component {
                             </form>
                         </div>
                     </div>
-                </div>
-            </section>
-        )
-    }
+        </div>
+      </section>
+    );
+  }
 }
 
 export default withRouter(Login);
