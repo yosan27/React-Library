@@ -1,48 +1,52 @@
 import React from 'react'
-import { Container, Row, Col, Image, Form, Button } from 'react-bootstrap';
+import { Link, withRouter } from 'react-router-dom'
 import './Register-style.css'
 
 function Register() {
     return (
-        <Container className="pad-50" >
-            <Row>
-                <Col md={6}>
-                    <Image src="img/cover4.jpg" fluid />
-                </Col>
-                <Col md={5} className="space-top-25">
-                    <img class="img-right" src="img/book.png" alt="" />
-                    <h1 class="font-weight-bold py-2 bl-2">Register</h1>
-                    <h4 class="txt-2 bl-2">Please Register to Create Account</h4>
-
-                    <Form>
-                        <Form.Group>
-                            <Col md={8}>
-                                <Form.Control size="md" type="name" placeholder="Username" className="box-input" />
-                                <Form.Control size="md" type="name" placeholder="Fullname" className="box-input" />
-                                <Form.Control size="md" type="email" placeholder="Email Address" className="box-input" />
-                                <Form.Control size="md" type="password" placeholder="Password" className="box-input" />
-                                <Form.Check
-                                    type="checkbox"
-                                    id="autoSizingCheck"
-                                    className="mb-2 grey"
-                                    label="Remember me"
-                                />
-                            </Col>
-                            <Button className="btn-login loginBtn" variant="secondary">Sign Up</Button>
-                            <Button className="btn-sign-up" variant="outline-secondary">Login</Button>
-                        </Form.Group>
-                        <a href="forgotPass.html" class="forgot grey">Forgot Password?</a>
-                    </Form>
-                    <div class="space-top-25">
-                        <p class="txt-3 mg-0">By signing up, you agree to E-Perpus's</p>
-                        <p class="txt-3"><a class="txt-3"
-                            href="https://web.kominfo.go.id/sites/default/files/users/4761/UU%2019%20Tahun%202016.pdf"
-                            target="blank"><b>Terms and Conditions & Privacy Policy</b></a></p>
+        <section class="Form my-5 mx-5 pb-5 card-login">
+            <div class="container">
+                <div class="row no-gutters row-box">
+                    <div class="col-lg-6">
+                        <img src="assets/images/cover4.jpg" class="img-fluid img-page" alt="" />
                     </div>
-                </Col>
-            </Row>
-        </Container>
+                    <div class="col-lg-6 px-5 pt-3">
+                        <img class="img-right img-page" src="assets/images/book.png" alt="" />
+                        <h1 class="font-weight-bold py-2 bl-2">Register</h1>
+                        <h4 class="txt-4 bl-2">Please Register to create account</h4>
+                        <form action="">
+                            <div class="form-row">
+                                <div class="col-lg-7">
+                                    <input type="text" placeholder="Username" class="form-control my-1 p-4 box" required />
+                                    <input type="text" placeholder="Fullname" class="form-control my-1 p-4 box" required />
+                                    <input type="email" placeholder="Email Address" class="form-control my-1 p-4 box"
+                                        required />
+                                    <input type="password" placeholder="Password" class="form-control my-1 p-4 box"
+                                        required />
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-lg-3">
+                                    <button type="button" class="btn-login mt-3">Sign Up</button>
+                                </div>
+                                <div class="col-lg-3">
+                                    <Link to="/login">
+                                        <a href="login.html"><button type="button"
+                                            class="btn-sign-up mt-3 mb-5">Login</button></a>
+                                    </Link>
+                                </div>
+                            </div>
+
+                            <p class="txt-3 mg-0">By signing up, you agree to E-Perpus's</p>
+                            <p class="txt-3"><a class="txt-3"
+                                href="https://web.kominfo.go.id/sites/default/files/users/4761/UU%2019%20Tahun%202016.pdf"
+                                target="blank"><b>Terms and Conditions & Privacy Policy</b></a></p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
     )
 }
 
-export default Register
+export default withRouter(Register);
