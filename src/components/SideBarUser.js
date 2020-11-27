@@ -19,10 +19,10 @@ class SideBarUser extends Component {
         return (
             <div className="left_col scroll-view">
                 <div className="navbar nav_title" style={{ border: 0 }}>
-                    <a href="index.html" className="site_title">
+                    <Link to="/indexUser" className="site_title">
                         <img src="assets/images/1.png" alt="" />
                         <span>Faraday E-Library</span>
-                    </a>
+                    </Link>
                 </div>
 
                 <div className="clearfix"></div>
@@ -103,9 +103,9 @@ class SideBarUser extends Component {
                             </li>
                             <li className={(pathCurrent[1] === 'donation' ? "current-page" : "")}>
 
-                                <Link to="/donation">
+                                <Link to="/donation-user">
                                     <i className="fa fa-gift"></i>
-                                    donation
+                                    Donation
                                 </Link>
 
                             </li>
@@ -114,9 +114,9 @@ class SideBarUser extends Component {
                 </div>
 
                 <div className="sidebar-footer hidden-small d-flex flex-row">
-                    <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
+                    <Link to="/login">
                         <span className="glyphicon glyphicon-off" aria-hidden="true"></span>
-                    </a>
+                    </Link>
                 </div>
             </div>
         )

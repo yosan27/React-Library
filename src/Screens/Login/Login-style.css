@@ -1,13 +1,11 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
-
 * {
   padding: 0;
   margin: 0;
   box-sizing: border;
-  font-family: "Poppins", sans-serif !important;
+  font-family: "Poppins", sans-serif;
 }
 
-body {
+.card-login {
   background: rgba(219, 226, 226, alpha);
 }
 
@@ -34,10 +32,9 @@ body {
   display: none;
 }
 
-.row {
+.row-box {
   background: white;
   border-radius: 30px;
-  box-shadow: 12px 12px 22px grey;
 }
 
 .box-input{
@@ -46,7 +43,7 @@ body {
   margin-bottom: 0.5rem;
 }
 
-img {
+.img-page {
   border-top-left-radius: 30px;
   border-bottom-left-radius: 30px;
 }
@@ -55,7 +52,7 @@ img {
   border: none;
   outline: none;
   height: 50px;
-  width: 25%;
+  width: 100% !important;
   background-color: #424242;
   color: white;
   border-radius: 4px;
@@ -73,7 +70,7 @@ img {
 .btn-sign-up {
   outline: none;
   height: 50px;
-  width: 25%;
+  width: 100% !important;
   background-color: white;
   color: #424242;
   border-radius: 4px;
