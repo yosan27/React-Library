@@ -2,6 +2,11 @@ import React, { Component } from 'react'
 import { Modal, Button } from 'react-bootstrap';
 import Image from 'react-bootstrap/Image'
 import './Catalog.css'
+// Rating
+import Rating from '@material-ui/lab/Rating';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
+
 //Datatable Modules
 import "datatables.net-dt/js/dataTables.dataTables"
 import "datatables.net-dt/css/jquery.dataTables.min.css"
@@ -23,7 +28,8 @@ class Catalog extends Component {
                 {"id": "2017100251", "title":"Laut Bercerita", "cover":"https://www.gramedia.com/blog/content/images/2020/05/Laut-bercerita_gramedia.jpg", "author":"Leila S. Chudori", "categories":"Foreign Language Study", "publisher":"Gramedia Pustaka "},
                 {"id": "2017100251", "title":"Defending Jacob", "cover":"https://www.gramedia.com/blog/content/images/2020/05/defending-jacob_gramedia.jpg", "author":"William Landay", "categories":"Juvenile Fiction", "publisher":"Gramedia Pustaka "},
     
-            ]
+            ],
+            value: 0
         }
     }
 
@@ -43,12 +49,25 @@ class Catalog extends Component {
         this.setState({ showReview: false})
     }
 
+    handleAddReview = () => {
+        this.setState({ addReview: true})
+    }
+
+    handleCloseAddReview = () => {
+        this.setState({ addReview: false})
+    }
+
+    rating = (event, newValue) => {
+            this.setState({ value: this.state.value + 1})
+    }
+    
+
     componentDidMount() {
         $(document).ready(function () {
             $('.table').DataTable();
         });
 
-        $('.img-book').hover(makeBigger, returnToOriginalSize);
+    $('.img-book').hover(makeBigger, returnToOriginalSize);
       function makeBigger() {
           $(this).css({width: '+=10%'});
       }
@@ -58,7 +77,8 @@ class Catalog extends Component {
     }
 
     render(){
-        const { data, showDetail, showReview } = this.state,
+        const { data, showDetail, showReview, addReview, value, setValue} = this.state,
+      
         Photo = data.map(user => (
             <Image className='photoOfOrder text-center' key={user.id} src={user.cover} wrapped ui={false} style={{width:'30%',height:'auto'}}/>
         ));
@@ -196,70 +216,117 @@ class Catalog extends Component {
                     <div className='container'>
                         <div className='modal-body'>
                             <form>
-                            <div class="form-group row">
-                      <label for="editImage" class="col-sm-2 col-form-label">By Afiff <br /><span class="fa fa-star checked"></span>
-                      <span class="fa fa-star checked"></span>
-                      <span class="fa fa-star checked"></span>
-                      <span class="fa fa-star"></span>
-                      <span class="fa fa-star"></span>
-                      </label>
-                      <div class="col-sm-10" >
-                        <p>Tarik napas....fiuhhhhhhh..
-                        Selesai juga baca buku ke-8 series tersayang sekaligus terkampret ini, kampret krn buku pertama terbit dr 2015, 5 tahun umurku aku pake buat nunggu buku ini🤣 Buku serial bumi ini menceritakan tentang biografi Selena (pasti tau dong siapa dia kalau ngikutin).</p>
-                      </div>
-                    </div>
-                    <hr />
-                    <div class="form-group row">
-                      <label for="editImage" class="col-sm-2 col-form-label">By Desti <br /> <span class="fa fa-star checked"></span>
-                      <span class="fa fa-star checked"></span>
-                      <span class="fa fa-star checked"></span>
-                      <span class="fa fa-star checked"></span>
-                      <span class="fa fa-star checked"></span>
-                      </label>
-                      <div class="col-sm-10" >
-                        <p>** spoiler alert ** Selena dan Nebula.
+                                <div class="form-group row">
+                                    <label for="editImage" class="col-sm-2 col-form-label">By Afiff <br /><span class="fa fa-star checked"></span>
+                                    <span class="fa fa-star checked"></span>
+                                    <span class="fa fa-star checked"></span>
+                                    <span class="fa fa-star"></span>
+                                    <span class="fa fa-star"></span>
+                                    </label>
+                                    <div class="col-sm-10" >
+                                        <p>Tarik napas....fiuhhhhhhh..
+                                        Selesai juga baca buku ke-8 series tersayang sekaligus terkampret ini, kampret krn buku pertama terbit dr 2015, 5 tahun umurku aku pake buat nunggu buku ini🤣 Buku serial bumi ini menceritakan tentang biografi Selena (pasti tau dong siapa dia kalau ngikutin).</p>
+                                    </div>
+                                    </div>
+                                    <hr />
+                                    <div class="form-group row">
+                                    <label for="editImage" class="col-sm-2 col-form-label">By Desti <br /> <span class="fa fa-star checked"></span>
+                                    <span class="fa fa-star checked"></span>
+                                    <span class="fa fa-star checked"></span>
+                                    <span class="fa fa-star checked"></span>
+                                    <span class="fa fa-star checked"></span>
+                                    </label>
+                                    <div class="col-sm-10" >
+                                        <p>** spoiler alert ** Selena dan Nebula.
 
-                        Satu, eh, dua buku fantasi yang dibumbui romantika. Diulang: fantasi dibumbui romantika, bukan romantika berbumbu fantasi—seperti kata Tere Liye di salah satu status Facebooknya, "... membaca kisah roman dalam serial fantasi ..." Tapi, tenang. Karena cerita utamanya genre fantasi—bukan roman—nggak ada adegan bergalau ria disini. </p>
-                      </div>
-                    </div>
-                    <hr />
-                    <div class="form-group row">
-                      <label for="editImage" class="col-sm-2 col-form-label">By omnivoreader <br /><span class="fa fa-star checked"></span>
-                      <span class="fa fa-star checked"></span>
-                      <span class="fa fa-star checked"></span>
-                      <span class="fa fa-star checked"></span>
-                      <span class="fa fa-star"></span>
-                      </label>
-                      <div class="col-sm-10" >
-                        <p>Iseng mulai baca, eh keterusan sampai selesai.
-                        Kisah tentang Miss Selena ini seru juga ya. Sejarah akan guru matematikanya Raib dan kawan-kawannya ini ternyata asyik juga diikuti. Dan untuk masalah tentang dua sahabatnya alias Mata dan Tazk mah udah jelas lah ya siapa mereka.</p>
-                      </div>
-                    </div>
-                    <hr />
-                    <div class="form-group row">
-                      <label for="editImage" class="col-sm-2 col-form-label">By  Hamim <br /><span class="fa fa-star checked"></span>
-                      <span class="fa fa-star checked"></span>
-                      <span class="fa fa-star checked"></span>
-                      <span class="fa fa-star checked"></span>
-                      <span class="fa fa-star"></span>
-                      </label>
-                      <div class="col-sm-10" >
-                        <p>Bagi yang telah menunggu kelanjutan pertualangan raib, Ali Dan seli pasti udah ga sabar pengen baca cerita nya..
-                        Ets tapi harus bersabar karena buku ke 8 ini banyak menceritakan tokoh baru yang pasti bakal bikin kalian penasaran.
-                        Jelas sekali di judul nya, siapa yang tidak kenal dengan nama itu, yaps</p>
-                      </div>
-                    </div>
-                </form>                   
-                </div>
-            </div>                                                            
+                                        Satu, eh, dua buku fantasi yang dibumbui romantika. Diulang: fantasi dibumbui romantika, bukan romantika berbumbu fantasi—seperti kata Tere Liye di salah satu status Facebooknya, "... membaca kisah roman dalam serial fantasi ..." Tapi, tenang. Karena cerita utamanya genre fantasi—bukan roman—nggak ada adegan bergalau ria disini. </p>
+                                    </div>
+                                    </div>
+                                    <hr />
+                                    <div class="form-group row">
+                                    <label for="editImage" class="col-sm-2 col-form-label">By omnivoreader <br /><span class="fa fa-star checked"></span>
+                                    <span class="fa fa-star checked"></span>
+                                    <span class="fa fa-star checked"></span>
+                                    <span class="fa fa-star checked"></span>
+                                    <span class="fa fa-star"></span>
+                                    </label>
+                                    <div class="col-sm-10" >
+                                        <p>Iseng mulai baca, eh keterusan sampai selesai.
+                                        Kisah tentang Miss Selena ini seru juga ya. Sejarah akan guru matematikanya Raib dan kawan-kawannya ini ternyata asyik juga diikuti. Dan untuk masalah tentang dua sahabatnya alias Mata dan Tazk mah udah jelas lah ya siapa mereka.</p>
+                                    </div>
+                                    </div>
+                                    <hr />
+                                    <div class="form-group row">
+                                    <label for="editImage" class="col-sm-2 col-form-label">By  Hamim <br /><span class="fa fa-star checked"></span>
+                                    <span class="fa fa-star checked"></span>
+                                    <span class="fa fa-star checked"></span>
+                                    <span class="fa fa-star checked"></span>
+                                    <span class="fa fa-star"></span>
+                                    </label>
+                                    <div class="col-sm-10" >
+                                        <p>Bagi yang telah menunggu kelanjutan pertualangan raib, Ali Dan seli pasti udah ga sabar pengen baca cerita nya..
+                                        Ets tapi harus bersabar karena buku ke 8 ini banyak menceritakan tokoh baru yang pasti bakal bikin kalian penasaran.
+                                        Jelas sekali di judul nya, siapa yang tidak kenal dengan nama itu, yaps</p>
+                                    </div>
+                                </div>
+                            </form>                   
+                        </div>
+                    </div>                                                            
                 </Modal.Body>
                 <Modal.Footer>
                     <Button className="btn btn-secondary" variant="secondary" onClick={this.handleCloseReview}>
                             <i class="fa fa-times-circle"></i> Close
                     </Button> 
+                    <Button className="btn btn-primary" variant="primary" onClick={this.handleAddReview}>
+                            <i class=""></i> Add Review
+                    </Button> 
                 </Modal.Footer>
             </Modal>                                         
              {/* modal review */}
+
+             {/* modal create review */}
+            <Modal size="lg" show={addReview} onHide={this.handleCloseReview}>
+                <Modal.Header closeButton>
+                    <Modal.Title> Book Review </Modal.Title>                                     
+                </Modal.Header>
+                <Modal.Body>
+                    <div className='container'>
+                        <div className='modal-body'>
+                            <form>
+                                <div class="form-group row">
+                                    <div class="col-sm-12 text-center">
+                                    <Image className='' src={"https://www.gramedia.com/blog/content/images/2020/05/selena_gramedia.jpg"} wrapped ui={false} style={{width:'20%',height:'auto'}}/>
+                                    </div>
+                                </div>
+                               <div class="form-group row">
+                                    <label for="rating" class="col-sm-2 col-form-label">Rating</label>
+                                    <div class="col-sm-10">
+                                    <Box component="fieldset" mb={3} borderColor="transparent">
+                                        <Rating
+                                        name="simple-controlled"
+                                        
+                                        onClick={this.rating}
+                                        />
+                                    </Box>           
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="editRev" class="col-sm-2 col-form-label">Review</label>
+                                    <div class="col-sm-10">
+                                    <textarea class="form-control" id="editDesc" placeholder="Review..."></textarea>
+                                    </div>
+                              </div>
+                            </form>                   
+                        </div>
+                    </div>                                                            
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button className="btn btn-secondary" variant="secondary" onClick={this.handleCloseAddReview}>
+                        <i class="fa fa-times-circle"></i> Close
+                    </Button> 
+                </Modal.Footer>
+            </Modal>                                         
+             {/* modal create review */}
 
             </div >                
         )

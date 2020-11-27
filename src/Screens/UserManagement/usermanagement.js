@@ -5,6 +5,7 @@ import { Modal, Button } from 'react-bootstrap';
 import "datatables.net-dt/js/dataTables.dataTables"
 import "datatables.net-dt/css/jquery.dataTables.min.css"
 import $ from 'jquery'; 
+import swal from 'sweetalert';
 
 
 class UserManagement extends Component {
@@ -28,13 +29,31 @@ class UserManagement extends Component {
     }
 
     suspend = () => {
-        this.setState({
-            data: [
-                {"id":"1", "username":"Yosan27", "fullname":"Yosan Fandi", "email":"yosan27@gmail.com", "status":"Suspended", "card":"https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg"},
-                {"id":"2", "username":"Cleo", "fullname":"Cleoputra", "email":"cleo@gmail.com", "status":"Active", "card":"https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg"},
-                {"id":"3", "username":"Todi", "fullname":"Todi Dewaranto", "email":"todi@gmail.com", "status":"Active", "card":"https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg"},
-            ]
-         })
+        swal({
+            title: "Are you sure?",
+            text: "Once suspended, you will not be able to undo the action!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((Delete) => {
+            if (Delete) {
+                swal('User will be suspended!', {
+                    icon: "success",
+                })
+                this.setState({
+                    data: [
+                        {"id":"1", "username":"Yosan27", "fullname":"Yosan Fandi", "email":"yosan27@gmail.com", "status":"Suspended", "card":"https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg"},
+                        {"id":"2", "username":"Cleo", "fullname":"Cleoputra", "email":"cleo@gmail.com", "status":"Active", "card":"https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg"},
+                        {"id":"3", "username":"Todi", "fullname":"Todi Dewaranto", "email":"todi@gmail.com", "status":"Active", "card":"https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg"},
+                    ],
+                 showSuspend: false   
+                 })
+            } else {
+                swal('User will not be suspended!');
+            }
+        })
+        
     };
 
     componentDidMount() {
