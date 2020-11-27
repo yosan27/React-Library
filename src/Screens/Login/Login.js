@@ -1,46 +1,97 @@
-import React from 'react'
-import { Container, Row, Col, Image, Form, Button } from 'react-bootstrap';
-import './Login-style.css'
+import React, { Component } from "react";
+import { Link, withRouter } from "react-router-dom";
+import "./Login-style.css";
 
-function login() {
+class Login extends Component {
+  render() {
     return (
-        <Container className="pad-50" >
-            <Row>
-                <Col md={6}>
-                    <Image src="img/cover2.png" fluid />
-                </Col>
-                <Col md={5} className="space-top-50">
-                    <img class="img-right" src="img/book.png" alt="" />
-                    <h1 class="font-weight-bold py-2 bl-2">Login</h1>
-                    <h4 class="txt-2 bl-2">Welcome Back, Please Login to your account</h4>
+      <section class="Form my-5 mx-5 pb-5 card-login">
+        <div class="container">
+          <div class="row no-gutters row-box">
+            <div class="col-lg-5">
+              <img src="assets/images/cover2.png" class="img-fluid img-page" alt="" />
+            </div>
+            <div class="col-lg-7 px-5 pt-3">
+              <img class="img-right img-page" src="assets/images/book.png" alt="" />
+              <h1 class="font-weight-bold py-2 bl-2">Login</h1>
+              <h4 class="txt-2 bl-2">
+                Welcome Back, Please Login to your account
+              </h4>
+              <form action="">
+                <div class="form-row">
+                  <div class="col-lg-7">
+                    <input
+                      type="email"
+                      placeholder="Email Address"
+                      class="form-control my-2 p-4 box email"
+                      required
+                    />
+                    <span id="wrong-user" class="hide">
+                      Email is not registered!
+                    </span>
 
-                    <Form>
-                        <Form.Group>
-                            <Col md={8}>
-                                <Form.Control size="lg" type="email" placeholder="Email Address" className="box-input" />
-                                <Form.Control size="lg" type="password" placeholder="Password" className="box-input" />
-                                <Form.Check
-                                    type="checkbox"
-                                    id="autoSizingCheck"
-                                    className="mb-2 grey"
-                                    label="Remember me"
-                                />
-                            </Col>
-                            <Button className="btn-login loginBtn" variant="secondary">Login</Button>
-                            <Button className="btn-sign-up" variant="outline-secondary">Sign Up</Button>
-                        </Form.Group>
-                        <a href="forgotPass.html" class="forgot grey">Forgot Password?</a>
-                    </Form>
-                    <div class="space-top-50">
-                        <p class="txt-3 mg-0">By signing up, you agree to E-Perpus's</p>
-                        <p class="txt-3"><a class="txt-3"
-                            href="https://web.kominfo.go.id/sites/default/files/users/4761/UU%2019%20Tahun%202016.pdf"
-                            target="blank"><b>Terms and Conditions & Privacy Policy</b></a></p>
-                    </div>
-                </Col>
-            </Row>
-        </Container>
-    )
+                    <input
+                      type="password"
+                      placeholder="Password"
+                      class="form-control my-2 p-4 box password"
+                      required
+                    />
+                    <span id="wrong-pass" class="hide">
+                      Wrong password!
+                    </span>
+                  </div>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="gridCheck1"
+                  />
+                  <label class="form-check-label grey" for="gridCheck1">
+                    Remember Me
+                  </label>
+                </div>
+                <div class="form-row">
+                  <div class="col-lg-3">
+                    <button type="button" class="btn-login mt-3 loginBtn">
+                      Login
+                    </button>
+                  </div>
+                  <div class="col-lg-3">
+                    <Link to="/register">
+                      <a href="register.html">
+                        <button type="button" class="btn-sign-up mt-3 mb-2">
+                          Sign Up
+                        </button>
+                      </a>
+                    </Link>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <Link to="/forgot-password">
+                    <a href="forgotPass.html" class="forgot mb-5 grey">
+                      Forgot Password?
+                    </a>
+                  </Link>
+                </div>
+
+                <p class="txt-3 mg-0">By signing up, you agree to E-Perpus's</p>
+                <p class="txt-3">
+                  <a
+                    class="txt-3"
+                    href="https://web.kominfo.go.id/sites/default/files/users/4761/UU%2019%20Tahun%202016.pdf"
+                    target="blank"
+                  >
+                    <b>Terms and Conditions & Privacy Policy</b>
+                  </a>
+                </p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 }
 
-export default login
+export default withRouter(Login);

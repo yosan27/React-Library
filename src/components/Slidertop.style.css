@@ -20,7 +20,7 @@
 }
 
 .item-inner {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1465061935505-a7ac0037fd42?ixlib=rb-1.2.1&auto=format&fit=crop&w=756&q=80');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://www.gramedia.com/blog/content/images/2019/02/dilan-1990.jpeg');
     height: 250px;
     box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.2);
     max-width: auto;
@@ -30,19 +30,19 @@
 }
 
 .item2 .item-inner {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1465061935505-a7ac0037fd42?ixlib=rb-1.2.1&auto=format&fit=crop&w=756&q=80');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://www.gramedia.com/blog/content/images/2019/06/five_feet_apart.jpg');
 }
 
 .item3 .item-inner {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1465061935505-a7ac0037fd42?ixlib=rb-1.2.1&auto=format&fit=crop&w=756&q=80');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://www.gramedia.com/blog/content/images/2019/06/rich_people_problem.jpg');
 }
 
 .item4 .item-inner {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1465061935505-a7ac0037fd42?ixlib=rb-1.2.1&auto=format&fit=crop&w=756&q=80');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://www.gramedia.com/blog/content/images/2019/10/9786237211280_batch.jpg');
 }
 
 .item5 .item-inner {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1465061935505-a7ac0037fd42?ixlib=rb-1.2.1&auto=format&fit=crop&w=756&q=80');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://www.gramedia.com/blog/content/images/2019/10/img20190913_14323955_qUA9DUp_batch.jpg');
 }
 
 .item-inner .text-slide {
