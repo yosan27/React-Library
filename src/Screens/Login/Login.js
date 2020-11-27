@@ -6,25 +6,25 @@ class Login extends Component {
 
     render() {
         return (
-            <section class="Form my-5 mx-5 card-login">
-                <div class="container">
-                    <div class="row no-gutters">
+            <section className="Form my-5 mx-5 card-login">
+                <div className="container">
+                    <div className="no-gutters">
                         <div class="col-lg-5">
-                            <img src="assets/images/cover2.png" class="img-fluid" alt="" />
+                            <img src="assets/images/cover2.png" className="img-fluid img-login" alt="" />
                         </div>
                         <div class="col-lg-7 px-5 pt-3">
-                            <img class="img-right" src="assets/images/book.png" alt="" />
-                            <h1 class="font-weight-bold py-2 bl-2">Login</h1>
-                            <h4 class="txt-2 bl-2">Welcome Back, Please Login to your account</h4>
+                            <img className="img-right" src="assets/images/book.png" alt="" />
+                            <h1 className="font-weight-bold py-2 white">Login</h1>
+                            <h4 className="txt-2 white">Welcome Back, Please Login to your account</h4>
                             <form action="">
-                                <div class="form-row">
-                                    <div class="col-lg-7">
-                                        <input type="email" placeholder="Email Address" class="form-control my-2 p-4 box email"
+                                <div className="form-row">
+                                    <div className="col-lg-7">
+                                        <input type="email" placeholder="Email Address" className="form-control my-2 p-4 box email"
                                             required />
-                                        <span id="wrong-user" class="hide">Email is not registered!</span>
-                                        <input type="password" placeholder="Password" class="form-control my-2 p-4 box password"
+                                        <span id="wrong-user" className="hide">Email is not registered!</span>
+                                        <input type="password" placeholder="Password" className="form-control my-2 p-4 box password"
                                             required />
-                                        <span id="wrong-pass" class="hide">Wrong password!</span>
+                                        <span id="wrong-pass" className="hide">Wrong password!</span>
                                     </div>
                                 </div>
                                 <div class="form-check">
@@ -35,7 +35,9 @@ class Login extends Component {
                                 </div>
                                 <div class="form-row">
                                     <div class="col-lg-3">
-                                        <button type="button" class="btn-login mt-3 loginBtn">Login</button>
+                                        <Link to="/indexUser">
+                                            <button type="button" class="btn-login mt-3 loginBtn">Login</button>
+                                        </Link>
                                     </div>
                                     <div class="col-lg-3">
                                         <Link to="/register">

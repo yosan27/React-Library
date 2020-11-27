@@ -32,9 +32,13 @@
   display: none;
 }
 
-.row {
+/* .row-login {
   background: white;
-  border-radius: 30px;
+  border-radius: 30px; 
+}*/
+
+.white{
+  color: white;
 }
 
 .box-input{
@@ -43,7 +47,7 @@
   margin-bottom: 0.5rem;
 }
 
-img {
+.img-login {
   border-top-left-radius: 30px;
   border-bottom-left-radius: 30px;
 }
