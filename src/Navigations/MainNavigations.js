@@ -10,6 +10,7 @@ import ProfileUser from "../Screens/ProfileUser/ProfileUser";
 import BookManagement from "../Screens/BookManagement/bookmanagement";
 import DetailPage from "../Screens/DetailPage/detailpage";
 import UserManagement from '../Screens/UserManagement/usermanagement';
+import ManageDonation from '../Screens/ManageDonation/index';
 
 class MainNavigation extends Component {
   render() {
@@ -43,6 +44,9 @@ class MainNavigation extends Component {
           </Route>
           <Route path="/detailpage">
             <DetailPage />
+          </Route>
+          <Route path='/manage-donation'>
+              <ManageDonation />
           </Route>
           <Route path="/">
             <Footer />
