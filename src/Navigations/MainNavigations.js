@@ -9,6 +9,7 @@ import Profile from "../Screens/Profile/Profile";
 import ProfileUser from "../Screens/ProfileUser/ProfileUser";
 import BookManagement from "../Screens/BookManagement/bookmanagement";
 import DetailPage from "../Screens/DetailPage/detailpage";
+import UserManagement from '../Screens/UserManagement/usermanagement';
 
 class MainNavigation extends Component {
   render() {
@@ -36,6 +37,9 @@ class MainNavigation extends Component {
           </Route>
           <Route path="/manageBook">
             <BookManagement />
+          </Route>
+          <Route path='/manageUser'>
+              <UserManagement />
           </Route>
           <Route path="/detailpage">
             <DetailPage />
