@@ -9,7 +9,7 @@ import ProfileUser from "../Screens/ProfileUser/ProfileUser";
 import HistoryUser from "../Screens/HistoryUser/HistoryUser";
 import Cart from "../Screens/Cart/Cart";
 import Wishlist from "../Screens/Wishlist/Wishlist";
-import Payment from "../Screens/Payment/Payment";
+import Payment from "../Screens/Payment/Index";
 import Catalog from "../Screens/Catalog/Catalog";
 import DetailPage from "../Screens/DetailPage/detailpage";
 import Login from "../Screens/Login/Login";
