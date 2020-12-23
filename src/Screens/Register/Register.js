@@ -4,14 +4,14 @@ import './Register-style.css'
 
 function Register() {
     return (
-        <section class="Form my-5 mx-5 card-login">
+        <section class="Form my-5 mx-5 pb-5 card-login">
             <div class="container">
-                <div class="row no-gutters">
+                <div class="row no-gutters row-box">
                     <div class="col-lg-6">
-                        <img src="assets/images/cover4.jpg" class="img-fluid" alt="" />
+                        <img src="assets/images/cover4.jpg" class="img-fluid img-page" alt="" />
                     </div>
                     <div class="col-lg-6 px-5 pt-3">
-                        <img class="img-right" src="assets/images/book.png" alt="" />
+                        <img class="img-right img-page" src="assets/images/book.png" alt="" />
                         <h1 class="font-weight-bold py-2 bl-2">Register</h1>
                         <h4 class="txt-4 bl-2">Please Register to create account</h4>
                         <form action="">
