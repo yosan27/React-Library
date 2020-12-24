@@ -80,7 +80,7 @@ export default class FineLists extends Component {
               <button
                 className="btn-sm btn-success"
                 type="button"
-                onClick={() => this.props.pay()}
+                onClick={this.props.pay}
               >
                 Pay
               </button>
