@@ -1,22 +1,37 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
+import 'datatables.net-dt/js/dataTables.dataTables'
+import 'datatables.net-dt/css/jquery.dataTables.min.css'
+import 'datatables.net-responsive-dt/js/responsive.dataTables.js'
+import 'datatables.net-responsive-dt/css/responsive.dataTables.css'
+import 'jquery/dist/jquery.min.js'
+import $ from 'jquery'
 
 export default class Wishlist extends Component {
+    componentDidMount() {
+        $(function () {
+            $('#wishlist_table').DataTable({
+                responsive: true
+            });
+        });
+    }
+    deleteBtn1 = () => {
+        document.getElementById("data1").style.display = "none";
+    };
+    deleteBtn2 = () => {
+        document.getElementById("data2").style.display = "none";
+    };
+    pinjamBtn = () => {
+        document.getElementById("data2").style.display = "none";
+        document.getElementById("cartCount").innerHTML = "3";
+    };
     render() {
         const mystyleBtn = {
             color: "white",
             cursor: 'pointer',
         };
-        const pinjamBtn = () => {
-            document.getElementById("data2").style.display = "none";
-            document.getElementById("cartCount").innerHTML = "3";
-        };
-        const deleteBtn1 = () => {
-            document.getElementById("data1").style.display = "none";
-        };
-        const deleteBtn2 = () => {
-            document.getElementById("data2").style.display = "none";
-        };
+        
+        
 
         return (
             <div className="right_col" role="main" style={{ minHeight: '100vh' }}>
@@ -59,7 +74,7 @@ export default class Wishlist extends Component {
                                                             <Link to="/detailPage" className="btn shadow btn-sm btn-light">
                                                                 <i className="fa fa-info"></i>
                                                             </Link>
-                                                            <a id="btn-data1" onClick={deleteBtn1} style={mystyleBtn}
+                                                            <a id="btn-data1" onClick={() => this.deleteBtn1()} style={mystyleBtn}
                                                                 className="btn shadow btn-sm btn-danger"><i
                                                                     className="fa fa-trash"></i></a>
                                                         </td>
@@ -80,9 +95,9 @@ export default class Wishlist extends Component {
                                                             <a href="detailpageUser.html"
                                                                 className="btn shadow btn-sm btn-light"><i
                                                                     className="fa fa-info"></i></a>
-                                                            <a id="btn-data2" onClick={deleteBtn2} style={mystyleBtn} className="btn btn-sm btn-danger"><i
+                                                            <a id="btn-data2" onClick={() => this.deleteBtn2()} style={mystyleBtn} className="btn btn-sm btn-danger"><i
                                                                 className="fa fa-trash"></i></a>
-                                                            <a id="btn-pinjam2" onClick={pinjamBtn} style={mystyleBtn} className="btn shadow btn-sm btn-success">
+                                                            <a id="btn-pinjam2" onClick={() => this.pinjamBtn()}  style={mystyleBtn} className="btn shadow btn-sm btn-success">
                                                                 Borrow
                                                             </a>
                                                         </td>

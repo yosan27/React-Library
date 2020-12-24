@@ -1,14 +1,19 @@
 import React, { Component } from 'react';
-import { Table, Container, Form, InputGroup, Modal, Button } from 'react-bootstrap';
+import { Table, Form, Modal, Button } from 'react-bootstrap';
 import swal from "sweetalert";
-import Pagination from './components/pagination';
 import ReactFormInputValidation from "react-form-input-validation";
+//Datatable Modules
+import 'datatables.net-dt/js/dataTables.dataTables'
+import 'datatables.net-dt/css/jquery.dataTables.min.css'
+import 'datatables.net-responsive-dt/js/responsive.dataTables.js'
+import 'datatables.net-responsive-dt/css/responsive.dataTables.css'
+import $ from 'jquery'; 
  
 class BookManagement extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      books:
+      data:
         [
           {
             bookID: "201710025",
@@ -101,15 +106,9 @@ class BookManagement extends Component {
             isPopular: false
           }
         ],
-      search: '',
       showAdd: false,
       showEdit: false,
       showDelete: false,
-      currentPage: 1,
-      postsPerPage: 5,
-      ketiksearch: false,
-      showpagination: true,
-      showsearchresults: false,
       fields: {
         urlImage: "",
         title: "",
@@ -157,13 +156,20 @@ class BookManagement extends Component {
       // Do you ajax calls here.
       console.log(fields);
     }
+
     this.form.handleChangeEvent = (event) => {
-      if (event.target.value == "") {
+      if (event.target.value === "") {
         this.setState({ submitting: false });
       } else {
         this.setState({ submitting: true });;
       }
     }
+
+    $(function () {
+      $('#bookmanagement').DataTable({
+          responsive: true
+      });
+    });
   }
   
 
@@ -198,36 +204,11 @@ class BookManagement extends Component {
     this.setState({ showDelete: true })
   }
 
-  searchData = event => {
-    if (event.target.value) {
-      this.setState({ketiksearch: true, showpagination: false, showsearchresults: true, search: event.target.value});
-    }
-    if (event.target.value === "") {
-      this.setState({ ketiksearch: false, showpagination: true, showsearchresults: false });
-    }
-  }
-
-  paginate = pagenumber => {
-      this.setState({currentPage : pagenumber});
-  }
+  
 
   render() {
-    const { books, search, showAdd, showEdit, showDelete, currentPage, postsPerPage, ketiksearch, showpagination, showsearchresults, fields, errors, disableSubmitting } = this.state;
-    const filteredData = books.filter(book =>
-      book.bookTitle.toLowerCase().includes(search.toLowerCase())
-    );
-
-    const indexOfLastPost = currentPage * postsPerPage;
-    const indexOfFirstPost = indexOfLastPost - postsPerPage;
-    const currentPosts = books.slice(indexOfFirstPost, indexOfLastPost);
-
-    let returnedTarget;
-    if (ketiksearch === true) {
-      returnedTarget = filteredData;
-    } else {
-      returnedTarget = currentPosts;
-    }
-
+    const { data, showAdd, showEdit, showDelete, fields, errors, disableSubmitting } = this.state;
+   
     return (
       // page content
       <div className="right_col" role="main" style={{ minHeight: '100vh' }}>
@@ -242,43 +223,15 @@ class BookManagement extends Component {
                   <div className="card-body">
                     {/* title */}
                     <div class="">
-                      <Button variant="success" onClick={this.handleShowAdd}>
+                      <Button className="mb-5" variant="success" onClick={this.handleShowAdd}>
                         <i class="fa fa-plus"></i> Add Book
                       </Button>
                     </div>
                     {/* title */}
 
                     {/* book management table */}
-                    <Container className=''>
-                      <div className='row justify-content-center'>
-                        <div className='col-2-lg m-2'>
-                          <InputGroup>
-                            <InputGroup.Prepend>
-                              <InputGroup.Text id="inputGroupPrepend"><i class="fa fa-search"></i></InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <Form.Control
-                              type="text"
-                              placeholder="Search Title.."
-                              aria-describedby="inputGroupPrepend"
-                              name="search"
-                              onChange={this.searchData}
-                            // value={values.username}
-                            // isInvalid={!!errors.username}
-                            />
-                            <Form.Control.Feedback type="invalid" tooltip>
-                              {/* {errors.username} */}
-                            </Form.Control.Feedback>
-                          </InputGroup>
-                          <div className="d-flex justify-content-center">
-                            <div style={{display: showsearchresults ? 'block' : 'none', color:"#444444"}}>
-                              <p>Showing <b>{returnedTarget.length}</b> search results</p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <Table responsive bordered hover size="sm">
-                        <thead>
+                    <Table responsive striped id="bookmanagement" style={{ width: '100%' }}>
+                      <thead>
                           <tr>
                             <th>Book ID</th>
                             <th>Book Title</th>
@@ -288,45 +241,34 @@ class BookManagement extends Component {
                             <th>Book Cover</th>
                             <th>Action</th>
                           </tr>
-                        </thead>
-                        {
-                          returnedTarget.map((book, index) => {
-
-                            return (
-                              <tbody key={index}>
-                                <tr>
-                                  <td>{book.bookID}</td>
-                                  <td>{book.bookTitle}</td>
-                                  <td>{book.author}</td>
-                                  <td>{book.publishedDate}</td>
-                                  <td>{book.categories}</td>
-                                  <td class="text-center">
-                                    <img height="80" src={book.bookCover} alt="bookimage"/>
-                                  </td>
-                                  <td>
-                                    <div class='d-flex justify-content-around mt-4' style={{ border: 'none' }}>
-                                      <button class="btn btn-primary" data-toggle="modal" data-target="#edit" onClick={this.handleShowEdit}><i
-                                        class="fa fa-edit"></i></button>
-                                      <button class="btn btn-danger" data-toggle="modal" data-target="#delete" onClick={this.handleShowDelete}><i
-                                        class="fa fa-trash"></i></button>
-                                    </div>
-                                  </td>
-                                </tr>
-                              </tbody>
-                            )
-
-                          })
-                        }
-                      </Table>
-                      <div style={{display: showpagination ? 'block' : 'none' }}>
-                      
-                      <Pagination
-                        postsPerPage={postsPerPage}
-                        totalPosts={books.length}
-                        paginate={this.paginate}
-                      />
-                      </div>
-                    </Container>
+                      </thead>
+                      <tbody>
+                      {
+                        data.map((book, index) => {
+                          return (
+                              <tr key={index}>
+                                <td>{book.bookID}</td>
+                                <td>{book.bookTitle}</td>
+                                <td>{book.author}</td>
+                                <td>{book.publishedDate}</td>
+                                <td>{book.categories}</td>
+                                <td class="text-center">
+                                  <img height="80" src={book.bookCover} alt="bookimage"/>
+                                </td>
+                                <td>
+                                  <div class='d-flex justify-content-around mt-4' style={{ border: 'none' }}>
+                                    <button class="btn btn-primary" data-toggle="modal" data-target="#edit" onClick={this.handleShowEdit}><i
+                                      class="fa fa-edit"></i></button>
+                                    <button class="btn btn-danger" data-toggle="modal" data-target="#delete" onClick={this.handleShowDelete}><i
+                                      class="fa fa-trash"></i></button>
+                                  </div>
+                                </td>
+                              </tr>
+                          )
+                        })
+                      }
+                      </tbody>
+                    </Table>
 
                     {/* modal add */}
                     <Modal size="lg" show={showAdd} onHide={this.handleCloseModal}>

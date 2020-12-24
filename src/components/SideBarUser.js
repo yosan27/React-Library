@@ -97,7 +97,7 @@ class SideBarUser extends Component {
 
                                 <Link to="/payment">
                                     <i className="fa fa-money"></i>
-                                    payment
+                                    Payment
                                 </Link>
 
                             </li>

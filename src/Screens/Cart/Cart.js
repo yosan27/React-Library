@@ -1,4 +1,11 @@
 import React, { Component } from 'react';
+import 'datatables.net-dt/js/dataTables.dataTables'
+import 'datatables.net-dt/css/jquery.dataTables.min.css'
+import 'datatables.net-responsive-dt/js/responsive.dataTables.js'
+import 'datatables.net-responsive-dt/css/responsive.dataTables.css'
+import 'jquery/dist/jquery.min.js'
+import $ from 'jquery'
+import swal from "sweetalert";
 
 export default class Cart extends Component {
     constructor(props) {
@@ -10,6 +17,11 @@ export default class Cart extends Component {
 
     componentDidMount() {
         this.getTglNow()
+        $(function () {
+            $('#example').DataTable({
+                responsive: true
+            });
+        });
     }
 
     async getTglNow() {
@@ -49,29 +61,33 @@ export default class Cart extends Component {
 
     }
 
+    order = () => {
+        document.getElementById("wait").style.display = "";
+        setTimeout(function () {
+            document.getElementById("wait").style.opacity = "0";
+        }, 500);
+        document.getElementById("data1").style.display = "none";
+        document.getElementById("data2").style.display = "none";
+        document.getElementById("foot-card").style.display = "none";
+        document.getElementById("cartCount").innerHTML = "0";
+        swal("Thank You", "Please wait for validation admin", "success");
+    };
+
+    deleteBtn1 = () => {
+        document.getElementById("data1").style.display = "none";
+        document.getElementById("cartCount").innerHTML = "1";
+    };
+    deleteBtn2 = () => {
+        document.getElementById("data2").style.display = "none";
+        document.getElementById("cartCount").innerHTML = "1";
+    };
+
     render() {
         const mystyleBtn = {
             color: "white",
             cursor: 'pointer',
         };
-        const deleteBtn1 = () => {
-            document.getElementById("data1").style.display = "none";
-            document.getElementById("cartCount").innerHTML = "1";
-        };
-        const deleteBtn2 = () => {
-            document.getElementById("data2").style.display = "none";
-            document.getElementById("cartCount").innerHTML = "1";
-        };
-        const borrowBtn = () => {
-            document.getElementById("wait").style.display = "";
-            setTimeout(function () {
-                document.getElementById("wait").style.opacity = "0";
-            }, 500);
-            document.getElementById("data1").style.display = "none";
-            document.getElementById("data2").style.display = "none";
-            document.getElementById("foot-card").style.display = "none";
-            document.getElementById("cartCount").innerHTML = "0";
-        };
+
         return (
             <div className="right_col" role="main" style={{ minHeight: '100vh' }}>
                 <section className="mt-5 pt-5">
@@ -117,7 +133,7 @@ export default class Cart extends Component {
                                                         <td>Selena</td>
                                                         <td>Tere Liye</td>
                                                         <td>
-                                                            <a id="btn-data1" style={mystyleBtn} onClick={deleteBtn1} className="btn btn-sm btn-danger"><i
+                                                            <a id="btn-data1" style={mystyleBtn} onClick={() => this.deleteBtn1()} className="btn btn-sm btn-danger"><i
                                                                 className="fa fa-trash"></i></a>
                                                         </td>
                                                     </tr>
@@ -127,7 +143,7 @@ export default class Cart extends Component {
                                                         <td>Nebula</td>
                                                         <td>Tere Liye</td>
                                                         <td>
-                                                            <a id="btn-data2" style={mystyleBtn} onClick={deleteBtn2} className="btn btn-sm btn-danger"><i
+                                                            <a id="btn-data2" style={mystyleBtn} onClick={() => this.deleteBtn2()} className="btn btn-sm btn-danger"><i
                                                                 className="fa fa-trash"></i></a>
                                                         </td>
                                                     </tr>
@@ -154,14 +170,14 @@ export default class Cart extends Component {
                                                 <div className="col-lg-6">
                                                     <div className="form-group">
                                                         <label>Tanggal Pengembalian</label>
-                                                        <input readonly id="tgl_kembali" type="date"
+                                                        <input readOnly id="tgl_kembali" type="date"
                                                             name="tanggal_kembali" className="form-control" required />
                                                     </div>
                                                 </div>
                                                 <div className="col-lg-12">
                                                     <div className="form-group">
                                                         <label className="text-success">*Ajukan Peminjaman</label>
-                                                        <a id="btn-confirmPinjam" style={mystyleBtn} onClick={borrowBtn} className="btn shadow disabled btn-sm btn-success btn-block">
+                                                        <a id="btn-confirmPinjam" style={mystyleBtn} onClick={() => this.order()} className="btn shadow disabled btn-sm btn-success btn-block">
                                                             Borrow
                                                         </a>
                                                     </div>
