@@ -28,9 +28,9 @@ class ForgotPassword extends Component {
                                         <button type="button" class="btn-login mt-3 loginBtn">Submit</button>
                                     </div>
                                     <div class="col-lg-3">
-                                        <Link to="/login">
-                                            <a href="login.html"><button type="button" class="btn-sign-up mt-3 mb-2">Sign
-                                            In</button></a>
+                                        <Link to="/">
+                                            <button type="button" class="btn-sign-up mt-3 mb-2">Sign
+                                            In</button>
                                         </Link>
                                     </div>
                                 </div>

@@ -30,9 +30,9 @@ function Register() {
                                     <button type="button" className="btn-login mt-3">Sign Up</button>
                                 </div>
                                 <div className="col-lg-3">
-                                    <Link to="/login">
-                                        <a href="login.html"><button type="button"
-                                            className="btn-sign-up mt-3 mb-5">Login</button></a>
+                                    <Link to="/">
+                                        <button type="button"
+                                            className="btn-sign-up mt-3 mb-5">Login</button>
                                     </Link>
                                 </div>
                             </div>

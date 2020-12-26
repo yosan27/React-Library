@@ -71,7 +71,7 @@ export default class Wishlist extends Component {
                                                             </span>
                                                         </td>
                                                         <td>
-                                                            <Link to="/detailPage" className="btn shadow btn-sm btn-light">
+                                                            <Link to="/page/etailPage" className="btn shadow btn-sm btn-light">
                                                                 <i className="fa fa-info"></i>
                                                             </Link>
                                                             <a id="btn-data1" onClick={() => this.deleteBtn1()} style={mystyleBtn}

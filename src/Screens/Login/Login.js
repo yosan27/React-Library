@@ -3,6 +3,23 @@ import { Link, withRouter } from "react-router-dom";
 import "./Login-style.css";
 
 class Login extends Component {
+constructor(props) {
+    super(props)
+
+    this.state = {
+         user : ""
+    }
+}
+
+userHandling = (event) => {
+    this.setState({
+        [event.target.name] : event.target.value
+    })
+}
+
+loginClick = () => {
+    this.props.history.push(`/${this.state.user}`)
+}
     render() {
         return (
             <section className="Form my-5 mx-5 card-login">
@@ -19,7 +36,7 @@ class Login extends Component {
                                 <div className="form-row">
                                     <div className="col-lg-7">
                                         <input type="email" placeholder="Email Address" className="form-control my-2 p-4 box email"
-                                            required />
+                                            required name="user" value={this.state.user} onChange={this.userHandling}/>
                                         <span id="wrong-user" className="hide">Email is not registered!</span>
                                         <input type="password" placeholder="Password" className="form-control my-2 p-4 box password"
                                             required />
@@ -34,9 +51,7 @@ class Login extends Component {
                                 </div>
                                 <div class="form-row">
                                     <div class="col-lg-3">
-                                        <Link to="/indexUser">
-                                            <button type="button" class="btn-login mt-3 loginBtn">Login</button>
-                                        </Link>
+                                            <button type="button" class="btn-login mt-3 loginBtn" onClick={this.loginClick}>Login</button>
                                     </div>
                                     <div class="col-lg-3">
                                         <Link to="/register">
