@@ -23,59 +23,32 @@ class MainNavigationsUser extends Component {
     return (
       <Router>
         <Switch>
-          <Route path="/login" exact>
-            <Login />
-          </Route>
-          <Route path="/register" exact>
-            <Register />
-          </Route>
-          <Route path="/forgot-password" exact>
-            <Password />
-          </Route>
+          <Route path="/login" exact component={Login}></Route>
+          <Route path="/register" exact component={Register}></Route>
+          <Route path="/forgot-password" exact component={Password}></Route>
+
           <div className="main_container">
-            <div className="col-md-3 left_col">
-              <Route path="/">
-                <SideBarUser />
-              </Route>
-            </div>
+
             <div className="top_nav">
-              <Route path="/">
-                <HeaderUser />
-              </Route>
+              <Route path="/" component={HeaderUser}></Route>
             </div>
-            <Route path="/indexUser">
-              <Content />
-            </Route>
-            <Route path="/profileUser">
-              <ProfileUser />
-            </Route>
-            <Route path="/historyUser">
-              <HistoryUser />
-            </Route>
-            <Route path="/cart">
-              <Cart />
-            </Route>
-            <Route path="/wishlist">
-              <Wishlist />
-            </Route>
-            <Route path="/payment">
-              <Payment />
-            </Route>
-            <Route path="/catalog">
-              <Catalog />
-            </Route>
-            <Route path="/detailpage">
-              <DetailPage />
-            </Route>
-            <Route path="/donation-user">
-              <Donation />
-            </Route>
-            <Route path="/donation-form">
-              <DonationForm />
-            </Route>
-            <Route path="/">
-              <Footer />
-            </Route>
+
+            <div className="col-md-3 left_col">
+              <Route path="/" component={SideBarUser}></Route>
+            </div>
+            
+            <Route path="/indexUser" component={Content}></Route>
+            <Route path="/profileUser" component={ProfileUser}></Route>
+            <Route path="/historyUser" component={HistoryUser}></Route>
+            <Route path="/cart" component={Cart}></Route>
+            <Route path="/wishlist" component={Wishlist}></Route>
+            <Route path="/payment" component={Payment}></Route>
+            <Route path="/catalog" component={Catalog}></Route>
+            <Route path="/detailpage" component={DetailPage}></Route>
+            <Route path="/donation-user" component={Donation}></Route>
+            <Route path="/donation-form" component={DonationForm}></Route>
+
+            <Route path="/" component={Footer}></Route>
           </div>
         </Switch>
       </Router>

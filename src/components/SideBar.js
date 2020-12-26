@@ -66,9 +66,9 @@ class SideBar extends Component {
                                     </Link>
                             </li>
                             <li onClick={() => this.setState({ condition: !condition })} className={this.state.condition ? "active" : ""}>
-                                <a>
+                                <Link>
                                     <i className="fa fa-edit"></i> Manage <span className="fa fa-chevron-down"></span>
-                                </a>
+                                </Link>
                                 <ul className="nav child_menu" style={{ display: this.state.condition ? 'block' : 'none' }}>
                                     <li className={(pathCurrent[1] === 'manageUser' ? "current-page" : "")}>
                                         <Link to="/manageUser">
