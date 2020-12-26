@@ -3,7 +3,12 @@ import React, { Component } from "react";
 export default class HistoryPayment extends Component {
   render() {
     return (
-      <>
+      <div className="container history-payment shadow-sm p-3 bg-white hide">
+        <div className="row p-3">
+          <div className="col">
+            <b className="history-payment-title">Payment History</b>
+          </div>
+        </div>
         {this.props.paymentRecord.reverse().map((rec) => {
           return (
             <div className="row">
@@ -34,7 +39,7 @@ export default class HistoryPayment extends Component {
             </div>
           );
         })}
-      </>
+      </div>
     );
   }
 }

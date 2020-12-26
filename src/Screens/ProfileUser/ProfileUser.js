@@ -1,18 +1,21 @@
 import React, { Component } from 'react';
+import swal from "sweetalert";
 
 export default class ProfileUser extends Component {
+
+    updateBtn = () => {
+        swal("Successfully", "Changed profile", "success");
+    };
 
     cekPass1 = (e) => {
         // alert(e);
         if (document.getElementById("password2").value === e) {
             document.getElementById("pwmatch").classList.remove("fa-close");
             document.getElementById("pwmatch").classList.add("fa-check");
-            document.getElementById("btn-save").setAttribute("disabled", false);
             document.getElementById("pwmatch").style.color = "#00A41E";
         } else {
             document.getElementById("pwmatch").classList.remove("fa-check");
             document.getElementById("pwmatch").classList.add("fa-close");
-            document.getElementById("btn-save").setAttribute("disabled", true);
             document.getElementById("pwmatch").style.color = "#FF0004";
         }
     };
@@ -23,12 +26,10 @@ export default class ProfileUser extends Component {
         if (document.getElementById("password1").value === e) {
             document.getElementById("pwmatch").classList.remove("fa-close");
             document.getElementById("pwmatch").classList.add("fa-check");
-            document.getElementById("btn-save").setAttribute("disabled", false);
             document.getElementById("pwmatch").style.color = "#00A41E";
         } else {
             document.getElementById("pwmatch").classList.remove("fa-check");
             document.getElementById("pwmatch").classList.add("fa-close");
-            document.getElementById("btn-save").setAttribute("disabled", true);
             document.getElementById("pwmatch").style.color = "#FF0004";
         }
     };
@@ -43,10 +44,10 @@ export default class ProfileUser extends Component {
         var fileSampul = new FileReader();
         fileSampul.readAsDataURL(sampul.files[0]);
 
-        fileSampul.onload = function(e) {
+        fileSampul.onload = function (e) {
             imgPreview.src = e.target.result;
         };
-      };
+    };
 
     render() {
         return (
@@ -77,117 +78,117 @@ export default class ProfileUser extends Component {
                                                 <div className="tab-content" id="vert-tabs-tabContent">
                                                     <div className="tab-pane text-left fade active show" id="vert-tabs-home"
                                                         role="tabpanel" aria-labelledby="vert-tabs-home-tab">
-                                                        <form className="form-horizontal" action="" method="post"
-                                                            encType="multipart/form-data">
-                                                            <div className="form-group row">
-                                                                <label htmlFor="nama"
-                                                                    className="col-sm-2 col-form-label">Name</label>
-                                                                <div className="col-sm-10">
-                                                                    <input type="text" className="form-control" id="nama"
-                                                                        name="nama" value="User Baginda" readOnly />
-                                                                </div>
+                                                        {/* <form className="form-horizontal"
+                                                            encType="multipart/form-data"> */}
+                                                        <div className="form-group row">
+                                                            <label htmlFor="nama"
+                                                                className="col-sm-2 col-form-label">Name</label>
+                                                            <div className="col-sm-10">
+                                                                <input type="text" className="form-control" id="nama"
+                                                                    name="nama" value="User Baginda" readOnly />
                                                             </div>
-                                                            <div className="form-group row">
-                                                                <label htmlFor="id"
-                                                                    className="col-sm-2 col-form-label">ID</label>
-                                                                <div className="col-sm-10">
-                                                                    <input type="text" name="id" className="form-control"
-                                                                        id="id" placeholder="masukan id..." value="123"
-                                                                        readOnly />
-                                                                </div>
+                                                        </div>
+                                                        <div className="form-group row">
+                                                            <label htmlFor="id"
+                                                                className="col-sm-2 col-form-label">ID</label>
+                                                            <div className="col-sm-10">
+                                                                <input type="text" name="id" className="form-control"
+                                                                    id="id" placeholder="masukan id..." value="123"
+                                                                    readOnly />
                                                             </div>
-                                                            <div className="form-group row">
-                                                                <label htmlFor="email"
-                                                                    className="col-sm-2 col-form-label">Email</label>
-                                                                <div className="col-sm-10">
-                                                                    <input type="text" name="email" className="form-control"
-                                                                        id="email" placeholder="masukan email..."
-                                                                        value="user@gmail.com" />
-                                                                </div>
+                                                        </div>
+                                                        <div className="form-group row">
+                                                            <label htmlFor="email"
+                                                                className="col-sm-2 col-form-label">Email</label>
+                                                            <div className="col-sm-10">
+                                                                <input type="text" name="email" className="form-control"
+                                                                    id="email" placeholder="masukan email..."
+                                                                    value="user@gmail.com" />
                                                             </div>
-                                                            <div className="form-group row">
-                                                                <label htmlFor="username"
-                                                                    className="col-sm-2 col-form-label">Username</label>
-                                                                <div className="col-sm-10">
-                                                                    <input type="text" name="username"
-                                                                        className="form-control" id="username"
-                                                                        placeholder="masukan username..." value="user" />
-                                                                </div>
+                                                        </div>
+                                                        <div className="form-group row">
+                                                            <label htmlFor="username"
+                                                                className="col-sm-2 col-form-label">Username</label>
+                                                            <div className="col-sm-10">
+                                                                <input type="text" name="username"
+                                                                    className="form-control" id="username"
+                                                                    placeholder="masukan username..." value="user" />
                                                             </div>
-                                                            <div className="form-group row">
-                                                                <label htmlFor="alamat"
-                                                                    className="col-sm-2 col-form-label">Address</label>
-                                                                <div className="col-sm-10">
-                                                                    <textarea name="alamat" className="form-control"
-                                                                        id="alamat">Jl. Patriot Kp.2 No.50</textarea>
-                                                                </div>
+                                                        </div>
+                                                        <div className="form-group row">
+                                                            <label htmlFor="alamat"
+                                                                className="col-sm-2 col-form-label">Address</label>
+                                                            <div className="col-sm-10">
+                                                                <textarea name="alamat" className="form-control"
+                                                                    id="alamat">Jl. Patriot Kp.2 No.50</textarea>
                                                             </div>
-                                                            <div className=" form-group row">
-                                                                <label htmlFor="no_hp" className="col-sm-2 col-form-label">No
+                                                        </div>
+                                                        <div className=" form-group row">
+                                                            <label htmlFor="no_hp" className="col-sm-2 col-form-label">No
                                                                     Hp</label>
-                                                                <div className="col-sm-10">
-                                                                    <input type="tel" name="no_hp" className="form-control"
-                                                                        id="no_hp" placeholder="masukan nomer hp..."
-                                                                        pattern="[0-9]+" value="088290332283" />
-                                                                </div>
+                                                            <div className="col-sm-10">
+                                                                <input type="tel" name="no_hp" className="form-control"
+                                                                    id="no_hp" placeholder="masukan nomer hp..."
+                                                                    pattern="[0-9]+" value="088290332283" />
                                                             </div>
-                                                            <div className="form-group row">
-                                                                <label htmlFor="inputEmail3"
-                                                                    className="col-sm-2 col-form-label">Profile
+                                                        </div>
+                                                        <div className="form-group row">
+                                                            <label htmlFor="inputEmail3"
+                                                                className="col-sm-2 col-form-label">Profile
                                                                     Picture</label>
-                                                                <div className="col-sm-2">
-                                                                    <img src="assets/images/user.png"
-                                                                        className="img-thumbnail img-preview" />
+                                                            <div className="col-sm-2">
+                                                                <img src="assets/images/user.png"
+                                                                    className="img-thumbnail img-preview" />
+                                                            </div>
+                                                            <div className="col-sm-8">
+                                                                <div className="custom-file">
+                                                                    <input id="foto" name="foto" onChange={(e) => this.previewImg(e.target.value)} type="file"
+                                                                        className="custom-file-input" />
+                                                                    <label className="custom-file-label"
+                                                                        htmlFor="foto">Choose file</label>
                                                                 </div>
-                                                                <div className="col-sm-8">
-                                                                    <div className="custom-file">
-                                                                        <input id="foto" name="foto" onChange={(e) => this.previewImg(e.target.value)} type="file"
-                                                                            className="custom-file-input" />
-                                                                        <label className="custom-file-label"
-                                                                            htmlFor="foto">Choose file</label>
-                                                                    </div>
-                                                                    <small>*format gambar berupa .jpg dengan ukuran
+                                                                <small>*format gambar berupa .jpg dengan ukuran
                                                                         maksimal 1MB</small>
-                                                                </div>
                                                             </div>
-                                                            <br />
-                                                            <div className="form-group">
-                                                                <button type="submit"
-                                                                    className="btn btn-primary btn-block">Update</button>
-                                                            </div>
-                                                        </form>
+                                                        </div>
+                                                        <br />
+                                                        <div className="form-group">
+                                                            <button
+                                                                className="btn btn-primary btn-block" onClick={() => this.updateBtn()}>Update</button>
+                                                        </div>
+                                                        {/* </form> */}
                                                     </div>
 
                                                     <div className="tab-pane fade" id="vert-tabs-password" role="tabpanel"
                                                         aria-labelledby="vert-tabs-password-tab">
-                                                        <form action="" method="post">
-                                                            <div className="card-body">
-                                                                <div className="form-group">
-                                                                    <label htmlFor="password1" className="">
-                                                                        New Password
+                                                        {/* <form> */}
+                                                        <div className="card-body">
+                                                            <div className="form-group">
+                                                                <label htmlFor="password1" className="">
+                                                                    New Password
                                                                     </label>
-                                                                    <input type="password" onChange={(e) => this.cekPass1(e.target.value)} name="password" required
-                                                                        autoComplete="off" id="password1"
-                                                                        className="form-control simm-inv" />
-                                                                </div>
-                                                                <div className="form-group">
-                                                                    <label htmlFor="password2" className="">Confirm
-                                                                        Password</label><br />
-                                                                    <input onChange={(e) => this.cekPass2(e.target.value)} type="password" name="password_confirm"
-                                                                        required autoComplete="off" id="password2"
-                                                                        className="form-control simm-inv" />
-                                                                    <small id="passmatch" style={{ display: 'none' }}><i
-                                                                        id="pwmatch" className="fa fa-close"
-                                                                        style={{ color: '#FF0004' }}></i> Passwords
-                                                                        Match</small>
-                                                                </div>
-                                                                <br />
-                                                                <div className="form-group">
-                                                                    <button type="submit" disabled id="btn-save"
-                                                                        className="btn btn-primary btn-block">Change</button>
-                                                                </div>
+                                                                <input type="password" onChange={(e) => this.cekPass1(e.target.value)} name="password" required
+                                                                    autoComplete="off" id="password1"
+                                                                    className="form-control simm-inv" />
                                                             </div>
-                                                        </form>
+                                                            <div className="form-group">
+                                                                <label htmlFor="password2" className="">Confirm
+                                                                        Password</label><br />
+                                                                <input onChange={(e) => this.cekPass2(e.target.value)} type="password" name="password_confirm"
+                                                                    required autoComplete="off" id="password2"
+                                                                    className="form-control simm-inv" />
+                                                                <small id="passmatch" style={{ display: 'none' }}><i
+                                                                    id="pwmatch" className="fa fa-close"
+                                                                    style={{ color: '#FF0004' }}></i> Passwords
+                                                                        Match</small>
+                                                            </div>
+                                                            <br />
+                                                            <div className="form-group">
+                                                                <button id="btn-save"
+                                                                    className="btn btn-primary btn-block" onClick={() => this.updateBtn()}>Change</button>
+                                                            </div>
+                                                        </div>
+                                                        {/* </form> */}
                                                     </div>
                                                 </div>
                                             </div>

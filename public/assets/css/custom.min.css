@@ -1215,9 +1215,21 @@
 	margin-left: 15%;
 	z-index: 1000;
 	position: inherit;
-	margin-top: 20px;
+	margin-top: 37px;
 	border: 1px solid rgba(52, 73, 94, 0.44);
 	padding: 4px
+}
+
+.img-circle.profile_img.admin {
+	width: 70%;
+	background: #fff;
+	margin-left: 15%;
+	z-index: 1000;
+	position: inherit;
+	margin-top: 25px;
+	border: 1px solid rgba(52, 73, 94, 0.44);
+	padding: 4px;
+	margin-bottom: 10px;
 }
 
 .profile_info {
@@ -1910,11 +1922,12 @@ a:focus {
 	width: 100%;
 	color: #ECF0F1 !important;
 	margin-left: 0 !important;
+	margin-top: 15px !important;
 	line-height: 59px;
 	display: block;
 	height: 55px;
 	margin: 0;
-	padding-left: 10px
+	padding-left: 15px
 }
 
 .site_title:hover,
