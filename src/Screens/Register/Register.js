@@ -65,7 +65,7 @@ class Register extends Component {
     }
     render() {
         return (
-            <section class="Form my-5 mx-5 pb-5 card-login">
+            <section class="Form my-8 mx-5 pb-5 card-login">
                 <div class="container">
                     <div class="row no-gutters row-box">
                         <div class="col-lg-6">
@@ -78,7 +78,7 @@ class Register extends Component {
                                 <div class="col-lg-7">
                                     <div className={`form-group ${this.errorClass(this.state.formErrors.fullname)}`}>
                                         <label htmlFor="email">Enter Your Name</label>
-                                        <input type="tedt" required class="form-control my-2 p-4 box email" name="fullname"
+                                        <input type="tedt" size="sm" required class="form-control my-2 p-4 box email" name="fullname"
                                             placeholder="Fullname"
                                             value={this.state.fullname}
                                             onChange={this.handleUserInput} />

@@ -58,7 +58,7 @@ class Login extends Component {
 
   render() {
     return (
-      <section class="Form my-5 mx-5 pb-5 card-login">
+      <section class="Form my-10 mx-5 pb-5 card-login">
         <div class="container">
           <div class="row no-gutters row-box">
             <div class="col-lg-5">

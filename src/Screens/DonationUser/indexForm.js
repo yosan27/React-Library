@@ -147,7 +147,7 @@ class DonationForm extends Component {
 
                             <div className={`form-group ${this.errorClass(this.state.formErrors.photo)}`}>
                                 <label for="exampleFormControlInput1">Photo Book</label>
-                                <input class="form-control" type="file" id="avatar" name="photo"
+                                <input class="form-control" type="file" id="avatar" name="photo     "
                                     accept="image/png, image/jpeg" value={this.state.photo} onChange={this.handleUserInput} />
                             </div>
                         </form>
