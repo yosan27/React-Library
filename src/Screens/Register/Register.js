@@ -112,8 +112,8 @@ class Register extends Component {
                             </form>
 
 
-                            <p class="txt-3 mg-0">By signing up, you agree to E-Perpus's</p>
-                            <p class="txt-3"><a class="txt-3"
+                            <p className="txt-3 mg-0">By signing up, you agree to E-Perpus's</p>
+                            <p className="txt-3"><a class="txt-3"
                                 href="https://web.kominfo.go.id/sites/default/files/users/4761/UU%2019%20Tahun%202016.pdf"
                                 target="blank"><b>Terms and Conditions & Privacy Policy</b></a></p>
                         </div>

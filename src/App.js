@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
+import MainNavigationsUser from './Navigations/MainNavigationsUser';
+import 'react-app-polyfill/stable';
 
-import MainNavigations from './Navigations/MainNavigations'
-import MainNavigationsUser from './Navigations/MainNavigationsUser'
 class App extends Component {
 
   render() {
