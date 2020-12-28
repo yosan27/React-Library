@@ -27,6 +27,11 @@
   font-style: italic;
   font-size: smaller;
 }
+.wrong-user{
+  color: red;
+  font-style: italic;
+  font-size: smaller;
+}
 
 .hide{
   display: none;
