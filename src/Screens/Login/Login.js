@@ -12,7 +12,8 @@ class Login extends Component {
       formErrors: { email: '', password: '' },
       emailValid: false,
       passwordValid: false,
-      formValid: false
+      formValid: false,
+      user : ""
     }
   }
 
@@ -54,6 +55,16 @@ class Login extends Component {
   errorClass(error) {
     return (error.length === 0 ? '' : 'has-error');
   }
+      
+  userHandling = (event) => {
+    this.setState({
+        [event.target.name] : event.target.value
+    })
+}
+
+loginClick = () => {
+    this.props.history.push(`/${this.state.user}`)
+}
 
 
   render() {
@@ -89,7 +100,7 @@ class Login extends Component {
                   </div>
                   <i className="wrong-user"><FormErrors formErrors={this.state.formErrors} /></i>
                   <div class="col-lg-5">
-                    <button type="button" class="btn-login mt-3 loginBtn" disabled={!this.state.formValid}>
+                    <button type="button" class="btn-login mt-3 loginBtn" disabled={!this.state.formValid} onClick={this.loginClick}>
                       Login
                     </button>
                   </div>

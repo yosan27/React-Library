@@ -103,7 +103,7 @@ class Register extends Component {
                                         <button type="button" class="btn-login mt-3">Sign Up</button>
                                     </div>
                                     <div class="col-lg-5">
-                                        <Link to="/login">
+                                        <Link to="/">
                                             <a href="login.html"><button type="button"
                                                 class="btn-sign-up mt-3 mb-5">Login</button></a>
                                         </Link>

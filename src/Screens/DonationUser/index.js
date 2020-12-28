@@ -32,11 +32,7 @@ class DonationUser extends Component {
                 </div>
                 <div class="container" id="demo">
                     <div class="row justify-content-md-center">
-<<<<<<< HEAD
                         <img src={this.state.image} class="img-fluid" alt="Responsive image" />
-=======
-                        <img src="assets/images/donation1.png" className="img-fluid" alt="Responsive image"/>
->>>>>>> b0d33ec5d7dab66894d8281d9464cddc0d939811
                     </div>
                     <div class="row justify-content-md-center">
                         <h4 class="col-lg-8 text-center"><i> &quot;{this.state.desc}&quot; </i><b>{this.state.author}</b></h4>
