@@ -8,6 +8,29 @@ import 'jquery/dist/jquery.min.js'
 import $ from 'jquery'
 
 export default class Wishlist extends Component {
+
+    constructor() {
+        super()
+        this.state = {
+            data: [
+                {
+                    "id": "2017100251",
+                    "title": "Selena",
+                    "author": "Tere Liye",
+                    "cover": "https://www.gramedia.com/blog/content/images/2020/05/selena_gramedia.jpg",
+                    "status": "2"
+                },
+                {
+                    "id": "2017100244",
+                    "title": "Nebula",
+                    "author": "Tere Liye",
+                    "cover": "https://www.gramedia.com/blog/content/images/2020/05/nebula_gramedia.jpg",
+                    "status": "1"
+                }
+            ],
+        }
+    }
+
     componentDidMount() {
         $(function () {
             $('#wishlist_table').DataTable({
@@ -15,23 +38,20 @@ export default class Wishlist extends Component {
             });
         });
     }
-    deleteBtn1 = () => {
-        document.getElementById("data1").style.display = "none";
-    };
-    deleteBtn2 = () => {
-        document.getElementById("data2").style.display = "none";
-    };
-    pinjamBtn = () => {
-        document.getElementById("data2").style.display = "none";
+    deleteBtn(data) {
+        document.getElementById("data"+data).style.display = "none";
+    }
+    pinjamBtn(data) {
+        document.getElementById("data"+data).style.display = "none";
         document.getElementById("cartCount").innerHTML = "3";
     };
+
     render() {
         const mystyleBtn = {
             color: "white",
             cursor: 'pointer',
         };
-        
-        
+        const { data } = this.state
 
         return (
             <div className="right_col" role="main" style={{ minHeight: '100vh' }}>
@@ -50,58 +70,52 @@ export default class Wishlist extends Component {
                                                 <thead>
                                                     <tr>
                                                         <th>ID Book</th>
-                                                        <th>Cover</th>
+                                                        <th>Action</th>
                                                         <th>Title</th>
                                                         <th>Author</th>
                                                         <th>Status</th>
-                                                        <th>Action</th>
+                                                        <th>Cover</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr id="data1">
-                                                        <td>10100733</td>
-                                                        <td className="text-center">
-                                                            <img height="100" src="assets/images/segitiga.jpg" />
-                                                        </td>
-                                                        <td>Segi Tiga</td>
-                                                        <td>Sapardi Djoko Damono</td>
-                                                        <td>
-                                                            <span className="badge badge-danger">
-                                                                Tidak Dapat Dipinjam
-                                                            </span>
-                                                        </td>
-                                                        <td>
-                                                            <Link to="/detailPage" className="btn shadow btn-sm btn-light">
-                                                                <i className="fa fa-info"></i>
-                                                            </Link>
-                                                            <a id="btn-data1" onClick={() => this.deleteBtn1()} style={mystyleBtn}
-                                                                className="btn shadow btn-sm btn-danger"><i
-                                                                    className="fa fa-trash"></i></a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr id="data2">
-                                                        <td>10100785</td>
-                                                        <td className="text-center">
-                                                            <img height="100" src="assets/images/misteri.jpg" />
-                                                        </td>
-                                                        <td>Misteri Terakhir #1</td>
-                                                        <td>S. Mara Gd.</td>
-                                                        <td>
-                                                            <span className="badge badge-success">
-                                                                Dapat Dipinjam
-                                                            </span>
-                                                        </td>
-                                                        <td>
-                                                            <a href="detailpageUser.html"
-                                                                className="btn shadow btn-sm btn-light"><i
-                                                                    className="fa fa-info"></i></a>
-                                                            <a id="btn-data2" onClick={() => this.deleteBtn2()} style={mystyleBtn} className="btn btn-sm btn-danger"><i
-                                                                className="fa fa-trash"></i></a>
-                                                            <a id="btn-pinjam2" onClick={() => this.pinjamBtn()}  style={mystyleBtn} className="btn shadow btn-sm btn-success">
-                                                                Borrow
-                                                            </a>
-                                                        </td>
-                                                    </tr>
+                                                    {
+                                                        data.map((book, i) => {
+                                                            return (
+                                                                <tr id={"data" + i}>
+                                                                    <td>{book.id}</td>
+                                                                    <td>
+                                                                        <Link to="/page/detailPage" className="btn shadow btn-sm btn-light">
+                                                                            <i className="fa fa-info"></i>
+                                                                        </Link>
+                                                                        <a id={"btn-data" + i} onClick={() => this.deleteBtn(i)} style={mystyleBtn}
+                                                                            className="btn shadow btn-sm btn-danger"><i
+                                                                                className="fa fa-trash"></i></a>
+                                                                        {(() => {
+                                                                            if (book.status == 1) {
+                                                                                return (
+                                                                                    <a id={"btn-pinjam" + i} onClick={() => this.pinjamBtn(i)} style={mystyleBtn} className="btn shadow btn-sm btn-success">
+                                                                                        Borrow
+                                                                                    </a>
+                                                                                )
+                                                                            }
+                                                                            return null;
+                                                                        })()}
+
+                                                                    </td>
+                                                                    <td>{book.title}</td>
+                                                                    <td>{book.author}</td>
+                                                                    <td>
+                                                                        <span className={book.status == 1 ? "badge badge-success" : "badge badge-danger"}>
+                                                                            {book.status == 1 ? "Available for Borrow" : "Can't Borrow"}
+                                                                        </span>
+                                                                    </td>
+                                                                    <td className="text-center">
+                                                                        <img height="100" src={book.cover} />
+                                                                    </td>
+                                                                </tr>
+                                                            )
+                                                        })
+                                                    }
                                                 </tbody>
                                             </table>
                                         </div>

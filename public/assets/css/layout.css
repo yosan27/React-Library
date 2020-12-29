@@ -22,17 +22,13 @@ body {
 
 .profile_name{
   display: none;
+  color: #ECF0F1;
+  font-size: smaller;
 }
 
-.profile_name h4{
-  margin-top: 20px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  font-size: 12px;
-  font-weight: bold;
-  color: darkslategrey;
-  background-color: white;
-  text-align: center;
+.profile_saldo{
+  font-size: 18px !important;
+  color: wheat !important;
 }
 
 .smaller{
@@ -43,10 +39,34 @@ body {
   color: black;
 }
 
+.profile-space{
+  padding-top: 10px;
+}
+
 
 @media only screen and (max-width: 768px) {
   .profile_name{
     display: inline;
+    margin-top: -20px;
+  }
+
+  .profile_name h5{
+    padding-top: 10px;
+    font-size: 14px;
+  }
+
+  .profile_name .img-circle{
+    margin-top: 30px;
+  }
+
+  .profile_saldo{
+    margin-top: -10px;
+    font-size: 14px !important;
+    padding-bottom: 20px;
+  }
+
+  .profile-space{
+    padding-top: 20px;
   }
 }
 

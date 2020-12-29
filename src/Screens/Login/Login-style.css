@@ -27,18 +27,19 @@
   font-style: italic;
   font-size: smaller;
 }
+.wrong-user{
+  color: red;
+  font-style: italic;
+  font-size: smaller;
+}
 
 .hide{
   display: none;
 }
 
-.row-login {
+.row-box {
   background: white;
-  border-radius: 30px; 
-}
-
-.white{
-  color: white;
+  border-radius: 30px;
 }
 
 .box-input{
@@ -47,7 +48,7 @@
   margin-bottom: 0.5rem;
 }
 
-.img-login {
+.img-page {
   border-top-left-radius: 30px;
   border-bottom-left-radius: 30px;
 }

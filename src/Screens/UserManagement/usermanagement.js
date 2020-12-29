@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Image from 'react-bootstrap/Image'
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button, Card, Table, Form, Row, Col, Badge } from 'react-bootstrap';
 //Datatable Modules
 import "datatables.net-dt/js/dataTables.dataTables"
 import "datatables.net-dt/css/jquery.dataTables.min.css"
@@ -57,9 +57,11 @@ class UserManagement extends Component {
     };
 
     componentDidMount() {
-        $(document).ready(function () {
-            $('.table').DataTable();
-        });
+        $(function () {
+            $('#historyUser').DataTable({
+                responsive: true
+            });
+          });
 
         $('.img-card').hover(makeBigger, returnToOriginalSize);
         function makeBigger() {
@@ -80,54 +82,55 @@ class UserManagement extends Component {
                     <div className="container-fluid">
                         <div className="row">
                             <div className="col-12 col-lg-12">
-                                <div className="card">
-                                    <div className="card-header">
-                                        <h3 className="card-title">User Management</h3>
-                                    </div>
-                                    <div className="card-body">
-                                        <div className="table-responsive">
-                                            <table id="history" className="table table-striped table-white table-bordered dt-responsive nowrap" style={{ width: '100%' }}>
-                                                <thead className='thead-dark'>
-                                                    <tr>
+                                <Card>
+                                    <Card.Header>
+                                        <h3>User Management</h3>
+                                    </Card.Header>
+                                    <Card.Body>
+                                        <Table responsive striped id="historyUser" style={{ width: '100%' }}>
+                                            <thead>
+                                                <tr>
                                                         <th>ID</th>
+                                                        <th>Action</th>
                                                         <th>Username</th>
                                                         <th>Name</th>
                                                         <th>Email Addres</th>
                                                         <th>Status</th>
                                                         <th>Identification Card</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
                                                     {
                                                         data.map(user => {
                                                             return (
                                                                 <tr>
                                                                     <td>{user.id}</td>
+                                                                    <td>
+                                                                        <span className="d-flex justify-content-center" data-toggle="tooltip" title="suspend">
+                                                                        <Button variant="danger" size="sm" data-toggle="modal" data-target="#detail" onClick={this.handleShowSuspend}>
+                                                                            <i className="fa fa-gavel"></i>
+                                                                        </Button>
+                                                                        </span>
+                                                                    </td>
                                                                     <td>{user.username}</td>
                                                                     <td>{user.fullname}</td>
                                                                     <td>{user.email}</td>
                                                                     <td>{user.status}</td>
                                                                     <td className="text-center"><Image className='photoOfOrder text-center img-card' key={user.id} src={user.card} wrapped ui={false} style={{width:'40%',height:'auto'}} /></td>
-                                                                    <td>
-                                                                        <span className="d-flex justify-content-center" data-toggle="tooltip" title="suspend">
-                                                                            <button className="btn btn-danger" data-toggle="modal" data-target="#detail" onClick={this.handleShowSuspend}><i className="fas fa-stopwatch">Suspend</i></button>
-                                                                        </span>
-                                                                    </td>
+                                                                    
                                                                 </tr>
                                                             )
                                                         })
                                                     }
                                                 </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
+                                        </Table>
+                                    </Card.Body>
+                                </Card>
                             </div>
                         </div>
                     </div >
                 </section >
-
             {/* modal suspend */}
             <Modal size="lg" show={showSuspend} onHide={this.handleCloseSuspend}>
                 <Modal.Header closeButton>

@@ -11,19 +11,26 @@ import Cart from "../Screens/Cart/Cart";
 import Wishlist from "../Screens/Wishlist/Wishlist";
 import Payment from "../Screens/Payment/Index";
 import Catalog from "../Screens/Catalog/Catalog";
-import DetailPage from "../Screens/DetailPage/detailpage";
 import Login from "../Screens/Login/Login";
 import Register from "../Screens/Register/Register";
 import Password from "../Screens/ForgotPassword/index";
 import Donation from "../Screens/DonationUser/index";
 import DonationForm from "../Screens/DonationUser/indexForm";
-
+import Profile from "../Screens/Profile/Profile";
+import History from "../Screens/History/History";
+import ExtendForm from "../Screens/Form/ExtendForm";
+import ReturnForm from "../Screens/Form/ReturnForm";
+import UserManagement from "../Screens/UserManagement/usermanagement";
+import ManageDonation from "../Screens/ManageDonation/index";
+import PublisherManagement from "../Screens/PublisherManagement/publishermanagement";
+import BookManagement from "../Screens/BookManagement/bookmanagement";
+import DetailPage from "../Screens/DetailPage/detailpage";
 class MainNavigationsUser extends Component {
   render() {
     return (
       <Router>
         <Switch>
-          <Route path="/login" exact>
+          <Route path="/" exact>
             <Login />
           </Route>
           <Route path="/register" exact>
@@ -32,48 +39,80 @@ class MainNavigationsUser extends Component {
           <Route path="/forgot-password" exact>
             <Password />
           </Route>
+
           <div className="main_container">
-            <div className="col-md-3 left_col">
-              <Route path="/">
-                <SideBarUser />
-              </Route>
-            </div>
-            <div className="top_nav">
-              <Route path="/">
+            <Route path="/:id">
+              <div className="top_nav">
                 <HeaderUser />
-              </Route>
-            </div>
-            <Route path="/indexUser">
+              </div>
+              <div className="col-md-3 left_col">
+                <SideBarUser />
+              </div>
+            </Route>
+
+            <Route exact path="/:id">
               <Content />
             </Route>
-            <Route path="/profileUser">
+
+            <Route path="/page/indexUser">
+              <Content />
+            </Route>
+            <Route path="/page/profileUser">
               <ProfileUser />
             </Route>
-            <Route path="/historyUser">
+            <Route path="/page/historyUser">
               <HistoryUser />
             </Route>
-            <Route path="/cart">
+            <Route path="/page/cart">
               <Cart />
             </Route>
-            <Route path="/wishlist">
+            <Route path="/page/wishlist">
               <Wishlist />
             </Route>
-            <Route path="/payment">
+            <Route path="/page/payment">
               <Payment />
             </Route>
-            <Route path="/catalog">
+            <Route path="/page/catalog">
               <Catalog />
             </Route>
-            <Route path="/detailpage">
+            <Route path="/page/detailpage">
               <DetailPage />
             </Route>
-            <Route path="/donation-user">
+            <Route path="/page/donation-user">
               <Donation />
             </Route>
-            <Route path="/donation-form">
+            <Route path="/page/donation-form">
               <DonationForm />
             </Route>
-            <Route path="/">
+            <Route path="/page/profile">
+              <Profile />
+            </Route>
+            <Route path="/page/managePublisher">
+              <PublisherManagement />
+            </Route>
+            <Route path="/page/manageBook">
+              <BookManagement />
+            </Route>
+            <Route path="/page/manageUser">
+              <UserManagement />
+            </Route>
+            <Route path="/page/detailpage">
+              <DetailPage />
+            </Route>
+            <Route path="/page/manage-donation">
+              <ManageDonation />
+            </Route>
+            <Route path="/page/history">
+              <History />
+            </Route>
+            <Route path="/page/extendForm">
+              <ExtendForm />
+            </Route>
+            <Route path="/page/returnForm">
+              <ReturnForm />
+            </Route>
+
+            <Route path="/page/:id">
               <Footer />
             </Route>
           </div>

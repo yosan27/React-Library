@@ -63,7 +63,7 @@ class ExtendForm extends Component {
                                             <hr />
                                             <div style={{ float: 'right' }}>
                                                 <Button variant="success" onClick={this.alertSubmit}>Submit</Button>
-                                                <Link to='/history'>
+                                                <Link to='/page/history'>
                                                     <Button variant="secondary">Cancel</Button>
                                                 </Link>
                                             </div>

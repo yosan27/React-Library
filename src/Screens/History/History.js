@@ -88,10 +88,10 @@ class History extends Component {
                                                                         <Button size="sm" data-toggle="modal" onClick={this.handleShowInfo}>
                                                                             <i className="fa fa-info-circle"></i>
                                                                         </Button>
-                                                                        <Link to='/extendForm'>
+                                                                        <Link to='/page/extendForm'>
                                                                             <Button size="sm" className="ml-1"><i className="fa fa-edit"></i></Button>
                                                                         </Link>
-                                                                        <Link to='/returnForm'>
+                                                                        <Link to='/page/returnForm'>
                                                                             <Button size="sm" className="ml-1"><i className="fa fa-exchange"></i></Button>
                                                                         </Link>
                                                                     </ButtonGroup>

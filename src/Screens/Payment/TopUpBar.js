@@ -16,8 +16,8 @@ export default class TopUpBar extends Component {
 
             <div className="col top-up d-flex justify-content-end">
               <p className="pr-1 saldo-text">Rp</p>
-              <span className="pr-3">{this.props.saldo}</span>
-              <div className="pr-3" onClick={() => this.props.history()}>
+              <span>{this.props.saldo}</span>
+              <div className="history-icon" onClick={() => this.props.history()}>
                 <IconContext.Provider value={{ color: "green" }}>
                   <FaIcons.FaHistory />
                 </IconContext.Provider>

@@ -24,17 +24,6 @@ body {
   display: none;
 }
 
-.profile_name h4{
-  margin-top: 20px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  font-size: 12px;
-  font-weight: bold;
-  color: darkslategrey;
-  background-color: white;
-  text-align: center;
-}
-
 .smaller{
   font-size: smaller;
 }
@@ -47,6 +36,10 @@ body {
 @media only screen and (max-width: 768px) {
   .profile_name{
     display: inline;
+  }
+  .center{
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 
