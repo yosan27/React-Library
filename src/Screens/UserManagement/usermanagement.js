@@ -57,9 +57,11 @@ class UserManagement extends Component {
     };
 
     componentDidMount() {
-        $(document).ready(function () {
-            $('.table').DataTable();
-        });
+        $(function () {
+            $('#historyUser').DataTable({
+                responsive: true
+            });
+          });
 
         $('.img-card').hover(makeBigger, returnToOriginalSize);
         function makeBigger() {

@@ -30,9 +30,14 @@ class Catalog extends Component {
                 {"id": "2017100251", "title":"Defending Jacob", "cover":"https://www.gramedia.com/blog/content/images/2020/05/defending-jacob_gramedia.jpg", "author":"William Landay", "categories":"Juvenile Fiction", "publisher":"Gramedia Pustaka "},
     
             ],
+            showAddCategory: false,
+            showDetail: false,
+            showReview: false,
             value: 0,
             fields : [
+                
             ],
+
             errors: {},
             disableSubmitting: false
         }
@@ -82,9 +87,12 @@ class Catalog extends Component {
     
 
     componentDidMount() {
-        $(document).ready(function () {
-            $('.table').DataTable();
-        });
+        
+        $(function () {
+            $('#historyUser').DataTable({
+                responsive: true
+            });
+          });
 
     $('.img-book').hover(makeBigger, returnToOriginalSize);
       function makeBigger() {
