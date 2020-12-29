@@ -37,6 +37,10 @@ body {
   .profile_name{
     display: inline;
   }
+  .center{
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 @media only screen and (max-width: 425px) {
