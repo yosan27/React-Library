@@ -13,7 +13,7 @@ class Login extends Component {
       emailValid: false,
       passwordValid: false,
       formValid: false,
-      user : ""
+      user: ""
     }
   }
 
@@ -55,16 +55,16 @@ class Login extends Component {
   errorClass(error) {
     return (error.length === 0 ? '' : 'has-error');
   }
-      
+
   userHandling = (event) => {
     this.setState({
-        [event.target.name] : event.target.value
+      [event.target.name]: event.target.value
     })
-}
+  }
 
-loginClick = () => {
+  loginClick = () => {
     this.props.history.push(`/${this.state.user}`)
-}
+  }
 
 
   render() {
@@ -99,6 +99,12 @@ loginClick = () => {
                       onChange={this.handleUserInput} />
                   </div>
                   <i className="wrong-user"><FormErrors formErrors={this.state.formErrors} /></i>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="gridCheck1" />
+                    <label class="form-check-label grey" for="gridCheck1">
+                      Remember Me
+                                    </label>
+                  </div>
                   <div class="col-lg-5">
                     <button type="button" class="btn-login mt-3 loginBtn" disabled={!this.state.formValid} onClick={this.loginClick}>
                       Login
@@ -113,6 +119,10 @@ loginClick = () => {
                   </div>
                 </div>
               </form>
+
+              <Link to="/forgot-password">
+                <a href="forgotPass.html" class="forgot mb-5 grey">Forgot Password?</a>
+              </Link>
 
               <p class="txt-3 mg-0">By signing up, you agree to E-Perpus's</p>
               <p class="txt-3">

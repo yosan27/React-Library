@@ -38,16 +38,13 @@ class DonationUser extends Component {
                         <h4 class="col-lg-8 text-center"><i> &quot;{this.state.desc}&quot; </i><b>{this.state.author}</b></h4>
                     </div>
                     <br /><br />
-                    <div class="row justify-content-md-center">
-                        <div class="col-lg-2">
-                            <button type="button" class="btn btn-info" onClick={this.handleAjax}>Kenali lebih dalam</button>
-                        </div>
-                        <div class="col-lg-2">
-                            <Link to="/page/donation-form">
-                                <button type="button" class="btn btn-outline-info">Donasi
+                    <div class="row justify-content-md-center center">
+                        <button type="button" class="btn btn-info" onClick={this.handleAjax}>Kenali lebih dalam</button>
+                        <Link to="/page/donation-form">
+                            <button type="button" class="btn btn-outline-info">Donasi
                                 Sekarang!</button>
-                            </Link>
-                        </div>
+                        </Link>
+
                     </div>
 
                 </div>

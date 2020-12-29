@@ -1,5 +1,12 @@
 import React, { Component } from "react";
+import { Table, Form, Modal, Button } from 'react-bootstrap'
 import swal from "sweetalert";
+
+import 'datatables.net-dt/js/dataTables.dataTables'
+import 'datatables.net-dt/css/jquery.dataTables.min.css'
+import 'datatables.net-responsive-dt/js/responsive.dataTables.js'
+import 'datatables.net-responsive-dt/css/responsive.dataTables.css'
+import $ from 'jquery';
 
 class ManageDonation extends Component {
   constructor() {
@@ -63,6 +70,14 @@ class ManageDonation extends Component {
     swal("Thank You", "Book Donation Successfully Received", "success");
   };
 
+  componentDidMount() {
+    $(function () {
+      $('#bookmanagement').DataTable({
+        responsive: true
+      });
+    });
+  }
+
   render() {
     const { data } = this.state;
     return (
@@ -75,61 +90,55 @@ class ManageDonation extends Component {
                   <div className="card-header">
                     <h3 className="card-title">Donation Management</h3>
                   </div>
-                  <div className="card-body">
-                    <div className="table-responsive">
-                      <table
-                        id="history-user"
-                        className="table table-striped table-white"
-                        style={{ width: "100%" }}
-                      >
-                        <thead>
+                  <Table responsive striped id="bookmanagement" style={{ width: '100%' }}>
+                    <thead>
+                      <tr>
+                        <th>Book ID</th>
+                        <th>Book Title</th>
+                        <th>Author</th>
+                        <th>Donation Date</th>
+                        <th>Categories</th>
+                        <th>Book Photo</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.map((user) => {
+                        return (
                           <tr>
-                            <th>Book ID</th>
-                            <th>Book Title</th>
-                            <th>Author</th>
-                            <th>Donation Date</th>
-                            <th>Categories</th>
-                            <th>Book Photo</th>
-                            <th>Action</th>
+                            <td>{user.id}</td>
+                            <td>
+                              <span className="d-flex justify-content-center">
+                                <button
+                                  className="btn btn-primary"
+                                  data-toggle="modal"
+                                  data-target="#edit"
+                                >
+                                  <i className="fa fa-eye"></i>
+                                </button>
+                                <button
+                                  className="btn btn-success"
+                                  data-toggle="modal"
+                                  data-target="#delete"
+                                >
+                                  <i className="fa fa-check"></i>
+                                </button>
+                              </span>
+                            </td>
+                            <td>{user.book}</td>
+                            <td>{user.author}</td>
+                            <td>{user.borrowed}</td>
+                            <td>{user.category}</td>
+                            <td>
+                              <img height="80" src={user.image} alt="" />
+                            </td>
                           </tr>
-                        </thead>
-                        <tbody>
-                          {data.map((user) => {
-                            return (
-                              <tr>
-                                <td>{user.id}</td>
-                                <td>{user.book}</td>
-                                <td>{user.author}</td>
-                                <td>{user.borrowed}</td>
-                                <td>{user.category}</td>
-                                <td>
-                                  <img height="80" src={user.image} alt="" />
-                                </td>
-                                <td>
-                                  <span className="d-flex justify-content-center">
-                                    <button
-                                      className="btn btn-primary"
-                                      data-toggle="modal"
-                                      data-target="#edit"
-                                    >
-                                      <i className="fa fa-eye"></i>
-                                    </button>
-                                    <button
-                                      className="btn btn-success"
-                                      data-toggle="modal"
-                                      data-target="#delete"
-                                    >
-                                      <i className="fa fa-check"></i>
-                                    </button>
-                                  </span>
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
+                        )
+                      })
+                      }
+                    </tbody>
+                  </Table>
+
                 </div>
 
                 {/* MODAL */}
