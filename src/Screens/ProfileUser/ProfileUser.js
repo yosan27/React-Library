@@ -3,6 +3,18 @@ import swal from "sweetalert";
 
 export default class ProfileUser extends Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            userCode : "UU001",
+            fullName : "James Rodriguez",
+            email : "james@gmail.com",
+            profilePict : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBG685vI07-3MsuqJxjCfzIabfFJJG-8yM-ppvjjNpD5QNtWNE4A",
+            phone : "0812388291",
+            balance : "5000"
+        }
+    }
+
     updateBtn = () => {
         swal("Successfully", "Changed profile", "success");
     };
@@ -81,20 +93,20 @@ export default class ProfileUser extends Component {
                                                         {/* <form className="form-horizontal"
                                                             encType="multipart/form-data"> */}
                                                         <div className="form-group row">
+                                                            <label htmlFor="id"
+                                                                className="col-sm-2 col-form-label">User ID</label>
+                                                            <div className="col-sm-10">
+                                                                <input type="text" name="id" className="form-control"
+                                                                    id="id" placeholder="masukan id..." value={this.state.userCode}
+                                                                    readOnly />
+                                                            </div>
+                                                        </div>
+                                                        <div className="form-group row">
                                                             <label htmlFor="nama"
                                                                 className="col-sm-2 col-form-label">Name</label>
                                                             <div className="col-sm-10">
                                                                 <input type="text" className="form-control" id="nama"
-                                                                    name="nama" value="User Baginda" readOnly />
-                                                            </div>
-                                                        </div>
-                                                        <div className="form-group row">
-                                                            <label htmlFor="id"
-                                                                className="col-sm-2 col-form-label">ID</label>
-                                                            <div className="col-sm-10">
-                                                                <input type="text" name="id" className="form-control"
-                                                                    id="id" placeholder="masukan id..." value="123"
-                                                                    readOnly />
+                                                                    name="nama" value={this.state.fullName} readOnly />
                                                             </div>
                                                         </div>
                                                         <div className="form-group row">
@@ -103,33 +115,15 @@ export default class ProfileUser extends Component {
                                                             <div className="col-sm-10">
                                                                 <input type="text" name="email" className="form-control"
                                                                     id="email" placeholder="masukan email..."
-                                                                    value="user@gmail.com" />
-                                                            </div>
-                                                        </div>
-                                                        <div className="form-group row">
-                                                            <label htmlFor="username"
-                                                                className="col-sm-2 col-form-label">Username</label>
-                                                            <div className="col-sm-10">
-                                                                <input type="text" name="username"
-                                                                    className="form-control" id="username"
-                                                                    placeholder="masukan username..." value="user" />
-                                                            </div>
-                                                        </div>
-                                                        <div className="form-group row">
-                                                            <label htmlFor="alamat"
-                                                                className="col-sm-2 col-form-label">Address</label>
-                                                            <div className="col-sm-10">
-                                                                <textarea name="alamat" className="form-control"
-                                                                    id="alamat">Jl. Patriot Kp.2 No.50</textarea>
+                                                                    value={this.state.email} readOnly />
                                                             </div>
                                                         </div>
                                                         <div className=" form-group row">
-                                                            <label htmlFor="no_hp" className="col-sm-2 col-form-label">No
-                                                                    Hp</label>
+                                                            <label htmlFor="no_hp" className="col-sm-2 col-form-label">Phone</label>
                                                             <div className="col-sm-10">
                                                                 <input type="tel" name="no_hp" className="form-control"
                                                                     id="no_hp" placeholder="masukan nomer hp..."
-                                                                    pattern="[0-9]+" value="088290332283" />
+                                                                    pattern="[0-9]+" value={this.state.phone} />
                                                             </div>
                                                         </div>
                                                         <div className="form-group row">
@@ -137,7 +131,7 @@ export default class ProfileUser extends Component {
                                                                 className="col-sm-2 col-form-label">Profile
                                                                     Picture</label>
                                                             <div className="col-sm-2">
-                                                                <img src="assets/images/user.png"
+                                                                <img src={this.state.profilePict}
                                                                     className="img-thumbnail img-preview" />
                                                             </div>
                                                             <div className="col-sm-8">
