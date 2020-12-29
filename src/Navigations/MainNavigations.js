@@ -7,6 +7,7 @@ import Content from "../components/Content";
 import Footer from "../components/Footer";
 import Profile from "../Screens/Profile/Profile";
 import ProfileUser from "../Screens/ProfileUser/ProfileUser";
+import PublisherManagement from "../Screens/PublisherManagement/publishermanagement";
 import BookManagement from "../Screens/BookManagement/bookmanagement";
 import DetailPage from "../Screens/DetailPage/detailpage";
 import History from '../Screens/History/History';
@@ -54,6 +55,9 @@ class MainNavigation extends Component {
             </Route>
             <Route path="/manageBook">
               <BookManagement />
+            </Route>
+            <Route path="/managePublisher">
+              <PublisherManagement />
             </Route>
             <Route path="/manageUser">
               <UserManagement />

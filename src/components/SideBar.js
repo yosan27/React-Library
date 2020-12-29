@@ -80,6 +80,11 @@ class SideBar extends Component {
                                             Book
                                         </Link>
                                     </li>
+                                    <li className={(pathCurrent[1] === 'managePublisher' ? "current-page" : "")}>
+                                        <Link to="/managePublisher">
+                                            Publisher
+                                        </Link>
+                                    </li>
                                     <li className={(pathCurrent[1] === 'manageDonation' ? "current-page" : "")}>
                                         <Link to="/manage-donation">
                                             Donation
