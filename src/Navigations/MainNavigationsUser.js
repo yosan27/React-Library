@@ -24,6 +24,7 @@ import UserManagement from "../Screens/UserManagement/usermanagement";
 import ManageDonation from "../Screens/ManageDonation/index";
 import BookManagement from "../Screens/BookManagement/bookmanagement";
 import DetailPage from "../Screens/DetailPage/detailpage";
+import FineManagement from "../Screens/FineManagement/fineManagement";
 class MainNavigationsUser extends Component {
   render() {
     return (
@@ -106,6 +107,9 @@ class MainNavigationsUser extends Component {
             </Route>
             <Route path="/page/returnForm">
               <ReturnForm />
+            </Route>
+            <Route path="/page/manageFine">
+              <FineManagement />
             </Route>
 
             <Route path="/page/:id">
