@@ -318,7 +318,7 @@ class Catalog extends Component {
              {/* modal review */}
 
              {/* modal create review */}
-            <Modal size="lg" show={addReview} onHide={this.handleCloseReview}>
+            <Modal size="lg" show={addReview} onHide={this.handleCloseAddReview}>
                 <Modal.Header closeButton>
                     <Modal.Title> Book Review </Modal.Title>                                     
                 </Modal.Header>

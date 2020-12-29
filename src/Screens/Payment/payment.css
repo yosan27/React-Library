@@ -22,6 +22,11 @@
   font-size: 1.5em;
   color: green;
   text-align: center;
+  padding-right: 15px;
+}
+
+.history-icon{
+  padding-right: 15px;
 }
 
 .header-logo-bar .top-up p{
@@ -200,17 +205,60 @@
   }
 }
 
+@media only screen and (max-width: 375px) {
+  .top-up-btn{
+    font-size: 11px;
+  }
+
+  .header-logo-bar .top-up span{
+    font-size: 1.3em;
+    color: green;
+    text-align: center;
+    padding-right: 10px;
+  }
+  
+  .header-logo-bar .top-up p{
+    color: green;
+    font-size: 1em;
+  }
+
+  .header-logo-bar .top-up i{
+    color: green;
+    font-size: 1.3em;
+  }
+
+  .history-icon{
+    padding-right: 10px;
+  }
+}
+
 @media only screen and (max-width: 320px) {
   .header-logo-bar .logo h4{
-    font-size: 18px;
+    font-size: 16px;
+  }
+
+  .top-up-btn{
+    font-size: 9px;
+  }
+
+  .header-logo-bar .top-up span{
+    font-size: 1.1em;
+    color: green;
+    text-align: center;
+  }
+  
+  .header-logo-bar .top-up p{
+    color: green;
+    font-size: 0.8em;
+  }
+
+  .header-logo-bar .top-up i{
+    color: green;
+    font-size: 1em;
   }
 
   .saldo-text{
     margin-left: 5px;
-  }
-  
-  .top-up-btn{
-    font-size: 12px;
   }
 
   .modal .modal-debit{
