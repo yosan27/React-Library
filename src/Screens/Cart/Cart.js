@@ -10,7 +10,23 @@ import swal from "sweetalert";
 export default class Cart extends Component {
     constructor(props) {
         super(props);
-        this.state = { value: '' };
+        this.state = {
+            value: '',
+            data: [
+                {
+                    "id": "2017100251",
+                    "title": "Selena",
+                    "author": "Tere Liye",
+                    "cover": "https://www.gramedia.com/blog/content/images/2020/05/selena_gramedia.jpg",
+                },
+                {
+                    "id": "2017100244",
+                    "title": "Nebula",
+                    "author": "Tere Liye",
+                    "cover": "https://www.gramedia.com/blog/content/images/2020/05/nebula_gramedia.jpg",
+                }
+            ]
+        };
 
         this.handleChange = this.handleChange.bind(this);
     }
@@ -72,21 +88,19 @@ export default class Cart extends Component {
         document.getElementById("cartCount").innerHTML = "0";
         swal("Thank You", "Please wait for validation admin", "success");
     };
-
-    deleteBtn1 = () => {
-        document.getElementById("data1").style.display = "none";
+    
+    deleteBtn(data) {
+        document.getElementById("data"+data).style.display = "none";
         document.getElementById("cartCount").innerHTML = "1";
-    };
-    deleteBtn2 = () => {
-        document.getElementById("data2").style.display = "none";
-        document.getElementById("cartCount").innerHTML = "1";
-    };
+    }
 
     render() {
         const mystyleBtn = {
             color: "white",
             cursor: 'pointer',
         };
+
+        const { data } = this.state
 
         return (
             <div className="right_col" role="main" style={{ minHeight: '100vh' }}>
@@ -119,35 +133,33 @@ export default class Cart extends Component {
                                                 style={{ width: "100%" }}>
                                                 <thead>
                                                     <tr>
-                                                        <th>#</th>
-                                                        <th>Register</th>
-                                                        <th>Judul</th>
-                                                        <th>Pengarang</th>
-                                                        <th>Aksi</th>
+                                                        <th>ID Book</th>
+                                                        <th>Action</th>
+                                                        <th>Title</th>
+                                                        <th>Author</th>
+                                                        <th>Cover</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr id="data1">
-                                                        <td>1</td>
-                                                        <td>10100733</td>
-                                                        <td>Selena</td>
-                                                        <td>Tere Liye</td>
-                                                        <td>
-                                                            <a id="btn-data1" style={mystyleBtn} onClick={() => this.deleteBtn1()} className="btn btn-sm btn-danger"><i
-                                                                className="fa fa-trash"></i></a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr id="data2">
-                                                        <td>2</td>
-                                                        <td>10100785</td>
-                                                        <td>Nebula</td>
-                                                        <td>Tere Liye</td>
-                                                        <td>
-                                                            <a id="btn-data2" style={mystyleBtn} onClick={() => this.deleteBtn2()} className="btn btn-sm btn-danger"><i
-                                                                className="fa fa-trash"></i></a>
-                                                        </td>
-                                                    </tr>
-
+                                                    {
+                                                        data.map((book, i) => {
+                                                            return (
+                                                                <tr id={"data" + i}>
+                                                                    <td>{book.id}</td>
+                                                                    <td>
+                                                                        <a id={"btn-data" + i} style={mystyleBtn} onClick={() => this.deleteBtn(i)} className="btn btn-sm btn-danger">
+                                                                            <i className="fa fa-trash"></i>
+                                                                        </a>
+                                                                    </td>
+                                                                    <td>{book.title}</td>
+                                                                    <td>{book.author}</td>
+                                                                    <td className="text-center">
+                                                                        <img height="100" src={book.cover} />
+                                                                    </td>
+                                                                </tr>
+                                                            )
+                                                        })
+                                                    }
                                                 </tbody>
                                             </table>
                                         </div>
@@ -162,7 +174,7 @@ export default class Cart extends Component {
                                             <div className="row">
                                                 <div className="col-lg-6">
                                                     <div className="form-group">
-                                                        <label>Tanggal Pinjam</label>
+                                                        <label>Date Borrow</label>
                                                         <input required value={this.state.value} onChange={this.handleChange} id="tgl_pinjam"
                                                             type="date" name="tanggal_pinjam" className="form-control" />
                                                     </div>

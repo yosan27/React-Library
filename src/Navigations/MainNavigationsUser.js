@@ -22,8 +22,12 @@ import ExtendForm from "../Screens/Form/ExtendForm";
 import ReturnForm from "../Screens/Form/ReturnForm";
 import UserManagement from "../Screens/UserManagement/usermanagement";
 import ManageDonation from "../Screens/ManageDonation/index";
+import PublisherManagement from "../Screens/PublisherManagement/publishermanagement";
 import BookManagement from "../Screens/BookManagement/bookmanagement";
 import DetailPage from "../Screens/DetailPage/detailpage";
+import FineManagement from "../Screens/FineManagement/fineManagement";
+import AuthorManagement from "../Screens/AuthorManagement/AuthorManagement";
+
 class MainNavigationsUser extends Component {
   render() {
     return (
@@ -86,6 +90,9 @@ class MainNavigationsUser extends Component {
             <Route path="/page/profile">
               <Profile />
             </Route>
+            <Route path="/page/managePublisher">
+              <PublisherManagement />
+            </Route>
             <Route path="/page/manageBook">
               <BookManagement />
             </Route>
@@ -106,6 +113,12 @@ class MainNavigationsUser extends Component {
             </Route>
             <Route path="/page/returnForm">
               <ReturnForm />
+            </Route>
+            <Route path="/page/manageFine">
+              <FineManagement />
+            </Route>
+            <Route path="/page/manageAuthor">
+              <AuthorManagement />
             </Route>
 
             <Route path="/page/:id">

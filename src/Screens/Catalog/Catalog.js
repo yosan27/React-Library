@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { Modal, Button } from 'react-bootstrap';
+import {Card, Table, Modal, Form, Row, Col, Badge, Button } from 'react-bootstrap';
+import swal from "sweetalert";
 import Image from 'react-bootstrap/Image'
 import './Catalog.css'
 // Rating
@@ -29,9 +30,19 @@ class Catalog extends Component {
                 {"id": "2017100251", "title":"Defending Jacob", "cover":"https://www.gramedia.com/blog/content/images/2020/05/defending-jacob_gramedia.jpg", "author":"William Landay", "categories":"Juvenile Fiction", "publisher":"Gramedia Pustaka "},
     
             ],
-            value: 0
+            showAddCategory: false,
+            showDetail: false,
+            showReview: false,
+            value: 0,
+            fields : [
+                
+            ],
+
+            errors: {},
+            disableSubmitting: false
         }
-    }
+        
+    };
 
     handleShowDetail = () => {
         this.setState({ showDetail: true})
@@ -56,6 +67,19 @@ class Catalog extends Component {
     handleCloseAddReview = () => {
         this.setState({ addReview: false})
     }
+    
+    handleShowAddCategory = () => {
+        this.setState({ showAddCategory: true})
+    }
+
+    handleCloseCategory = () => {
+        this.setState({ showAddCategory: false})
+    }
+
+    handleAddCategory = () => {
+        this.setState({ showAddCategory: false})
+        swal("Success!", "Category Has Been Added", "success");
+    }
 
     rating = (event, newValue) => {
             this.setState({ value: this.state.value + 1})
@@ -63,9 +87,12 @@ class Catalog extends Component {
     
 
     componentDidMount() {
-        $(document).ready(function () {
-            $('.table').DataTable();
-        });
+        
+        $(function () {
+            $('#historyUser').DataTable({
+                responsive: true
+            });
+          });
 
     $('.img-book').hover(makeBigger, returnToOriginalSize);
       function makeBigger() {
@@ -77,7 +104,7 @@ class Catalog extends Component {
     }
 
     render(){
-        const { data, showDetail, showReview, addReview, value, setValue} = this.state,
+        const { data, showDetail, showReview, addReview, value, setValue, errors, showAddCategory, disableSubmitting, fields } = this.state,
       
         Photo = data.map(user => (
             <Image className='photoOfOrder text-center' key={user.id} src={user.cover} wrapped ui={false} style={{width:'30%',height:'auto'}}/>
@@ -88,49 +115,55 @@ class Catalog extends Component {
                     <div className="container-fluid">
                         <div className="row">
                             <div className="col-12 col-lg-12">
-                                <div className="card">
-                                    <div className="card-header">
-                                        <h3 className="card-title">Book Catalog</h3>
+                                <Card>
+                                    <Card.Header>
+                                        <h3>Book Catalog</h3>
+                                    </Card.Header>
+                                    <Card.Body>
+
+                                    <div class="">
+                                        <Button className="mb-5" variant="success" onClick={this.handleShowAddCategory}>
+                                            <i class="fa fa-plus"></i> Add Category
+                                        </Button>
                                     </div>
-                                    <div className="card-body">
-                                        <div className="table-responsive">
-                                            <table id="history-user" className="table table-striped table-white table-bordered dt-" style={{ width: '100%' }}>
-                                                <thead className='thead-dark'>
-                                                    <tr>
-                                                        <th>Book ID</th>
-                                                        <th>Book Title</th>                         
+                                        <Table responsive striped id="historyUser" style={{ width: '100%' }}>
+                                            <thead>
+                                                <tr>
+                                                <th>Book ID</th>
+                                                        <th>Book Title</th>    
+                                                        <th>Action</th>                     
                                                         <th>Book Cover</th>
                                                         <th>Author</th>
                                                         <th>Categories</th>
                                                         <th>Publisher</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
+                                                        
+                                                </tr>
+                                            </thead>
+                                            <tbody>
                                                     {
                                                         data.map(user => {
                                                             return (
                                                                 <tr>
                                                                     <td>{user.id}</td>
-                                                                    <td>{user.title}</td>
-                                                                    <td className="text-center"><Image className='photoOfOrder text-center img-book' key={user.id} src={user.cover} wrapped ui={false} style={{width:'30%',height:'auto'}} /></td>
-                                                                    <td>{user.author}</td>
-                                                                    <td>{user.categories}</td>
-                                                                    <td>{user.publisher}</td>
                                                                     <td>
                                                                         <span className="d-flex justify-content-center" data-toggle="tooltip" title="detail">
                                                                             <button className="btn btn-primary" data-toggle="modal" data-target="#detail" onClick={this.handleShowDetail}><i className="fa fa-info-circle"></i></button>
                                                                         </span>
                                                                     </td>
+                                                                    <td>{user.title}</td>
+                                                                    <td className="text-center"><Image className='photoOfOrder text-center img-book' key={user.id} src={user.cover} wrapped ui={false} style={{width:'30%',height:'auto'}} /></td>
+                                                                    <td>{user.author}</td>
+                                                                    <td>{user.categories}</td>
+                                                                    <td>{user.publisher}</td>
+                                                                    
                                                                 </tr>
                                                             )
                                                         })
                                                     }
                                                 </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
+                                        </Table>
+                                    </Card.Body>
+                                </Card>
                             </div>
                         </div>
                     </div >
@@ -285,7 +318,7 @@ class Catalog extends Component {
              {/* modal review */}
 
              {/* modal create review */}
-            <Modal size="lg" show={addReview} onHide={this.handleCloseReview}>
+            <Modal size="lg" show={addReview} onHide={this.handleCloseAddReview}>
                 <Modal.Header closeButton>
                     <Modal.Title> Book Review </Modal.Title>                                     
                 </Modal.Header>
@@ -327,6 +360,69 @@ class Catalog extends Component {
                 </Modal.Footer>
             </Modal>                                         
              {/* modal create review */}
+
+             {/* modal add */}
+             <Modal size="lg" show={showAddCategory} onHide={this.handleCloseCategory}>
+                      <Modal.Header closeButton>
+                        <Modal.Title>Add Book Data</Modal.Title>
+                      </Modal.Header>
+                      <Modal.Body>
+                        <div class='container'>
+                          <div class="modal-body">
+                            <form
+                              noValidate
+                              autoComplete="off"
+                            >
+                              <div class="form-group row">
+                                <label for="addCategoryCode" class="col-sm-2 col-form-label">Category Code</label>
+                                <div class="col-sm-10">
+                                  <input 
+                                    type="text" 
+                                    name="categoryCode"
+                                    class="form-control" 
+                                    id="addCategoryCode" 
+                                    placeholder="Category Code..." 
+                                    value={fields.categoryCode} 
+                                    data-attribute-name="Category Code"
+                                    data-async
+                                  />
+                                  <label className="error" style={{color: "red"}}>
+                                    {errors.categoryCode ? errors.categoryCode : ""}
+                                  </label>
+                                </div>
+                              </div>
+                              <div class="form-group row">
+                                <label for="addCategoryCode" class="col-sm-2 col-form-label">Category Name</label>
+                                <div class="col-sm-10">
+                                  <input 
+                                    type="text" 
+                                    name="categoryName"
+                                    class="form-control" 
+                                    id="addCategoryCode" 
+                                    placeholder="Category Name..." 
+                                    value={fields.categoryName} 
+                                    data-attribute-name="Category Name"
+                                    data-async
+                                  />
+                                  <label className="error" style={{color: "red"}}>
+                                    {errors.categoryName ? errors.categoryName : ""}
+                                  </label>
+                                </div>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </Modal.Body>
+                      <Modal.Footer>
+                        <Button className="btn btn-secondary" variant="secondary" onClick={this.handleCloseCategory}>
+                          <i class="fa fa-times-circle"></i> Close
+                        </Button>
+                        <Button id="buttonAddBook" disabled={disableSubmitting} type="submit" className="btn btn-success" variant="primary" onClick={this.handleAddCategory}>
+                          <i class="fa fa-plus"></i> Add
+                        </Button>
+                      </Modal.Footer>
+                    </Modal>
+                    {/* modal add */}
 
             </div >                
         )

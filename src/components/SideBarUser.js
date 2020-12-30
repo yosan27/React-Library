@@ -271,12 +271,15 @@ class SideBarUser extends Component {
                     >
                       <Link to="/page/manageUser">User</Link>
                     </li>
-                    <li
-                      className={
-                        pathCurrent[1] === "manageBook" ? "current-page" : ""
-                      }
-                    >
-                      <Link to="/page/manageBook">Book</Link>
+                    <li className={(pathCurrent[1] === 'managePublisher' ? "current-page" : "")}>
+                        <Link to="/page/managePublisher">
+                            Publisher
+                        </Link>
+                    </li>
+                    <li className={pathCurrent[1] === "manageBook" ? "current-page" : ""}>
+                      <Link to="/page/manageBook">
+                        Book
+                      </Link>
                     </li>
                     <li
                       className={
@@ -286,6 +289,20 @@ class SideBarUser extends Component {
                       }
                     >
                       <Link to="/page/manage-donation">Donation</Link>
+                    </li>
+                    <li
+                      className={
+                        pathCurrent[1] === "manageFine" ? "current-page" : ""
+                      }
+                    >
+                      <Link to="/page/manageFine">Fine</Link>
+                    </li>
+                    <li
+                      className={
+                        pathCurrent[1] === "manageAuthor" ? "current-page" : ""
+                      }
+                    >
+                      <Link to="/page/manageAuthor">Author</Link>
                     </li>
                   </ul>
                 </li>
