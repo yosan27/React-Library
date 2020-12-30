@@ -55,6 +55,16 @@ class Login extends Component {
   errorClass(error) {
     return (error.length === 0 ? '' : 'has-error');
   }
+      
+  userHandling = (event) => {
+    this.setState({
+        [event.target.name] : event.target.value
+    })
+}
+
+loginClick = () => {
+    this.props.history.push(`/${this.state.user}`)
+}
 
   userHandling = (event) => {
     this.setState({
