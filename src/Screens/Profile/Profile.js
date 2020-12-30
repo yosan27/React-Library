@@ -1,6 +1,23 @@
 import React, { Component } from 'react';
+import swal from "sweetalert";
 
 export default class Profile extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            userCode : "UA001",
+            fullName : "Admin",
+            email : "admin@gmail.com",
+            profilePict : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBG685vI07-3MsuqJxjCfzIabfFJJG-8yM-ppvjjNpD5QNtWNE4A",
+            phone : "0812388291"
+        }
+    }
+
+    updateBtn = () => {
+        swal("Successfully", "Changed profile", "success");
+    };
+
     cekPass1 = (e) => {
         // alert(e);
         if (document.getElementById("password2").value === e) {
@@ -77,21 +94,21 @@ export default class Profile extends Component {
                                                         role="tabpanel" aria-labelledby="vert-tabs-home-tab">
                                                         <form className="form-horizontal" action="" method="post"
                                                             encType="multipart/form-data">
+                                                           <div className="form-group row">
+                                                                <label htmlFor="id"
+                                                                    className="col-sm-2 col-form-label">User ID</label>
+                                                                <div className="col-sm-10">
+                                                                    <input type="text" name="id" className="form-control"
+                                                                        id="id" placeholder="masukan id..." value={this.state.userCode}
+                                                                        readOnly />
+                                                                </div>
+                                                            </div>
                                                             <div className="form-group row">
                                                                 <label htmlFor="nama"
                                                                     className="col-sm-2 col-form-label">Name</label>
                                                                 <div className="col-sm-10">
                                                                     <input type="text" className="form-control" id="nama"
-                                                                        name="nama" value="Admin Baginda" readOnly />
-                                                                </div>
-                                                            </div>
-                                                            <div className="form-group row">
-                                                                <label htmlFor="id"
-                                                                    className="col-sm-2 col-form-label">ID</label>
-                                                                <div className="col-sm-10">
-                                                                    <input type="text" name="id" className="form-control"
-                                                                        id="id" placeholder="masukan id..." value="123"
-                                                                        readOnly />
+                                                                        name="nama" value={this.state.fullName} readOnly />
                                                                 </div>
                                                             </div>
                                                             <div className="form-group row">
@@ -100,7 +117,7 @@ export default class Profile extends Component {
                                                                 <div className="col-sm-10">
                                                                     <input type="text" name="email" className="form-control"
                                                                         id="email" placeholder="masukan email..."
-                                                                        value="admin@gmail.com" />
+                                                                        value={this.state.email} readOnly />
                                                                 </div>
                                                             </div>
                                                             <div className="form-group row">
@@ -109,27 +126,26 @@ export default class Profile extends Component {
                                                                 <div className="col-sm-10">
                                                                     <input type="text" name="username"
                                                                         className="form-control" id="username"
-                                                                        placeholder="masukan username..." value="admin" />
+                                                                        placeholder="masukan username..." value="admin" readOnly />
                                                                 </div>
                                                             </div>
                                                             <div className="form-group row">
                                                                 <label htmlFor="inputEmail3"
                                                                     className="col-sm-2 col-form-label">Profile
-                                                                    Picture</label>
+                                                                        Picture</label>
                                                                 <div className="col-sm-2">
-                                                                    <img src="assets/images/user.png"
+                                                                    <img src={this.state.profilePict}
                                                                         className="img-thumbnail img-preview" />
                                                                 </div>
                                                                 <div className="col-sm-8">
                                                                     <div className="custom-file">
-                                                                        <input id="foto" name="foto"
-                                                                            onChange={(e) => this.previewImg(e.target.value)} type="file"
+                                                                        <input id="foto" name="foto" onChange={(e) => this.previewImg(e.target.value)} type="file"
                                                                             className="custom-file-input" />
                                                                         <label className="custom-file-label"
                                                                             htmlFor="foto">Choose file</label>
                                                                     </div>
                                                                     <small>*format gambar berupa .jpg dengan ukuran
-                                                                        maksimal 1MB</small>
+                                                                            maksimal 1MB</small>
                                                                 </div>
                                                             </div>
                                                             <br />
