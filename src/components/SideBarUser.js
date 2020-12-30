@@ -294,6 +294,13 @@ class SideBarUser extends Component {
                     >
                       <Link to="/page/manageFine">Fine Management</Link>
                     </li>
+                    <li
+                      className={
+                        pathCurrent[1] === "manageAuthor" ? "current-page" : ""
+                      }
+                    >
+                      <Link to="/page/manageAuthor">Author</Link>
+                    </li>
                   </ul>
                 </li>
               </ul>
