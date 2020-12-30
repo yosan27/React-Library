@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Form, Modal, Button } from 'react-bootstrap';
+import { Table, Modal, Button } from 'react-bootstrap';
 import swal from "sweetalert";
 import ReactFormInputValidation from "react-form-input-validation";
 //Datatable Modules
@@ -123,7 +123,8 @@ class BookManagement extends Component {
         isbn: "",
         weight: "",
         width: "",
-        isPopular: false
+        isPopular: false,
+        baseImage: ""
       },
       errors: {},
       disableSubmitting: false
@@ -145,6 +146,7 @@ class BookManagement extends Component {
         weight: "required",
         width: "required",
         isPopular: false,
+        baseImage: ""
         // name: "required",
         // email: "required|email",
         // phone_number: "required|numeric|digits_between:10,12",
@@ -172,6 +174,20 @@ class BookManagement extends Component {
     });
   }
   
+  // pickImage = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file){
+  //     const reader = new FileReader();
+  //     reader.onload = this._handleReaderLoaded.bind(this)
+  //     reader.readAsDataURL(file)
+  //   }
+  // }
+
+  // _handleReaderLoaded = (e) => {
+  //   let binaryStr = e.target.result
+  //   this.setState({ baseImage: (binaryStr)})
+  //   console.log(this.state.baseImage)
+  // }
 
   handleAddBook = () => {
     this.setState({ showAdd: false })
@@ -207,7 +223,7 @@ class BookManagement extends Component {
   
 
   render() {
-    const { data, showAdd, showEdit, showDelete, fields, errors, disableSubmitting } = this.state;
+    const { data, showAdd, showEdit, showDelete, fields, errors, disableSubmitting, baseImage } = this.state;
    
     return (
       // page content
@@ -234,12 +250,12 @@ class BookManagement extends Component {
                       <thead>
                           <tr>
                             <th>Book ID</th>
+                            <th>Action</th>
                             <th>Book Title</th>
                             <th>Author</th>
                             <th>Published Date</th>
                             <th>Categories</th>
                             <th>Book Cover</th>
-                            <th>Action</th>
                           </tr>
                       </thead>
                       <tbody>
@@ -248,13 +264,6 @@ class BookManagement extends Component {
                           return (
                               <tr key={index}>
                                 <td>{book.bookID}</td>
-                                <td>{book.bookTitle}</td>
-                                <td>{book.author}</td>
-                                <td>{book.publishedDate}</td>
-                                <td>{book.categories}</td>
-                                <td class="text-center">
-                                  <img height="80" src={book.bookCover} alt="bookimage"/>
-                                </td>
                                 <td>
                                   <div class='d-flex justify-content-around mt-4' style={{ border: 'none' }}>
                                     <button class="btn btn-primary" data-toggle="modal" data-target="#edit" onClick={this.handleShowEdit}><i
@@ -262,6 +271,13 @@ class BookManagement extends Component {
                                     <button class="btn btn-danger" data-toggle="modal" data-target="#delete" onClick={this.handleShowDelete}><i
                                       class="fa fa-trash"></i></button>
                                   </div>
+                                </td>
+                                <td>{book.bookTitle}</td>
+                                <td>{book.author}</td>
+                                <td>{book.publishedDate}</td>
+                                <td>{book.categories}</td>
+                                <td class="text-center">
+                                  <img height="80" src={book.bookCover} alt="bookimage"/>
                                 </td>
                               </tr>
                           )
@@ -283,26 +299,6 @@ class BookManagement extends Component {
                               autoComplete="off"
                               onSubmit={this.form.handleSubmit}
                             >
-                              <div class="form-group row">
-                                <label for="addImage" class="col-sm-2 col-form-label">Url Image</label>
-                                <div class="col-sm-10">
-                                  <input 
-                                    type="text" 
-                                    name="urlImage"
-                                    class="form-control" 
-                                    id="addImage" 
-                                    placeholder="Url Image..." 
-                                    onBlur={this.form.handleBlurEvent}
-                                    onChange={this.form.handleChangeEvent}
-                                    value={fields.urlImage} 
-                                    data-attribute-name="Url Image"
-                                    data-async
-                                  />
-                                  <label className="error" style={{color: "red"}}>
-                                    {errors.urlImage ? errors.urlImage : ""}
-                                  </label>
-                                </div>
-                              </div>
                               <div class="form-group row">
                                 <label for="addTitle" class="col-sm-2 col-form-label">Title</label>
                                 <div class="col-sm-10">
@@ -380,7 +376,26 @@ class BookManagement extends Component {
                                   </label>
                                 </div>
                               </div>
-                              <hr />
+                              <div class="form-group row">
+                                <label for="addImage" class="col-sm-2 col-form-label">Url Image</label>
+                                <div class="col-sm-10">
+                                  <input 
+                                    type="text" 
+                                    name="urlImage"
+                                    class="form-control" 
+                                    id="addImage" 
+                                    placeholder="Url Image..." 
+                                    onBlur={this.form.handleBlurEvent}
+                                    onChange={this.form.handleChangeEvent}
+                                    value={fields.urlImage} 
+                                    data-attribute-name="Url Image"
+                                    data-async
+                                  />
+                                  <label className="error" style={{color: "red"}}>
+                                    {errors.urlImage ? errors.urlImage : ""}
+                                  </label>
+                                </div>
+                              </div>
                               <div class="form-group row">
                                 <label for="addDesc" class="col-sm-2 col-form-label">Description</label>
                                 <div class="col-sm-10">
@@ -401,6 +416,7 @@ class BookManagement extends Component {
                                   </label>
                                 </div>
                               </div>
+                              <hr />
                               <div class="form-group row">
                                 <label for="addPages" class="col-sm-2 col-form-label">Number of Pages</label>
                                 <div class="col-sm-4">
@@ -458,27 +474,7 @@ class BookManagement extends Component {
                                     {errors.publishedDate ? errors.publishedDate : ""}
                                   </label>
                                 </div>
-                                <label for="addWeight" class="col-sm-2 col-form-label">Weight</label>
-                                <div class="col-sm-4">
-                                  <input 
-                                  type="text" 
-                                  name="weight"
-                                  class="form-control" 
-                                  id="addWeight" 
-                                  placeholder="Weight..." 
-                                  onBlur={this.form.handleBlurEvent}
-                                  onChange={this.form.handleChangeEvent}
-                                  value={fields.weight} 
-                                  data-attribute-name="Weight"
-                                  data-async
-                                  />
-                                  <label className="error" style={{color: "red"}}>
-                                    {errors.weight ? errors.weight : ""}
-                                  </label>
-                                </div>
-                              </div>
-                              <div class="form-group row">
-                                <label for="addLang" class="col-sm-2 col-form-label">Language</label>
+                                <label for="addWeight" class="col-sm-2 col-form-label">Language</label>
                                 <div class="col-sm-4">
                                   <input 
                                   type="text" 
@@ -496,61 +492,34 @@ class BookManagement extends Component {
                                     {errors.language ? errors.language : ""}
                                   </label>
                                 </div>
-                                <label for="addWidth" class="col-sm-2 col-form-label">Width</label>
-                                <div class="col-sm-4">
-                                  <input 
-                                  type="text" 
-                                  name="width"
-                                  class="form-control" 
-                                  id="addWidth" 
-                                  placeholder="Width..." 
-                                  onBlur={this.form.handleBlurEvent}
-                                  onChange={this.form.handleChangeEvent}
-                                  value={fields.width} 
-                                  data-attribute-name="Width"
-                                  data-async
-                                  />
-                                  <label className="error" style={{color: "red"}}>
-                                    {errors.width ? errors.width : ""}
-                                  </label>
-                                </div>
                               </div>
-                              <div class="form-group row">
-                                <label for="addLength" class="col-sm-2 col-form-label">Length</label>
+                              {/* <div class="form-group row">
+                                <label for="addLang" class="col-sm-2 col-form-label">Cover</label>
                                 <div class="col-sm-4">
-                                  <input 
-                                  type="text" 
-                                  name="length"
-                                  class="form-control" 
-                                  id="addLength" 
-                                  placeholder="Length..." 
-                                  onBlur={this.form.handleBlurEvent}
-                                  onChange={this.form.handleChangeEvent}
-                                  value={fields.length} 
-                                  data-attribute-name="Length"
-                                  data-async
-                                  />
-                                  <label className="error" style={{color: "red"}}>
-                                    {errors.length ? errors.length : ""}
-                                  </label>
-                                </div>
-                                <label for="addIsPopular" class="col-sm-2 col-form-label">Popular</label>
-                                <div class="col-sm-4 d-flex align-items-center">
-                                  <Form.Group controlId="formBasicCheckbox">
-                                    <Form.Check 
-                                    type="checkbox" 
-                                    name="isPopular"
-                                    id="addIsPopular"
-                                    label="Set as popular" 
+                                <input 
+                                    style={{display:'none'}}
+                                    type="file" 
+                                    name="urlImage"
+                                    id="addImage" 
                                     onBlur={this.form.handleBlurEvent}
-                                    onChange={this.form.handleChangeEvent}
-                                    value={fields.isPopular} 
-                                    data-attribute-name="Popular"
+                                    // onChange={this.form.handleChangeEvent}
+                                    value={fields.urlImage} 
+                                    data-attribute-name="Url Image"
                                     data-async
-                                    />
-                                  </Form.Group>
-                                </div>
-                              </div>
+                                    onChange={(e) => {
+                                      this.pickImage(e);
+                                    }}
+                                    accept=".jpeg, .png, .jpg"
+                                    ref={fileInput => this.fileInput = fileInput}
+                                  />
+                                  <Button onClick={() => this.fileInput.click()}>Pick Image</Button>
+                                  <br/><br/>
+                                  <img src={baseImage?baseImage:"assets/images/cover.png"} height="80vh" alt = 'cover'/> */}
+                                  {/* <label className="error" style={{color: "red"}}>
+                                    {errors.urlImage ? errors.urlImage : ""}
+                                  </label> */}
+                                {/* </div>
+                              </div> */}
                             </form>
                           </div>
                         </div>
