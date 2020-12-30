@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Table, Modal, Button } from 'react-bootstrap';
 import swal from "sweetalert";
-// import ReactFormInputValidation from "react-form-input-validation";
 //Datatable Modules
 import 'datatables.net-dt/js/dataTables.dataTables'
 import 'datatables.net-dt/css/jquery.dataTables.min.css'
@@ -87,10 +86,6 @@ class PublisherManagement extends Component {
 
   handleSaveEdit = () => {
     this.setState({ showEdit: false })
-    console.log("publisher id : "+this.state.publisherId);
-    console.log("pub name : "+this.state.publisherName);
-    console.log("pub address : "+this.state.address);
-    console.log("pub address : "+this.state.address);
     API.put(
       `api/publisher/${this.state.publisherId}`,
       {
@@ -128,18 +123,12 @@ class PublisherManagement extends Component {
   }
 
   //util
-  // handleChange = (event) => {
-  //   this.setState({
-  //     [event.target.name]: event.target.value,
-  //   });
-  // };
-
   handleCloseModal = () => {
     this.setState({ showAdd: false, showEdit: false, showDelete: false })
   }
 
   render() {
-    const { showAdd, showEdit, showDelete, fields, tabledata, disableSubmitting, publisherName, address } = this.state;
+    const { showAdd, showEdit, showDelete, tabledata, disableSubmitting, publisherName, address } = this.state;
    
     return (
       // page content
