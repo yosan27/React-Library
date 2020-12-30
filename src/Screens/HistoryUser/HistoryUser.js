@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Card, Table, Modal, Form, Row, Col, Badge, Button } from 'react-bootstrap'
+import { Badge } from 'react-bootstrap'
 
 import 'datatables.net-dt/js/dataTables.dataTables'
 import 'datatables.net-dt/css/jquery.dataTables.min.css'
@@ -13,25 +13,23 @@ class HistoryUser extends Component {
         super()
         this.state = {
             data: [
-                { "id": "202010052078", "book": "Unbranding", "borrowed": "2020/10/05", "due": "2020/10/11", "returned": "2020/10/09", "status": "Returned", "badge": "success" },
-                { "id": "202010052079", "book": "Koala Kumal", "borrowed": "2020/10/05", "due": "2020/10/11", "returned": "2020/10/09", "status": "Returned", "badge": "success" },
-                { "id": "202010082453", "book": "Laut Bercerita", "borrowed": "2020/10/08", "due": "2020/10/14", "returned": "2020/10/14", "status": "Returned", "badge": "success" },
-                { "id": "202010092605", "book": "Pulang", "borrowed": "2020/10/09", "due": "2020/10/15", "returned": "2020/10/14", "status": "Returned", "badge": "success" },
-                { "id": "202010092606", "book": "Becoming", "borrowed": "2020/10/09", "due": "2020/10/15", "returned": "2020/10/16", "status": "Returned", "badge": "success" },
-                { "id": "202010163390", "book": "The Book You Wish Your Parents Had Read", "borrowed": "2020/10/16", "due": "2020/10/22", "returned": "2020/10/21", "status": "Returned", "badge": "success" },
-                { "id": "202010305132", "book": "Nanti Kita Cerita Tentang Hari Ini", "borrowed": "2020/10/30", "due": "2020/11/05", "returned": "2020/11/04", "status": "Returned", "badge": "success" },
-                { "id": "202010305133", "book": "Book of Invisible Question", "borrowed": "2020/10/30", "due": "2020/11/05", "returned": "2020/11/04", "status": "Returned", "badge": "success" },
-                { "id": "202011065898", "book": "Atomic Habits", "borrowed": "2020/11/06", "due": "2020/11/12", "returned": "2020/11/13", "status": "Returned", "badge": "success" },
-                { "id": "202011126431", "book": "Hujan", "borrowed": "2020/11/12", "due": "2020/11/18", "returned": "", "status": "Overdue", "badge": "danger" },
-                { "id": "202011166876", "book": "Dilan 1990", "borrowed": "2020/11/16", "due": "2020/11/22", "returned": "", "status": "Borrowed", "badge": "warning" },
-                { "id": "202011166877", "book": "Dilan 1991", "borrowed": "2020/11/16", "due": "2020/11/22", "returned": "", "status": "Borrowed", "badge": "warning" }
+                { "rentCode": "R001", "book": "Unbranding", "borrowed": "2020/10/05", "due": "2020/10/11", "returned": "2020/10/09", "status": "Returned", "badge": "success" },
+                { "rentCode": "R002", "book": "Koala Kumal", "borrowed": "2020/10/05", "due": "2020/10/11", "returned": "2020/10/09", "status": "Returned", "badge": "success" },
+                { "rentCode": "R003", "book": "Laut Bercerita", "borrowed": "2020/10/08", "due": "2020/10/14", "returned": "2020/10/14", "status": "Returned", "badge": "success" },
+                { "rentCode": "R004", "book": "Pulang", "borrowed": "2020/10/09", "due": "2020/10/15", "returned": "2020/10/14", "status": "Returned", "badge": "success" },
+                { "rentCode": "R005", "book": "Becoming", "borrowed": "2020/10/09", "due": "2020/10/15", "returned": "2020/10/16", "status": "Returned", "badge": "success" },
+                { "rentCode": "R006", "book": "The Book You Wish Your Parents Had Read", "borrowed": "2020/10/16", "due": "2020/10/22", "returned": "2020/10/21", "status": "Returned", "badge": "success" },
+                { "rentCode": "R007", "book": "Nanti Kita Cerita Tentang Hari Ini", "borrowed": "2020/10/30", "due": "2020/11/05", "returned": "2020/11/04", "status": "Returned", "badge": "success" },
+                { "rentCode": "R008", "book": "Book of Invisible Question", "borrowed": "2020/10/30", "due": "2020/11/05", "returned": "2020/11/04", "status": "Returned", "badge": "success" },
+                { "rentCode": "R009", "book": "Atomic Habits", "borrowed": "2020/11/06", "due": "2020/11/12", "returned": "2020/11/13", "status": "Returned", "badge": "success" },
+                { "rentCode": "R010", "book": "Hujan", "borrowed": "2020/11/12", "due": "2020/11/18", "returned": "", "status": "Overdue", "badge": "danger" },
+                { "rentCode": "R011", "book": "Dilan 1990", "borrowed": "2020/11/16", "due": "2020/11/22", "returned": "", "status": "Borrowed", "badge": "warning" },
+                { "rentCode": "R012", "book": "Dilan 1991", "borrowed": "2020/11/16", "due": "2020/11/22", "returned": "", "status": "Borrowed", "badge": "warning" }
             ],
-            showInfo: false
         }
     }
 
     componentDidMount() {
-        // Initialize datatable
         $(function () {
             $('#historyUser').DataTable({
                 responsive: true
@@ -39,31 +37,23 @@ class HistoryUser extends Component {
         });
     }
 
-    handleShowInfo = () => {
-        this.setState({ showInfo: true })
-    }
-
-    handleCloseInfo = () => {
-        this.setState({ showInfo: false })
-    }
-
     render() {
-        const { data, showInfo } = this.state
+        const { data } = this.state
         return (
             <div className="right_col" role="main" style={{ minHeight: '100vh' }}>
                 <section className="mt-5 pt-5">
                     <div className="container-fluid">
                         <div className="row">
                             <div className="col-12 col-lg-12">
-                                <Card>
-                                    <Card.Header>
-                                        <h3>Borrowed and Returned</h3>
-                                    </Card.Header>
-                                    <Card.Body>
-                                        <Table responsive striped id="historyUser" style={{ width: '100%' }}>
+                                <div className="card">
+                                    <div className="card-header">
+                                        <h3 className="card-title">Borrowed and Returned</h3>
+                                    </div>
+                                    <div className="card-body">
+                                        <table id="historyUser" className="table table-striped" style={{ width: '100%' }}>
                                             <thead>
                                                 <tr>
-                                                    <th>Transaction ID</th>
+                                                    <th>Rent Code</th>
                                                     <th>Action</th>
                                                     <th>Book Title</th>
                                                     <th>Date Borrowed</th>
@@ -74,14 +64,14 @@ class HistoryUser extends Component {
                                             </thead>
                                             <tbody>
                                                 {
-                                                    data.map(user => {
+                                                    data.map((user, index) => {
                                                         return (
-                                                            <tr>
-                                                                <td>{user.id}</td>
+                                                            <tr key={index}>
+                                                                <td>{user.rentCode}</td>
                                                                 <td>
-                                                                    <Button variant="primary" size="sm" data-toggle="modal" onClick={this.handleShowInfo}>
+                                                                    <button className="btn btn-primary btn-sm rounded-sm mr-1" data-toggle="modal" data-target="#info">
                                                                         <i className="fa fa-info-circle"></i>
-                                                                    </Button>
+                                                                    </button>
                                                                 </td>
                                                                 <td>{user.book}</td>
                                                                 <td>{user.borrowed}</td>
@@ -93,112 +83,105 @@ class HistoryUser extends Component {
                                                     })
                                                 }
                                             </tbody>
-                                        </Table>
-                                    </Card.Body>
-                                </Card>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div >
                 </section >
 
-                <Modal size="lg" show={showInfo} onHide={this.handleCloseInfo}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Information</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Form>
-                            <Form.Group as={Row} controlId="transactionID">
-                                <Form.Label column sm="3">
-                                    Transaction ID
-                                </Form.Label>
-                                <Col sm="9">
-                                    <Form.Control plaintext readOnly defaultValue="202011202011" />
-                                </Col>
-                            </Form.Group>
-                            <Form.Group as={Row} controlId="borrowerName">
-                                <Form.Label column sm="3">
-                                    Borrower Name
-                                </Form.Label>
-                                <Col sm="9">
-                                    <Form.Control plaintext readOnly defaultValue="User" />
-                                </Col>
-                            </Form.Group>
-                            <Form.Group as={Row} controlId="bookTitle">
-                                <Form.Label column sm="3">
-                                    Book Title
-                                </Form.Label>
-                                <Col sm="9">
-                                    <Form.Control plaintext readOnly defaultValue="Dilan 1990" />
-                                </Col>
-                            </Form.Group>
-                            <hr />
-                            <Form.Group as={Row} controlId="dateBorrowed">
-                                <Form.Label column sm="3">
-                                    Date Borrowed
-                                </Form.Label>
-                                <Col sm="9">
-                                    <Form.Control plaintext readOnly defaultValue="11/11/2020" />
-                                </Col>
-                            </Form.Group>
-                            <Form.Group as={Row} controlId="dueDate">
-                                <Form.Label column sm="3">
-                                    Due Date
-                                </Form.Label>
-                                <Col sm="9">
-                                    <Form.Control plaintext readOnly defaultValue="11/18/2020" />
-                                </Col>
-                            </Form.Group>
-                            <Form.Group as={Row} controlId="dateReturned">
-                                <Form.Label column sm="3">
-                                    Date Returned
-                                </Form.Label>
-                                <Col sm="9">
-                                    <Form.Control plaintext readOnly defaultValue="11/18/2020" />
-                                </Col>
-                            </Form.Group>
-                            <hr />
-                            <Form.Group as={Row} controlId="late">
-                                <Form.Label column sm="3">
-                                    Late
-                                </Form.Label>
-                                <Col sm="9">
-                                    <Form.Control plaintext readOnly defaultValue="Rp 0" />
-                                    <Form.Text className="text-muted desc">0 day(s) late</Form.Text>
-                                </Col>
-                            </Form.Group>
-                            <Form.Group as={Row} controlId="damage">
-                                <Form.Label column sm="3">
-                                    Damage
-                                </Form.Label>
-                                <Col sm="9">
-                                    <Form.Control plaintext readOnly defaultValue="Rp 0" />
-                                    <Form.Text className="text-muted desc">No damage</Form.Text>
-                                </Col>
-                            </Form.Group>
-                            <Form.Group as={Row} controlId="totalfine">
-                                <Form.Label column sm="3">
-                                    Total Fine
-                                </Form.Label>
-                                <Col sm="9">
-                                    <Form.Control plaintext readOnly defaultValue="Rp 0" />
-                                </Col>
-                            </Form.Group>
-                            <Form.Group as={Row} controlId="status">
-                                <Form.Label column sm="3">
-                                    Status
-                                </Form.Label>
-                                <Col sm="9">
-                                    <Badge variant="success">Returned</Badge>
-                                </Col>
-                            </Form.Group>
-                        </Form>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={this.handleCloseInfo}>
-                            Close
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
+                {/* MODAL INFO */}
+                <div className="modal fade" id="info" tabIndex="-1" aria-labelledby="infoLabel" aria-hidden="true">
+                    <div className="modal-dialog modal-lg">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title" id="infoLabel">Info</h5>
+                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <form>
+                                    <div className="form-group row">
+                                        <label className="col-sm-3 col-form-label">Rent Code</label>
+                                        <div className="col-sm-9">
+                                            <input type="text" readOnly className="form-control-plaintext" id="rentCode" defaultValue="R001" />
+                                        </div>
+                                    </div>
+                                    <div className="form-group row">
+                                        <label className="col-sm-3 col-form-label">Borrower Name</label>
+                                        <div className="col-sm-9">
+                                            <input type="text" readOnly className="form-control-plaintext" id="borrowerName" defaultValue="User" />
+                                        </div>
+                                    </div>
+                                    <div className="form-group row">
+                                        <label className="col-sm-3 col-form-label">Book Title</label>
+                                        <div className="col-sm-9">
+                                            <input type="text" readOnly className="form-control-plaintext" id="bookTitle" defaultValue="Dilan 1990" />
+                                        </div>
+                                    </div>
+                                    <hr></hr>
+                                    <div className="form-group row">
+                                        <label className="col-sm-3 col-form-label">Date Borrowed</label>
+                                        <div className="col-sm-3">
+                                            <div className="input-group date" id="dateBorrowed">
+                                                <input type="text" className="form-control" defaultValue="11/11/2020" disabled />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="form-group row">
+                                        <label className="col-sm-3 col-form-label">Due Date</label>
+                                        <div className="col-sm-3">
+                                            <div className="input-group date" id="dueDate">
+                                                <input type="text" className="form-control" defaultValue="11/18/2020" disabled />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="form-group row">
+                                        <label className="col-sm-3 col-form-label">Date Returned</label>
+                                        <div className="col-sm-3">
+                                            <div className="input-group date" id="dateReturned">
+                                                <input type="text" className="form-control" defaultValue="11/18/2020" disabled />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr></hr>
+                                    <div className="form-group row pb-1">
+                                        <label className="col-sm-3 col-form-label">Late</label>
+                                        <div className="col-sm-9">
+                                            <input type="text" readOnly className="form-control-plaintext pb-0" id="late" defaultValue="Rp 0" />
+                                            <small className="form-text text-muted">0 day(s) late</small>
+                                        </div>
+                                    </div>
+                                    <div className="form-group row pb-1">
+                                        <label className="col-sm-3 col-form-label">Damage</label>
+                                        <div className="col-sm-9">
+                                            <input type="text" readOnly className="form-control-plaintext pb-0" id="damage" defaultValue="Rp 0" />
+                                            <small className="form-text text-muted">No Damage</small>
+                                        </div>
+                                    </div>
+                                    <div className="form-group row">
+                                        <label className="col-sm-3 col-form-label">Total Fine</label>
+                                        <div className="col-sm-9">
+                                            <input type="text" readOnly className="form-control-plaintext" id="totalfine" defaultValue="Rp 0" />
+                                        </div>
+                                    </div>
+                                    <div className="form-group row">
+                                        <label className="col-sm-3 col-form-label">Status</label>
+                                        <div className="col-sm-9">
+                                            <span className="badge badge-success">Returned</span>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div >
         )
     }
