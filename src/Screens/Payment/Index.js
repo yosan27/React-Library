@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import swal from "sweetalert";
+import axios from 'axios';
 
 // CSS
 import "./payment.css";
@@ -29,7 +30,7 @@ export default class Payment extends Component {
     this.state = {
       date: todayDate,
       paymentRecord: [],
-      saldo: 5000,
+      saldo: "",
       denda: 2000,
       sum: "",
       listBox: "",
@@ -48,6 +49,13 @@ export default class Payment extends Component {
   }
 
   componentDidMount() {
+    axios.get("http://localhost:8500/api/user-by-id/1").then((e) => {
+
+      this.setState({
+        saldo : e.data[0].balance
+      })
+    });
+
     this.totalDenda();
 
     this.setState({
@@ -119,10 +127,16 @@ export default class Payment extends Component {
       });
 
       const kurang = this.state.saldo - this.state.sum;
-      this.setState({ saldo: kurang });
-      this.state.listBox.classList.toggle("hide");
-      this.state.noBill.classList.toggle("hide");
-      swal("Thank You", "Your Payment Was Successful!", "success");
+      let updateBalance = {
+        balance: kurang
+      }
+      axios.put("http://localhost:8500/api/user-balance/1", updateBalance).then(()=>{
+        this.setState({ saldo: kurang });
+        this.state.listBox.classList.toggle("hide");
+        this.state.noBill.classList.toggle("hide");
+        swal("Thank You", "Your Payment Was Successful!", "success")
+          .then(() =>window.open("http://localhost:3000/User", "_self"));
+      })
     } else {
       swal("We're Sorry", "Your Payment Failed!", "error");
     }
@@ -178,10 +192,14 @@ export default class Payment extends Component {
       ],
     });
 
-    this.setState({
-      saldo: parseInt(this.state.saldo) + parseInt(this.state.nominalTopUp),
-      inputNominal: "",
-    });
+    let topUp = parseInt(this.state.saldo) + parseInt(this.state.nominalTopUp);
+    let updateBalance = {
+      balance: topUp
+    }
+    axios.put("http://localhost:8500/api/user-balance/1", updateBalance).then(()=>{
+        this.setState({ saldo: topUp, inputNominal: "", });
+        window.open("http://localhost:3000/User", "_self");
+      })
   };
 
   handleClose = () =>

@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
 
@@ -7,10 +8,17 @@ class SideBarUser extends Component {
     this.state = {
       condition: false,
       username : "",
+      userData : [],
+      saldo: "",
     };
   }
 
   componentDidMount(){
+    axios.get("http://localhost:8500/api/user-by-id/1").then((e)=>{
+      this.setState({
+        saldo : e.data[0].balance
+      })
+    })
     this.setState({
       username : this.props.match.params.id
     })
@@ -47,7 +55,7 @@ class SideBarUser extends Component {
               <h2>{this.state.username}</h2>
               <div>
                 <Link to="/page/payment">
-                  <h2 className="profile_saldo pt-2">Rp 5.000</h2>
+                  <h2 className="profile_saldo pt-2">Rp {this.state.saldo}</h2>
                 </Link>
               </div>
             </div>
@@ -63,7 +71,8 @@ class SideBarUser extends Component {
               <h5>{this.state.username}</h5>
               <div>
                 <Link to="/page/payment">
-                  <h5 className="profile_saldo pt-2">Rp 5.000</h5>
+                  {}
+                  <h5 className="profile_saldo pt-2">{this.state.saldo}</h5>
                 </Link>
               </div>
             </div>
