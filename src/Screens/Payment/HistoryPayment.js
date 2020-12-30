@@ -9,7 +9,7 @@ export default class HistoryPayment extends Component {
             <b className="history-payment-title">Payment History</b>
           </div>
         </div>
-        {this.props.paymentRecord.reverse().map((rec) => {
+        {this.props.paymentRecord.reverse().map((rec, i) => {
           return (
             <div className="row">
               <div className="col">
@@ -20,18 +20,19 @@ export default class HistoryPayment extends Component {
                 <div className="row pl-4">
                   <div className="col">
                     <b className="blackText">Reference Code :</b>
-                    <span className="blackText"> {rec.ref}</span>
+                    <span className="blackText"> {rec.transactionCode}</span>
                   </div>
                 </div>
 
                 <div className="row pl-4 pt-2">
                   <div className="col">
-                    <span className={rec.class}>{rec.desc}</span>
+                    <span className={(rec.paymentMethod === "LibraryPay") ? "detail-payment-min" : "detail-payment-plus"}>
+                      {(rec.paymentMethod === "LibraryPay") ? "Payment" : "Top-Up"}</span>
                   </div>
 
                   <div className="col d-flex justify-content-end pr-5">
-                    <span className={rec.class}>
-                      {rec.icon}Rp<span>{rec.price}</span>
+                    <span className={(rec.paymentMethod === "LibraryPay") ? "detail-payment-min" : "detail-payment-plus"}>
+                      {(rec.paymentMethod === "LibraryPay") ? "-" : "+"}Rp<span>{rec.nominal}</span>
                     </span>
                   </div>
                 </div>
