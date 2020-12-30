@@ -8,117 +8,138 @@ import 'datatables.net-dt/css/jquery.dataTables.min.css'
 import 'datatables.net-responsive-dt/js/responsive.dataTables.js'
 import 'datatables.net-responsive-dt/css/responsive.dataTables.css'
 import $ from 'jquery'; 
+import API from "../../api";
  
 class PublisherManagement extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data:
-        [
-          {
-            publisherID: "1",
-            publisherCode: "BP1",
-            publisherName: "Gramedia Pustaka",
-            address: "Jalan jalan no 12"
-          },
-          {
-            publisherID: "2",
-            publisherCode: "BP2",
-            publisherName: "Elex Media Komputindo",
-            address: "Jalan jalan no 13"
-          },
-          {
-            publisherID: "3",
-            publisherCode: "BP3",
-            publisherName: "Yudhistira",
-            address: "Jalan jalan no 14"
-          }
-        ],
+      tabledata: [],
       showAdd: false,
       showEdit: false,
       showDelete: false,
-      fields: {
-        publisherName: "",
-        address: ""
-      },
+      publisherId: "",
+      publisherName: "",
+      publisherCode: "",
+      address: ""
     };
   }
 
-  componentDidMount(){
+  async componentDidMount() {
+    // DATA TABEL
+    try {
+      const res = await API.get(`/api/publisher`);
+      const tabledata = res.data;
+      this.setState({ tabledata: tabledata });
+    } catch (error) {
+      console.log(error);
+    }
+
     $(function () {
       $('#publishermanagement').DataTable({
           responsive: true
       });
     });
+    
   }
 
-  handleSubmit = event => {
-    event.preventDefault();
-    // const fields = {
-    //   fields: this.state.fields
-    // }
-    // axios.post('', { fields })
-    //   .then(res=>{
-    //     console.log(res);
-    //     console.log(res.data);
-    //     window.location = "/retrieve" //This line of code will redirect you once the submission is succeed
-    //   })
-  }
-  handleChange = event =>{
-    this.setState({ fields: event.target.value});
+  //modal add
+  handleShowAdd = () => {
+    this.setState({ showAdd: true })
   }
 
-  handleSubmitEdit = event => {
-    event.preventDefault();
-    // const fields = {
-    //   fields: this.state.fields
-    // }
-    // axios.post('', { fields })
-    //   .then(res=>{
-    //     console.log(res);
-    //     console.log(res.data);
-    //     window.location = "/retrieve" //This line of code will redirect you once the submission is succeed
-    //   })
-  }
-  handleChangeEdit = event =>{
-    this.setState({ fields: event.target.value});
+  handleAddPublisher = (e) => {
+    API.post(
+      `api/publisher`,
+      {
+        publisherName: this.state.publisherName,
+        address: this.state.address,
+      },
+        {
+          headers: {
+            Accept: "*/*",
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then(() => {
+        window.location.reload();
+        swal("Success!", "Publisher Has Been Added", "success");
+      })
+      .catch((error) => {
+        swal("Oops!", "Please try again", "error");
+        console.log(error);
+      });
   }
 
-  handleAddPublisher = () => {
-    this.setState({ showAdd: false })
-    swal("Success!", "Publisher Has Been Added", "success");
+  //button edit
+  handleShowEdit = (pbid) => {
+    this.setState({showEdit: true, publisherId : pbid})
+    API.get(`/api/publisher/get-by-id/${pbid}`).then((res) => {
+      let response = res.data;
+      this.setState({
+        publisherName: response.publisherName,
+        address: response.address,
+        publisherCode : response.publisherCode
+      });
+    });
+  };
+
+  handleSaveEdit = () => {
+    this.setState({ showEdit: false })
+    console.log("publisher id : "+this.state.publisherId);
+    console.log("pub name : "+this.state.publisherName);
+    console.log("pub address : "+this.state.address);
+    console.log("pub address : "+this.state.address);
+    API.put(
+      `api/publisher/${this.state.publisherId}`,
+      {
+        publisherName: this.state.publisherName,
+        address: this.state.address,
+        publisherCode: this.state.publisherCode,
+      },
+        {
+          headers: {
+            Accept: "*/*",
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then(() => {
+        window.location.reload();
+        swal("Great!", "Publisher Has Been edited", "success");
+      })
+      .catch((error) => {
+        swal("Oops!", "Please try again", "error");
+        console.log(error);
+      });
   }
+
+  //button delete
+  handleShowDelete = (pbid) => {
+    this.setState({showDelete: true, publisherId : pbid})
+  }
+
+  handleDelete = () => {
+    this.setState({ showDelete: false });
+    API.delete(`/api/publisher/${this.state.publisherId}`)
+      .then(()=>window.location.reload())
+    swal("Deleted!", "Publisher Is Successfully Deleted", "success");
+  }
+
+  //util
+  // handleChange = (event) => {
+  //   this.setState({
+  //     [event.target.name]: event.target.value,
+  //   });
+  // };
 
   handleCloseModal = () => {
     this.setState({ showAdd: false, showEdit: false, showDelete: false })
   }
 
-  handleShowAdd = () => {
-    this.setState({ showAdd: true })
-  }
-
-  handleSaveEdit = () => {
-    this.setState({ showEdit: false })
-    swal("Success!", "Your Data Is Updated", "success");
-  }
-
-  handleShowEdit = () => {
-    this.setState({ showEdit: true })
-  }
-
-  handleDelete = () => {
-    this.setState({ showDelete: false })
-    swal("Deleted!", "Publisher Is Successfully Deleted", "success");
-  }
-
-  handleShowDelete = () => {
-    this.setState({ showDelete: true })
-  }
-
-  
-
   render() {
-    const { data, showAdd, showEdit, showDelete, fields, errors, disableSubmitting } = this.state;
+    const { showAdd, showEdit, showDelete, fields, tabledata, disableSubmitting, publisherName, address } = this.state;
    
     return (
       // page content
@@ -151,16 +172,16 @@ class PublisherManagement extends Component {
                           </tr>
                       </thead>
                       <tbody>
-                      {
-                        data.map((pb, index) => {
+                        {
+                        tabledata.map((pb, index) => {
                           return (
                               <tr key={index}>
                                 <td>{pb.publisherCode}</td>
                                 <td>
                                   <div class='d-flex justify-content-around mt-4' style={{ border: 'none' }}>
-                                    <button class="btn btn-primary" data-toggle="modal" data-target="#edit" onClick={this.handleShowEdit}><i
+                                    <button class="btn btn-primary" data-toggle="modal" data-target="#edit" onClick={()=> this.handleShowEdit(pb.id)}><i
                                       class="fa fa-edit"></i></button>
-                                    <button class="btn btn-danger" data-toggle="modal" data-target="#delete" onClick={this.handleShowDelete}><i
+                                    <button class="btn btn-danger" data-toggle="modal" data-target="#delete" onClick={()=> this.handleShowDelete(pb.id)}><i
                                       class="fa fa-trash"></i></button>
                                   </div>
                                 </td>
@@ -169,7 +190,7 @@ class PublisherManagement extends Component {
                               </tr>
                           )
                         })
-                      }
+                      } 
                       </tbody>
                     </Table>
 
@@ -181,9 +202,7 @@ class PublisherManagement extends Component {
                       <Modal.Body>
                         <div class='container'>
                           <div class="modal-body">
-                            <form
-                              onSubmit={this.handleSubmit}
-                            >
+                            <form>
                               <div class="form-group row">
                                 <label for="addPublisherName" class="col-sm-2 col-form-label">Publisher Name</label>
                                 <div class="col-sm-10">
@@ -193,8 +212,8 @@ class PublisherManagement extends Component {
                                   class="form-control" 
                                   id="addPublisherName" 
                                   placeholder="Name..." 
-                                  onChange={this.handleChange}
-                                  value={fields.publisherName} 
+                                  onChange={(e) => this.setState({publisherName : e.target.value})}
+                                  value={publisherName} 
                                   data-attribute-name="Name"
                                   data-async
                                   />
@@ -209,8 +228,8 @@ class PublisherManagement extends Component {
                                   class="form-control" 
                                   id="addAddress" 
                                   placeholder="Address..." 
-                                  onChange={this.handleChange}
-                                  value={fields.address} 
+                                  onChange={(e) => this.setState({address : e.target.value})}
+                                  value={address} 
                                   data-attribute-name="Address"
                                   data-async
                                   />
@@ -239,7 +258,7 @@ class PublisherManagement extends Component {
                       <Modal.Body>
                         <div class='container'>
                           <div class="modal-body">
-                            <form onSubmit={this.handleSubmitEdit}>
+                            <form>
                               <div class="form-group row">
                                 <label for="editPublisherName" class="col-sm-2 col-form-label">Publisher Name</label>
                                 <div class="col-sm-10">
@@ -248,8 +267,8 @@ class PublisherManagement extends Component {
                                     class="form-control" 
                                     id="editPublisherName" 
                                     placeholder="Please input publisher" 
-                                    value='' 
-                                    onChange={this.handleChangeEdit}/>
+                                    value={publisherName} 
+                                    onChange={(e) => this.setState({publisherName : e.target.value})}/>
                                 </div>
                               </div>
                               <div class="form-group row">
@@ -260,8 +279,8 @@ class PublisherManagement extends Component {
                                     class="form-control" 
                                     id="editAddress" 
                                     placeholder="Please input address" 
-                                    value='' 
-                                    onChange={this.handleChangeEdit}/>
+                                    value={address} 
+                                    onChange={(e) => this.setState({address : e.target.value})}/>
                                 </div>
                               </div>
                             </form>
