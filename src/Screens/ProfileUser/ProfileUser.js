@@ -118,6 +118,15 @@ export default class ProfileUser extends Component {
                                                                     value={this.state.email} readOnly />
                                                             </div>
                                                         </div>
+                                                        <div className="form-group row">
+                                                            <label htmlFor="username"
+                                                                className="col-sm-2 col-form-label">Username</label>
+                                                            <div className="col-sm-10">
+                                                                <input type="text" name="username"
+                                                                    className="form-control" id="username"
+                                                                    placeholder="masukan username..." value="admin" readOnly />
+                                                            </div>
+                                                        </div>
                                                         <div className=" form-group row">
                                                             <label htmlFor="no_hp" className="col-sm-2 col-form-label">Phone</label>
                                                             <div className="col-sm-10">
@@ -126,6 +135,7 @@ export default class ProfileUser extends Component {
                                                                     pattern="[0-9]+" value={this.state.phone} />
                                                             </div>
                                                         </div>
+                                                        
                                                         <div className="form-group row">
                                                             <label htmlFor="inputEmail3"
                                                                 className="col-sm-2 col-form-label">Profile

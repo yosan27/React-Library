@@ -26,6 +26,8 @@ import PublisherManagement from "../Screens/PublisherManagement/publishermanagem
 import BookManagement from "../Screens/BookManagement/bookmanagement";
 import DetailPage from "../Screens/DetailPage/detailpage";
 import FineManagement from "../Screens/FineManagement/fineManagement";
+import AuthorManagement from "../Screens/AuthorManagement/AuthorManagement";
+
 class MainNavigationsUser extends Component {
   render() {
     return (
@@ -111,6 +113,9 @@ class MainNavigationsUser extends Component {
             </Route>
             <Route path="/page/manageFine">
               <FineManagement />
+            </Route>
+            <Route path="/page/manageAuthor">
+              <AuthorManagement />
             </Route>
 
             <Route path="/page/:id">

@@ -113,7 +113,7 @@ class Content extends Component {
         <section>
           <Slider {...settings}>
             <div className="item item1">
-            <Link to="/detailpage">
+            <Link to="/page/detailpage">
               <div className="item-inner">
                 <div className="text-slide">
                   <span className="title-slide">Title Book</span>
@@ -131,7 +131,7 @@ class Content extends Component {
               </Link>
             </div>
             <div className="item item2">
-            <Link to="/detailpage">
+            <Link to="/page/detailpage">
               <div className="item-inner">
                 <div className="text-slide">
                   <span className="title-slide">Title Book</span>
@@ -149,7 +149,7 @@ class Content extends Component {
               </Link>
             </div>
             <div className="item item3">
-            <Link to="/detailpage">
+            <Link to="/page/detailpage">
               <div className="item-inner">
                 <div className="text-slide">
                   <span className="title-slide">Title Book</span>
@@ -167,7 +167,7 @@ class Content extends Component {
               </Link>
             </div>
             <div className="item item4">
-            <Link to="/detailpage">
+            <Link to="/page/detailpage">
               <div className="item-inner">
                 <div className="text-slide">
                   <span className="title-slide">Title Book</span>
@@ -185,7 +185,7 @@ class Content extends Component {
               </Link>
             </div>
             <div className="item item5">
-            <Link to="/detailpage">
+            <Link to="/page/detailpage">
               <div className="item-inner">
                 <div className="text-slide">
                   <span className="title-slide">Title Book</span>
@@ -213,7 +213,7 @@ class Content extends Component {
 
             <div className="card-group">
               <div className="card mr-2">
-                <Link to="/detailpage">
+                <Link to="/page/detailpage">
                   <img src={nebula} alt="avatar" className="card-img-top" />
                   <div className="card-body garis-top">
                     <h5 className="card-title-books">Nebula</h5>
@@ -222,7 +222,7 @@ class Content extends Component {
               </div>
 
               <div className="card mr-2">
-                <Link to="/detailpage">
+                <Link to="/page/detailpage">
                   <img src={selena} alt="avatar" className="card-img-top" />
                   <div className="card-body garis-top">
                     <h5 className="card-title-books">Selena</h5>
@@ -231,7 +231,7 @@ class Content extends Component {
               </div>
 
               <div className="card mr-2">
-                <Link to="/detailpage">
+                <Link to="/page/detailpage">
                   <img src={laut} alt="avatar" className="card-img-top" />
                   <div className="card-body garis-top">
                     <h5 className="card-title-books">Laut Bercerita</h5>
@@ -240,7 +240,7 @@ class Content extends Component {
               </div>
 
               <div className="card mr-2">
-                <Link to="/detailpage">
+                <Link to="/page/detailpage">
                   <img src={ibuk} alt="avatar" className="card-img-top" />
                   <div className="card-body garis-top">
                     <h5 className="card-title-books">Ibuk</h5>
@@ -249,7 +249,7 @@ class Content extends Component {
               </div>
 
               <div className="card mr-2">
-                <Link to="/detailpage">
+                <Link to="/page/detailpage">
                   <img src={tokyo} alt="avatar" className="card-img-top" />
                   <div className="card-body garis-top">
                     <h5 className="card-title-books smaller-font">
@@ -273,7 +273,7 @@ class Content extends Component {
               <div className="col">
                 <div className="card mt-5 asian-box">
                   <div className="row no-gutters">
-                    <Link to="/detailpage">
+                    <Link to="/page/detailpage">
                       <div className="col-md-4">
                         <img
                           src={ibu}
@@ -308,7 +308,7 @@ class Content extends Component {
               <div className="col">
                 <div className="card mt-5 asian-box">
                   <div className="row no-gutters">
-                    <Link to="/detailpage">
+                    <Link to="/page/detailpage">
                       <div className="col-md-4">
                         <img
                           src={kim}
@@ -352,7 +352,7 @@ class Content extends Component {
 
             <div className="card-group pt-3">
               <div className="card mr-2">
-                <Link to="/detailpage">
+                <Link to="/page/detailpage">
                   <img src={after} alt="avatar" className="card-img-top" />
                   <div className="card-body garis-top">
                     <h5 className="card-title-books">After the Funeral</h5>
@@ -361,7 +361,7 @@ class Content extends Component {
               </div>
 
               <div className="card mr-2">
-                <Link to="/detailpage">
+                <Link to="/page/detailpage">
                   <img src={segitiga} alt="avatar" className="card-img-top" />
                   <div className="card-body garis-top">
                     <h5 className="card-title-books">Segi Tiga</h5>
@@ -370,7 +370,7 @@ class Content extends Component {
               </div>
 
               <div className="card mr-2">
-                <Link to="/detailpage">
+                <Link to="/page/detailpage">
                   <img src={metro} alt="avatar" className="card-img-top" />
                   <div className="card-body garis-top">
                     <h5 className="card-title-books smaller-font">
@@ -381,7 +381,7 @@ class Content extends Component {
               </div>
 
               <div className="card mr-2">
-                <Link to="/detailpage">
+                <Link to="/page/detailpage">
                   <img src={defending} alt="avatar" className="card-img-top" />
                   <div className="card-body garis-top">
                     <h5 className="card-title-books">Defending Jacob</h5>
@@ -390,7 +390,7 @@ class Content extends Component {
               </div>
 
               <div className="card mr-2">
-                <Link to="/detailpage">
+                <Link to="/page/detailpage">
                   <img src={misteri} alt="avatar" className="card-img-top" />
                   <div className="card-body garis-top">
                     <h5 className="card-title-books">Misteri Terakhir #1</h5>

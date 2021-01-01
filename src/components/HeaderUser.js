@@ -5,16 +5,16 @@ class HeaderUser extends Component {
     constructor() {
         super();
         this.state = {
-            condition : false,
-            username :  "",
+            condition: false,
+            username: "",
         };
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.setState({
-            username : this.props.match.params.id
+            username: this.props.match.params.id
         })
-      }
+    }
 
     render() {
         const { condition, username } = this.state;
@@ -26,14 +26,19 @@ class HeaderUser extends Component {
             if (condition) {
                 document.body.classList.remove('nav-sm');
                 document.body.classList.add('nav-md');
+                document.getElementById('searchInput').style.display = "";
             } else {
                 document.body.classList.remove('nav-md');
                 document.body.classList.add('nav-sm');
+                var x = window.matchMedia("(max-width: 320px)");
+                if (x.matches) {
+                    document.getElementById('searchInput').style.display = "none";
+                }
             }
             this.setState({ condition: !condition })
         };
 
-        if(username === "User"){
+        if (username === "User") {
             return (
                 <nav className="navbar navbar-expand navbar-dark nav_menu shadow">
                     <ul className="navbar-nav">
@@ -85,7 +90,7 @@ class HeaderUser extends Component {
                                 <span id="cartCount" className="badge badge-danger navbar-badge">2</span>
                             </Link>
                         </li>
-                        <li className="nav-item" style={{ paddingLeft: '15px' }}>
+                        <li id="searchInput" className="nav-item" style={{ paddingLeft: '15px' }}>
                             <form className="form-inline pt-2">
                                 <div className="input-group input-group-sm">
                                     <input className="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search"
@@ -102,7 +107,7 @@ class HeaderUser extends Component {
                     </ul>
                 </nav >
             );
-        }else{
+        } else {
             return (
                 <nav className="navbar navbar-expand navbar-dark nav_menu shadow">
                     <ul className="navbar-nav">
@@ -211,7 +216,7 @@ class HeaderUser extends Component {
                                 </li>
                             </ul>
                         </li>
-                        <li className="nav-item" style={{ paddingLeft: '15px' }}>
+                        <li id="searchInput" className="nav-item" style={{ paddingLeft: '15px' }}>
                             <form className="form-inline pt-2">
                                 <div className="input-group input-group-sm">
                                     <input className="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search"
