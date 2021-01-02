@@ -28,6 +28,14 @@ class UserManagement extends Component {
         this.setState({ showSuspend: false})
     }
 
+    handleShowCard = () => {
+        this.setState({ showCard: true})
+    }
+
+    handleCloseCard = () => {
+        this.setState({ showCard: false})
+    }
+
     suspend = () => {
         swal({
             title: "Are you sure?",
@@ -74,7 +82,7 @@ class UserManagement extends Component {
     }
 
     render(){
-        const { data, showSuspend} = this.state;
+        const { data, showSuspend, showCard} = this.state;
 
         return(
             <div className="right_col" role="main" style={{ minHeight: '100vh' }}>
@@ -117,8 +125,13 @@ class UserManagement extends Component {
                                                                     <td>{user.fullname}</td>
                                                                     <td>{user.email}</td>
                                                                     <td>{user.status}</td>
-                                                                    <td className="text-center"><Image className='photoOfOrder text-center img-card' key={user.id} src={user.card} wrapped ui={false} style={{width:'40%',height:'auto'}} /></td>
-                                                                    
+                                                                    <td className="text-center">
+                                                                    <span className="d-flex justify-content-center" data-toggle="tooltip" title="card">
+                                                                        <Button variant="primary" size="sm" data-toggle="modal" data-target="#detail" onClick={this.handleShowCard}>
+                                                                            <i className="fa fa-credit-card"></i>
+                                                                        </Button>
+                                                                        </span>
+                                                                    </td>
                                                                 </tr>
                                                             )
                                                         })
@@ -162,7 +175,48 @@ class UserManagement extends Component {
                     </Button> 
                 </Modal.Footer>
             </Modal>                                         
-             {/* modal suspend */}    
+             {/* modal suspend */}
+             {/* modal iden card */}
+            <Modal size="lg" show={showCard} onHide={this.handleCloseCard}>
+                <Modal.Header closeButton>
+                    <Modal.Title> Identification Card </Modal.Title>                                     
+                </Modal.Header>
+                <Modal.Body>
+                    <div className='container'>
+                        <div className='modal-body'>
+                            
+                            
+                        <div class="card mb-3">
+                            <div class="row no-gutters">
+                                <div class="col-md-4">
+                                <Image className='photoOfOrder text-center img-card card-img-top' src='https://widgetwhats.com/app/uploads/2019/11/free-profile-photo-whatsapp-4.png' wrapped ui={false} style={{width:'100%',height:'auto'}} />                                    
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Yosan27</h5>
+                                        <div class="form-group">
+                                       
+                                        <p>Full Name: Yosan Fandi </p>
+                                        <p>Address: Jl. Pengangsaan Timur Blok Charlie No. 17A, Kebon Baru, Tebet Timur, Jakarta Selatan</p>
+                                        <p>Phone: 0812111222333</p>
+                                        <p class="card-text"><small class="text-muted">Active</small></p>
+                
+                                        </div>  
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                            
+                        </div>
+                    </div>                                                            
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button className="btn btn-secondary" variant="secondary" onClick={this.handleCloseCard}>
+                            <i class="fa fa-times-circle"></i> Close
+                    </Button> 
+                </Modal.Footer>
+            </Modal>                                         
+             {/* modal iden card */}    
             </div >
         )
 
