@@ -10,18 +10,18 @@ export default class DebitModal extends Component {
        cardNumber : "",
        cvc : "",
        expiredMonth : "",
-       expiredYear : ""
+       expiredYear : "",
     }
   }
   
   handleChange = (event) => {
     this.setState({
       [event.target.name] : event.target.value
-    })
+    });
 
     if(this.state.nameCard !== "" && this.state.cardNumber !== "" && this.state.cvc !== ""
       && this.state.expiredMonth !== "" && this.state.expiredYear !== "" && this.props.nominalTopUp !== 0){
-        document.querySelector(".debit-modal-pay-btn").classList.remove("disabled");
+          document.querySelector(".debit-modal-pay-btn").classList.remove("disabled");
       }
   }
 
@@ -135,7 +135,7 @@ export default class DebitModal extends Component {
                       placeholder="YY"
                       autocomplete="off"
                       size="4"
-                      value={this.state.expiredYear}
+                      value = {this.state.expiredYear}
                       onChange={(e) => this.handleChange(e)}
                     />
                   </div>
