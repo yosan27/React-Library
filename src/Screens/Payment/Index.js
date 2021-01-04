@@ -44,8 +44,8 @@ export default class Payment extends Component {
   componentDidMount() {
     axios.get("http://localhost:8500/api/user-by-id/1").then((e) => {
       this.setState({
-        saldo: e.data[0].balance,
-        userCode: e.data[0].userCode,
+        saldo: e.data.balance,
+        userCode: e.data.userCode,
       });
 
       axios.get(`http://localhost:8500/api/transaction/get-by-user-code/${this.state.userCode}`)
@@ -77,7 +77,6 @@ export default class Payment extends Component {
         });
 
         axios.get(`http://localhost:8500/api/transaction-detail/get-by-user-code/${this.state.userCode}`).then((record) => {
-          this.setState({listRecord: record.data});
           let idCode = this.state.userCode.substring(2,this.state.userCode.length);
           if (record.data.length !== 0) {
             let lastDigit = record.data[record.data.length - 1].detailCode.substr(7);

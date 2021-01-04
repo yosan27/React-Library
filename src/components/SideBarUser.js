@@ -26,13 +26,12 @@ class SideBarUser extends Component {
       console.log("tidak ada userData")
     } else {
       sessionStorage.getItem('userData') && this.setState({
-        userData: JSON.parse(sessionStorage.getItem('userData'))
+        userData: JSON.parse(sessionStorage.getItem('userData')),
       })
       console.log("ada local storage")
       console.log(JSON.parse(sessionStorage.getItem('userData')));
     }
     this.setState({
-      // username: this.props.match.params.id
       username: this.state.userData.data.userName,
       userCode: this.state.userData.data.userCode,
       saldo: this.state.userData.data.balance,

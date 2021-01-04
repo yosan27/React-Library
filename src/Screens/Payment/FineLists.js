@@ -7,7 +7,7 @@ export default class FineLists extends Component {
         <div className="container list-box">
           {/* Header */}
           <div className="row list-header pb-2 pt-2">
-            <div className="col">Order ID</div>
+            <div className="col">Rent Code</div>
 
             <div className="col d-flex justify-content-center">Details</div>
 
@@ -18,7 +18,7 @@ export default class FineLists extends Component {
           {this.props.listRecord.map((e, i) => {
             return (
               <div className="row listBar list-1 pb-3 pt-3 border-bottom border-secondary bg-white">
-                <div className="col">{i}. {e.rentCode}</div>
+                <div className="col">{i+1}. {e.rentCode}</div>
 
                 <div className="col d-flex justify-content-center">{e.description}</div>
 
