@@ -20,7 +20,7 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    axios.get("http://localhost:8500/api/user-by-code/UU001").then((e) => {
+    axios.get("http://localhost:8500/api/user-by-code/UA001").then((e) => {
       // console.log(e);
       sessionStorage.setItem('userData', JSON.stringify(e))
       this.setState({
