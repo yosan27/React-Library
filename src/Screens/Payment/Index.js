@@ -347,35 +347,35 @@ export default class Payment extends Component {
                               className="btn btn-outline-secondary mt-2"
                               onClick={(nominal) => this.inputClick(10000)}
                             >
-                              10000
+                              10.000
                             </button>
                             <button
                               type="button"
                               className="btn btn-outline-secondary mt-2"
                               onClick={(nominal) => this.inputClick(25000)}
                             >
-                              25000
+                              25.000
                             </button>
                             <button
                               type="button"
                               className="btn btn-outline-secondary mt-2"
                               onClick={(nominal) => this.inputClick(50000)}
                             >
-                              50000
+                              50.000
                             </button>
                             <button
                               type="button"
                               className="btn btn-outline-secondary mt-2"
                               onClick={(nominal) => this.inputClick(75000)}
                             >
-                              75000
+                              75.000
                             </button>
                             <button
                               type="button"
                               className="btn btn-outline-secondary mt-2"
                               onClick={(nominal) => this.inputClick(100000)}
                             >
-                              100000
+                              100.000
                             </button>
                           </div>
                         </div>

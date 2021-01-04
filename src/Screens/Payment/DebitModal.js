@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import NumberFormat from 'react-number-format';
 
 export default class DebitModal extends Component {
   constructor(props) {
@@ -151,7 +152,7 @@ export default class DebitModal extends Component {
 
                     <div className="row">
                       <div className="total col">
-                        <span>{this.props.nominalTopUp}</span>
+                        <span>Rp <NumberFormat value={this.props.nominalTopUp} displayType={'text'} thousandSeparator="&#8228;" /></span>
                       </div>
                     </div>
                   </div>

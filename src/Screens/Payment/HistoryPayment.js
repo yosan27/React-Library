@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import NumberFormat from 'react-number-format';
 
 export default class HistoryPayment extends Component {
   render() {
@@ -37,7 +38,7 @@ export default class HistoryPayment extends Component {
 
                   <div className="col d-flex justify-content-end pr-5">
                     <span className={(rec.paymentMethod === "LibraryPay") ? "detail-payment-min" : "detail-payment-plus"}>
-                      {(rec.paymentMethod === "LibraryPay") ? "-" : "+"}Rp<span>{rec.nominal}</span>
+                      {(rec.paymentMethod === "LibraryPay") ? "-" : "+"}Rp <span><NumberFormat value={rec.nominal} displayType={'text'} thousandSeparator="&#8228;"/></span>
                     </span>
                   </div>
                 </div>
