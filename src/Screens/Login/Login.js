@@ -21,7 +21,7 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    axios.get("http://localhost:8500/api/user-by-code/UA001").then((e) => {
+    axios.get("http://localhost:8500/api/user-by-code/UU001").then((e) => {
       // console.log(e);
       sessionStorage.setItem('userCode', e.data.userCode)
       this.setState({
