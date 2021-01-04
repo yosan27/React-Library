@@ -19,8 +19,6 @@ class SideBarUser extends Component {
     if (!sessionStorage.getItem('userCode')) {
       console.log("tidak ada userCode")
     } else {
-      console.log("ada local storage")
-      console.log(sessionStorage.getItem('userCode'));
       axios.get("http://localhost:8500/api/user-by-code/"+ sessionStorage.getItem('userCode')).then((e) => {
           // console.log(e);
           this.setState({

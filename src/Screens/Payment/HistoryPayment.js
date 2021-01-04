@@ -11,7 +11,7 @@ export default class HistoryPayment extends Component {
         </div>
         {this.props.paymentRecord.reverse().map((rec, i) => {
           return (
-            <div className="row">
+            <div className="row" key={i}>
               <div className="col">
                 <div className="row payment-date m-3 pb-1 pt-1">
                   <div className="col">{rec.date}</div>
