@@ -15,16 +15,17 @@ class Login extends Component {
       passwordValid: false,
       formValid: false,
       user: "",
-      userData: []
+      userData: [],
+      userCode: "",
     }
   }
 
   componentDidMount() {
     axios.get("http://localhost:8500/api/user-by-code/UA001").then((e) => {
       // console.log(e);
-      sessionStorage.setItem('userData', JSON.stringify(e))
+      sessionStorage.setItem('userCode', e.data.userCode)
       this.setState({
-        userData: e
+        userCode: e.data.userCode
       })
     })
   }
