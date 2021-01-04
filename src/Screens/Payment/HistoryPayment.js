@@ -30,6 +30,11 @@ export default class HistoryPayment extends Component {
                       {(rec.paymentMethod === "LibraryPay") ? "Payment" : "Top-Up"}</span>
                   </div>
 
+                  <div className="col d-flex justify-content-center">
+                    <span className={(rec.paymentStatus === 1) ? "detail-payment-min" : "detail-payment-plus"}>
+                      {(rec.paymentStatus === 1) ? "Pending" : "Success"}</span>
+                  </div>
+
                   <div className="col d-flex justify-content-end pr-5">
                     <span className={(rec.paymentMethod === "LibraryPay") ? "detail-payment-min" : "detail-payment-plus"}>
                       {(rec.paymentMethod === "LibraryPay") ? "-" : "+"}Rp<span>{rec.nominal}</span>

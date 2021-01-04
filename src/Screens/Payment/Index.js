@@ -52,6 +52,7 @@ export default class Payment extends Component {
       this.setState({
         paymentRecord : e.data
       });
+      console.log(e.data);
       if(this.state.paymentRecord.length !== 0){
         let lastDigit = this.state.paymentRecord[this.state.paymentRecord.length-1].transactionCode.substr(3);
         let secondDigit = this.state.paymentRecord[this.state.paymentRecord.length-1].transactionCode.substr(2,1);
