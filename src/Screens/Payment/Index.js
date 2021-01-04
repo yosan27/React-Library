@@ -24,6 +24,7 @@ export default class Payment extends Component {
       detailCode: "",
       userCode: "",
       paymentRecord: [],
+      listRecord: [],
       saldo: "",
       denda: 2000,
       sum: "",
@@ -76,6 +77,7 @@ export default class Payment extends Component {
         });
 
         axios.get(`http://localhost:8500/api/transaction-detail/get-by-user-code/${this.state.userCode}`).then((record) => {
+          this.setState({listRecord: record.data});
           let idCode = this.state.userCode.substring(2,this.state.userCode.length);
           if (record.data.length !== 0) {
             let lastDigit = record.data[record.data.length - 1].detailCode.substr(7);
@@ -100,6 +102,10 @@ export default class Payment extends Component {
             this.setState({ detailCode: `TD${idCode}001` });
           }
       });
+
+      axios.get(`http://localhost:8500/api/transaction-detail/get-by-bill/${this.state.userCode}`).then((record)=>{
+        this.setState({listRecord : record.data})
+      })
     });
 
     this.totalDenda();
@@ -286,6 +292,7 @@ export default class Payment extends Component {
                       denda={this.state.denda}
                       sum={this.state.sum}
                       pay={this.pay}
+                      listRecord={this.state.listRecord}
                     />
                     {/* List */}
 
