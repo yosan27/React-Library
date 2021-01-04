@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
 import "./Login-style.css";
 import { FormErrors } from './FormErrors';
+import axios from "axios";
 
 class Login extends Component {
   constructor(props) {
@@ -13,8 +14,19 @@ class Login extends Component {
       emailValid: false,
       passwordValid: false,
       formValid: false,
-      user: ""
+      user: "",
+      userData: []
     }
+  }
+
+  componentDidMount() {
+    axios.get("http://localhost:8500/api/user-by-code/UU001").then((e) => {
+      // console.log(e);
+      sessionStorage.setItem('userData', JSON.stringify(e))
+      this.setState({
+        userData: e
+      })
+    })
   }
 
   handleUserInput = (e) => {
@@ -66,11 +78,21 @@ class Login extends Component {
     this.props.history.push(`/${this.state.user}`)
   }
 
+  userHandling = (event) => {
+    this.setState({
+      [event.target.name]: event.target.value
+    })
+  }
+
+  loginClick = () => {
+    this.props.history.push(`/${this.state.user}`)
+  }
+
 
   render() {
     return (
       <section class="Form my-10 mx-5 pb-5 card-login">
-        <div class="container">
+        <div class="container mt-3">
           <div class="row no-gutters row-box">
             <div class="col-lg-5">
               <img src="assets/images/cover2.png" class="img-fluid img-page" alt="" />

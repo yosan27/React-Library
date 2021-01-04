@@ -1,6 +1,30 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 export default class DebitModal extends Component {
+  constructor(props) {
+    super(props)
+  
+    this.state = {
+       nameCard : "",
+       cardNumber : "",
+       cvc : "",
+       expiredMonth : "",
+       expiredYear : "",
+    }
+  }
+  
+  handleChange = (event) => {
+    this.setState({
+      [event.target.name] : event.target.value
+    });
+
+    if(this.state.nameCard !== "" && this.state.cardNumber !== "" && this.state.cvc !== ""
+      && this.state.expiredMonth !== "" && this.state.expiredYear !== "" && this.props.nominalTopUp !== 0){
+          document.querySelector(".debit-modal-pay-btn").classList.remove("disabled");
+      }
+  }
+
   render() {
     return (
       <div className="modal fade" tabindex="-1" id="debitModal">
@@ -39,7 +63,8 @@ export default class DebitModal extends Component {
                       type="text"
                       name="nameCard"
                       autocomplete="off"
-                      required
+                      value={this.state.nameCard}
+                      onChange={(e) => this.handleChange(e)}
                     />
                   </div>
                 </div>
@@ -55,7 +80,8 @@ export default class DebitModal extends Component {
                       type="text"
                       name="cardNumber"
                       autocomplete="off"
-                      required
+                      value={this.state.cardNumber}
+                      onChange={(e) => this.handleChange(e)}
                     />
                   </div>
                 </div>
@@ -83,7 +109,8 @@ export default class DebitModal extends Component {
                       placeholder="ex. 311"
                       autocomplete="off"
                       size="3"
-                      required
+                      value={this.state.cvc}
+                      onChange={(e) => this.handleChange(e)}
                     />
                   </div>
 
@@ -91,11 +118,12 @@ export default class DebitModal extends Component {
                     <input
                       className="short-input"
                       type="text"
-                      name="masa"
+                      name="expiredMonth"
                       placeholder="MM"
                       autocomplete="off"
                       size="4"
-                      required
+                      value={this.state.expiredMonth}
+                      onChange={(e) => this.handleChange(e)}
                     />
                   </div>
 
@@ -103,11 +131,12 @@ export default class DebitModal extends Component {
                     <input
                       className="short-input"
                       type="text"
-                      name="masa"
+                      name="expiredYear"
                       placeholder="YY"
                       autocomplete="off"
                       size="4"
-                      required
+                      value = {this.state.expiredYear}
+                      onChange={(e) => this.handleChange(e)}
                     />
                   </div>
                 </div>
@@ -130,14 +159,14 @@ export default class DebitModal extends Component {
                   <div className="col d-flex align-items-center justify-content-end">
                     <div className="row">
                       <div className="col">
-                        <button
-                          className="btn debit-modal-pay-btn"
+                        <Link
+                          className="btn debit-modal-pay-btn disabled"
                           type="button"
                           data-dismiss="modal"
                           onClick={() => this.props.debitPay()}
                         >
                           Pay
-                        </button>
+                        </Link>
                       </div>
                     </div>
                   </div>

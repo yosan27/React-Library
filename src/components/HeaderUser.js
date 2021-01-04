@@ -1,20 +1,49 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom'
 import './HeaderUser.style.css';
+import axios from "axios";
+
 class HeaderUser extends Component {
     constructor() {
         super();
         this.state = {
-            condition : false,
-            username :  "",
+            condition: false,
+            username: "",
+            userCode: "",
+            userData: [],
+            countCart : ""
         };
     }
-
-    componentDidMount(){
-        this.setState({
-            username : this.props.match.params.id
+    componentWillMount() {
+        sessionStorage.getItem('userData') && this.setState({
+            userData: JSON.parse(sessionStorage.getItem('userData'))
         })
-      }
+    }
+
+    componentDidMount() {
+        if (!sessionStorage.getItem('userData')) {
+            console.log("tidak ada userData")
+        } else {
+            sessionStorage.getItem('userData') && this.setState({
+                userData: JSON.parse(sessionStorage.getItem('userData'))
+            })
+            console.log("ada local storage")
+            console.log(JSON.parse(sessionStorage.getItem('userData')));
+        }
+        this.setState({
+            // username: this.props.match.params.id
+            username: this.state.userData.data.userName,
+            userCode: this.state.userData.data.userCode
+        })
+        axios.get('http://localhost:8500/api/cart-by-user/' + this.state.userData.data.userCode)
+        .then((res) => {
+            console.log(res)
+            console.log(res.data.length);
+            this.setState({
+                countCart : res.data.length
+            })
+        })
+    }
 
     render() {
         const { condition, username } = this.state;
@@ -26,14 +55,19 @@ class HeaderUser extends Component {
             if (condition) {
                 document.body.classList.remove('nav-sm');
                 document.body.classList.add('nav-md');
+                document.getElementById('searchInput').style.display = "";
             } else {
                 document.body.classList.remove('nav-md');
                 document.body.classList.add('nav-sm');
+                var x = window.matchMedia("(max-width: 320px)");
+                if (x.matches) {
+                    document.getElementById('searchInput').style.display = "none";
+                }
             }
             this.setState({ condition: !condition })
         };
 
-        if(username === "User"){
+        if (this.state.userCode.substring(0, 2) == "UU") {
             return (
                 <nav className="navbar navbar-expand navbar-dark nav_menu shadow">
                     <ul className="navbar-nav">
@@ -82,10 +116,10 @@ class HeaderUser extends Component {
                         <li className="nav-item" style={{ paddingLeft: "15px" }}>
                             <Link to="/page/cart" className="nav-link">
                                 <i className="fa fa-shopping-cart fa-lg" style={{ fontSize: '17px' }}></i>
-                                <span id="cartCount" className="badge badge-danger navbar-badge">2</span>
+                                <span id="cartCount" className="badge badge-danger navbar-badge">{this.state.countCart}</span>
                             </Link>
                         </li>
-                        <li className="nav-item" style={{ paddingLeft: '15px' }}>
+                        <li id="searchInput" className="nav-item" style={{ paddingLeft: '15px' }}>
                             <form className="form-inline pt-2">
                                 <div className="input-group input-group-sm">
                                     <input className="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search"
@@ -102,7 +136,7 @@ class HeaderUser extends Component {
                     </ul>
                 </nav >
             );
-        }else{
+        } else {
             return (
                 <nav className="navbar navbar-expand navbar-dark nav_menu shadow">
                     <ul className="navbar-nav">
@@ -211,7 +245,7 @@ class HeaderUser extends Component {
                                 </li>
                             </ul>
                         </li>
-                        <li className="nav-item" style={{ paddingLeft: '15px' }}>
+                        <li id="searchInput" className="nav-item" style={{ paddingLeft: '15px' }}>
                             <form className="form-inline pt-2">
                                 <div className="input-group input-group-sm">
                                     <input className="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search"

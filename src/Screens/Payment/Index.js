@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import swal from "sweetalert";
+import axios from "axios";
 
 // CSS
 import "./payment.css";
@@ -18,18 +19,13 @@ export default class Payment extends Component {
   constructor(props) {
     super(props);
 
-    let today = new Date();
-    let todayDate =
-      today.getDate() +
-      "-" +
-      (today.getMonth() + 1) +
-      "-" +
-      today.getFullYear();
-
     this.state = {
-      date: todayDate,
+      lastCode: "",
+      detailCode: "",
+      userCode: "",
       paymentRecord: [],
-      saldo: 5000,
+      listRecord: [],
+      saldo: "",
       denda: 2000,
       sum: "",
       listBox: "",
@@ -42,12 +38,76 @@ export default class Payment extends Component {
       inputNominal: "",
       nominalTopUp: 0,
       minimum: "",
-      show: false,
-      setShow: false,
     };
   }
 
   componentDidMount() {
+    axios.get("http://localhost:8500/api/user-by-id/1").then((e) => {
+      this.setState({
+        saldo: e.data[0].balance,
+        userCode: e.data[0].userCode,
+      });
+
+      axios.get(`http://localhost:8500/api/transaction/get-by-user-code/${this.state.userCode}`)
+        .then((record) => {
+          this.setState({paymentRecord: record.data});
+          let idCode = this.state.userCode.substring(2,this.state.userCode.length);
+          if (this.state.paymentRecord.length !== 0) {
+            let lastDigit = this.state.paymentRecord[this.state.paymentRecord.length - 1].transactionCode.substr(6);
+            let secondDigit = this.state.paymentRecord[this.state.paymentRecord.length - 1].transactionCode.substr(5,1);
+            let firstDigit = this.state.paymentRecord[this.state.paymentRecord.length - 1].transactionCode.substr(4,1);
+            if (lastDigit === 9) {
+              if (secondDigit === 9) {
+                let firstPlus = parseInt(firstDigit) + 1;
+                let code = `T${idCode}${firstPlus}00`;
+                this.setState({ lastCode: code });
+              } else {
+                let secondPlus = parseInt(secondDigit) + 1;
+                let code = `T${idCode}${firstDigit}${secondPlus}0`;
+                this.setState({ lastCode: code });
+              }
+            } else {
+              let lastPlus = parseInt(lastDigit) + 1;
+              let code = `T${idCode}${firstDigit}${secondDigit}${lastPlus}`;
+              this.setState({ lastCode: code });
+            }
+          } else {
+            this.setState({ lastCode: `T${idCode}001` });
+          }
+        });
+
+        axios.get(`http://localhost:8500/api/transaction-detail/get-by-user-code/${this.state.userCode}`).then((record) => {
+          this.setState({listRecord: record.data});
+          let idCode = this.state.userCode.substring(2,this.state.userCode.length);
+          if (record.data.length !== 0) {
+            let lastDigit = record.data[record.data.length - 1].detailCode.substr(7);
+            let secondDigit = record.data[record.data.length - 1].detailCode.substr(6, 1);
+            let firstDigit = record.data[record.data.length - 1].detailCode.substr(5, 1);
+            if (lastDigit === 9) {
+              if (secondDigit === 9) {
+                let firstPlus = parseInt(firstDigit) + 1;
+                let code = `TD${idCode}${firstPlus}00`;
+                this.setState({ detailCode: code });
+              } else {
+                let secondPlus = parseInt(secondDigit) + 1;
+                let code = `TD${idCode}${firstDigit}${secondPlus}0`;
+                this.setState({ detailCode: code });
+              }
+            } else {
+              let lastPlus = parseInt(lastDigit) + 1;
+              let code = `TD${idCode}${firstDigit}${secondDigit}${lastPlus}`;
+              this.setState({ detailCode: code });
+            }
+          } else {
+            this.setState({ detailCode: `TD${idCode}001` });
+          }
+      });
+
+      axios.get(`http://localhost:8500/api/transaction-detail/get-by-bill/${this.state.userCode}`).then((record)=>{
+        this.setState({listRecord : record.data})
+      })
+    });
+
     this.totalDenda();
 
     this.setState({
@@ -68,7 +128,6 @@ export default class Payment extends Component {
   };
 
   history = () => {
-    console.log("ok");
     this.state.noBill.classList.add("hide");
     this.state.listBox.classList.add("hide");
     this.state.topUpBox.classList.add("hide");
@@ -102,27 +161,33 @@ export default class Payment extends Component {
 
   pay = () => {
     if (this.state.saldo >= this.state.sum) {
-      this.setState({
-        paymentRecord: [
-          ...this.state.paymentRecord,
-          {
-            // buat property baru
-            id: this.state.paymentRecord.length + 1,
-            date: this.state.date,
-            ref: "PH-" + this.state.paymentRecord.length,
-            class: "detail-payment-min",
-            desc: "Payment",
-            price: this.state.sum,
-            icon: "-",
-          },
-        ],
-      });
-
       const kurang = this.state.saldo - this.state.sum;
-      this.setState({ saldo: kurang });
-      this.state.listBox.classList.toggle("hide");
-      this.state.noBill.classList.toggle("hide");
-      swal("Thank You", "Your Payment Was Successful!", "success");
+      let updateBalance = {
+        balance: kurang,
+      };
+      axios
+        .put("http://localhost:8500/api/user-balance/1", updateBalance)
+        .then(() => {
+          this.setState({ saldo: kurang });
+          this.state.listBox.classList.toggle("hide");
+          this.state.noBill.classList.toggle("hide");
+          let paymentRecord = {
+            transactionCode: this.state.lastCode,
+            nominal: this.state.sum,
+            paymentMethod: "LibraryPay",
+            paymentStatus: 2,
+            userCode: this.state.userCode,
+          };
+          axios
+            .post("http://localhost:8500/api/transaction", paymentRecord)
+            .then(() => {
+              swal(
+                "Thank You",
+                "Your Payment Was Successful!",
+                "success"
+              ).then(() => window.open("http://localhost:3000/User", "_self"));
+            });
+        });
     } else {
       swal("We're Sorry", "Your Payment Failed!", "error");
     }
@@ -156,40 +221,51 @@ export default class Payment extends Component {
   debitModal = () => {
     this.state.atmBox.classList.add("hide");
     this.state.mbankBox.classList.add("hide");
-    this.setState({ show: !this.state.show });
   };
 
   debitPay = () => {
-    this.handleClose();
-    swal("Thank You", "Your Payment Was Successful!", "success");
-    this.setState({
-      paymentRecord: [
-        ...this.state.paymentRecord,
-        {
-          // buat property baru
-          id: this.state.paymentRecord.length + 1,
-          date: this.state.date,
-          ref: "PH-" + this.state.paymentRecord.length,
-          class: "detail-payment-plus",
-          desc: "Top Up",
-          price: this.state.nominalTopUp,
-          icon: "+",
-        },
-      ],
-    });
-
-    this.setState({
-      saldo: parseInt(this.state.saldo) + parseInt(this.state.nominalTopUp),
-      inputNominal: "",
-    });
+    let topUp = parseInt(this.state.saldo) + parseInt(this.state.nominalTopUp);
+    let updateBalance = {
+      balance: topUp,
+    };
+    let paymentRecord = {
+      transactionCode: this.state.lastCode,
+      nominal: this.state.nominalTopUp,
+      paymentMethod: "Debit Card",
+      paymentStatus: 2,
+      userCode: this.state.userCode,
+    };
+    let detail = {
+      detailCode: this.state.detailCode,
+      transactionCode: this.state.lastCode,
+      description: "Top-Up",
+      debet: this.state.nominalTopUp,
+      kredit: 0,
+      fineCode: null,
+      rentCode: null,
+      userCode: this.state.userCode,
+    };
+    axios
+      .post("http://localhost:8500/api/transaction", paymentRecord)
+      .then(() => {
+        axios
+          .post("http://localhost:8500/api/transaction-detail", detail)
+          .then(() => {
+            axios
+              .put("http://localhost:8500/api/user-balance/1", updateBalance)
+              .then(() => {
+                this.setState({ saldo: topUp, inputNominal: "" });
+                swal(
+                  "Thank You",
+                  "Your Payment Was Successful!",
+                  "success"
+                ).then(() =>
+                  window.open("http://localhost:3000/User", "_self")
+                );
+              });
+          });
+      });
   };
-
-  handleClose = () =>
-    this.setState({
-      setShow: false,
-      show: !this.state.show,
-    });
-  handleShow = () => this.setState({ setShow: true });
 
   render() {
     return (
@@ -216,6 +292,7 @@ export default class Payment extends Component {
                       denda={this.state.denda}
                       sum={this.state.sum}
                       pay={this.pay}
+                      listRecord={this.state.listRecord}
                     />
                     {/* List */}
 

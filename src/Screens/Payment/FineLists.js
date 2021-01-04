@@ -15,65 +15,19 @@ export default class FineLists extends Component {
           </div>
           {/* Header */}
 
-          <div className="row listBar list-1 pb-3 pt-3 border-bottom border-secondary bg-white">
-            <div className="col">1. Order ID</div>
+          {this.props.listRecord.map((e, i) => {
+            return (
+              <div className="row listBar list-1 pb-3 pt-3 border-bottom border-secondary bg-white">
+                <div className="col">{i}. {e.rentCode}</div>
 
-            <div className="col d-flex justify-content-center">Late</div>
+                <div className="col d-flex justify-content-center">{e.description}</div>
 
-            <div className="col d-flex justify-content-end">
-              {this.props.denda}
-            </div>
-          </div>
-
-          <div className="row listBar list-2 pb-3 pt-3 border-bottom border-secondary bg-white">
-            <div className="col">2. Order ID</div>
-
-            <div className="col d-flex justify-content-center">Late</div>
-
-            <div className="col d-flex justify-content-end">
-              {this.props.denda}
-            </div>
-          </div>
-
-          <div className="row listBar list-3 pb-3 pt-3 border-bottom border-secondary bg-white">
-            <div className="col">3. Order ID</div>
-
-            <div className="col d-flex justify-content-center">Late</div>
-
-            <div className="col d-flex justify-content-end">
-              {this.props.denda}
-            </div>
-          </div>
-
-          <div className="row listBar list-4 pb-3 pt-3 border-bottom border-secondary bg-white">
-            <div className="col">4. Order ID</div>
-
-            <div className="col d-flex justify-content-center">Late</div>
-
-            <div className="col d-flex justify-content-end">
-              {this.props.denda}
-            </div>
-          </div>
-
-          <div className="row listBar list-5 pb-3 pt-3 border-bottom border-secondary bg-white">
-            <div className="col">5. Order ID</div>
-
-            <div className="col d-flex justify-content-center">Late</div>
-
-            <div className="col d-flex justify-content-end">
-              {this.props.denda}
-            </div>
-          </div>
-
-          <div className="row listBar list-6 pb-3 pt-3 border-bottom border-secondary bg-white">
-            <div className="col">6. Order ID</div>
-
-            <div className="col d-flex justify-content-center">Late</div>
-
-            <div className="col d-flex justify-content-end">
-              {this.props.denda}
-            </div>
-          </div>
+                <div className="col d-flex justify-content-end">
+                  {e.kredit}
+                </div>
+              </div>
+            );
+          })}
 
           <div className="row listBar list-total pb-2 pt-2">
             <div className="col">

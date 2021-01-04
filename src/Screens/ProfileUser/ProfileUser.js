@@ -1,23 +1,94 @@
 import React, { Component } from 'react';
 import swal from "sweetalert";
+import axios from "axios";
 
 export default class ProfileUser extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            userCode : "UU001",
-            fullName : "James Rodriguez",
-            email : "james@gmail.com",
-            profilePict : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBG685vI07-3MsuqJxjCfzIabfFJJG-8yM-ppvjjNpD5QNtWNE4A",
-            phone : "0812388291",
-            balance : "5000"
+            userCode: "UU001",
+            fullName: "James Rodriguez",
+            email: "james@gmail.com",
+            profilePict: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBG685vI07-3MsuqJxjCfzIabfFJJG-8yM-ppvjjNpD5QNtWNE4A",
+            phone: "0812388291",
+            balance: "5000",
+            address: "",
+            username: "",
+            userData: [],
+            id: "",
+            password: ""
         }
+        this.userChange = this.userChange.bind(this)
     }
 
-    updateBtn = () => {
+    componentWillMount() {
+        sessionStorage.getItem('userData') && this.setState({
+            userData: JSON.parse(sessionStorage.getItem('userData'))
+        })
+    }
+
+    componentDidMount() {
+        if (!sessionStorage.getItem('userData')) {
+            console.log("tidak ada userData")
+        } else {
+            sessionStorage.getItem('userData') && this.setState({
+                userData: JSON.parse(sessionStorage.getItem('userData'))
+            })
+            console.log("ada local storage")
+            console.log(JSON.parse(sessionStorage.getItem('userData')))
+        }
+        this.setState({
+            // username: this.props.match.params.id
+            username: this.state.userData.data.userName,
+            userCode: this.state.userData.data.userCode,
+            fullName: this.state.userData.data.fullName,
+            email: this.state.userData.data.email,
+            phone: this.state.userData.data.phone,
+            address: this.state.userData.data.address,
+        })
+    }
+
+    updateBtn = (id) => {
+        const userDto = {
+            fullName: this.state.fullName,
+            phone: this.state.phone,
+            address: this.state.address,
+            profilePict: this.state.profilePict,
+        }
+
+        console.log(userDto)
+        sessionStorage.clear();
+        axios.put('http://localhost:8500/api/user-profile/' + id, userDto)
+            .then((response) => {
+                sessionStorage.setItem('userData', JSON.stringify(response))
+                console.log(response);
+            })
+
         swal("Successfully", "Changed profile", "success");
     };
+
+    updatePassword = (id) => {
+        const userDto = {
+            password: this.state.password
+        }
+        sessionStorage.clear();
+        axios.put('http://localhost:8500/api/user-password/' + id, userDto)
+            .then((response) => {
+                sessionStorage.setItem('userData', JSON.stringify(response))
+                console.log(response);
+            })
+        this.setState({
+            password : "",
+        });
+        swal("Successfully", "Changed password", "success");
+    }
+
+    userChange = (event) => {
+        this.setState({
+            [event.target.name]: event.target.value,
+        });
+    }
 
     cekPass1 = (e) => {
         // alert(e);
@@ -30,6 +101,9 @@ export default class ProfileUser extends Component {
             document.getElementById("pwmatch").classList.add("fa-close");
             document.getElementById("pwmatch").style.color = "#FF0004";
         }
+        this.setState({
+            password : e,
+        });
     };
 
     cekPass2 = (e) => {
@@ -44,6 +118,9 @@ export default class ProfileUser extends Component {
             document.getElementById("pwmatch").classList.add("fa-close");
             document.getElementById("pwmatch").style.color = "#FF0004";
         }
+        this.setState({
+            password : e,
+        });
     };
 
     previewImg = () => {
@@ -118,14 +195,31 @@ export default class ProfileUser extends Component {
                                                                     value={this.state.email} readOnly />
                                                             </div>
                                                         </div>
+                                                        <div className="form-group row">
+                                                            <label htmlFor="username"
+                                                                className="col-sm-2 col-form-label">Username</label>
+                                                            <div className="col-sm-10">
+                                                                <input type="text" name="username"
+                                                                    className="form-control" id="username"
+                                                                    placeholder="masukan username..." value="admin" readOnly />
+                                                            </div>
+                                                        </div>
                                                         <div className=" form-group row">
                                                             <label htmlFor="no_hp" className="col-sm-2 col-form-label">Phone</label>
                                                             <div className="col-sm-10">
                                                                 <input type="tel" name="no_hp" className="form-control"
                                                                     id="no_hp" placeholder="masukan nomer hp..."
-                                                                    pattern="[0-9]+" value={this.state.phone} />
+                                                                    pattern="[0-9]+" value={this.state.phone} onChange={this.userChange} />
                                                             </div>
                                                         </div>
+                                                        <div className=" form-group row">
+                                                            <label htmlFor="address" className="col-sm-2 col-form-label">Address</label>
+                                                            <div className="col-sm-10">
+                                                                <textarea className="form-control" id="exampleFormControlTextarea1" name="address" rows="3" value={this.state.address} onChange={this.userChange}></textarea>
+                                                            </div>
+                                                        </div>
+
+
                                                         <div className="form-group row">
                                                             <label htmlFor="inputEmail3"
                                                                 className="col-sm-2 col-form-label">Profile
@@ -148,7 +242,7 @@ export default class ProfileUser extends Component {
                                                         <br />
                                                         <div className="form-group">
                                                             <button
-                                                                className="btn btn-primary btn-block" onClick={() => this.updateBtn()}>Update</button>
+                                                                className="btn btn-primary btn-block" onClick={() => this.updateBtn(this.state.userData.data.id)}>Update</button>
                                                         </div>
                                                         {/* </form> */}
                                                     </div>
@@ -161,14 +255,14 @@ export default class ProfileUser extends Component {
                                                                 <label htmlFor="password1" className="">
                                                                     New Password
                                                                     </label>
-                                                                <input type="password" onChange={(e) => this.cekPass1(e.target.value)} name="password" required
+                                                                <input type="password" onChange={(e) => this.cekPass1(e.target.value)} value={this.state.password} name="password" required
                                                                     autoComplete="off" id="password1"
                                                                     className="form-control simm-inv" />
                                                             </div>
                                                             <div className="form-group">
                                                                 <label htmlFor="password2" className="">Confirm
                                                                         Password</label><br />
-                                                                <input onChange={(e) => this.cekPass2(e.target.value)} type="password" name="password_confirm"
+                                                                <input onChange={(e) => this.cekPass2(e.target.value)} type="password" value={this.state.password} name="password_confirm"
                                                                     required autoComplete="off" id="password2"
                                                                     className="form-control simm-inv" />
                                                                 <small id="passmatch" style={{ display: 'none' }}><i
@@ -179,7 +273,7 @@ export default class ProfileUser extends Component {
                                                             <br />
                                                             <div className="form-group">
                                                                 <button id="btn-save"
-                                                                    className="btn btn-primary btn-block" onClick={() => this.updateBtn()}>Change</button>
+                                                                    className="btn btn-primary btn-block" onClick={() => this.updatePassword(this.state.userData.data.id)}>Change</button>
                                                             </div>
                                                         </div>
                                                         {/* </form> */}
