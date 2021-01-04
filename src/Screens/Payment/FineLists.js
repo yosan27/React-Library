@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-
+import NumberFormat from 'react-number-format';
 export default class FineLists extends Component {
   render() {
     return (
@@ -23,7 +23,7 @@ export default class FineLists extends Component {
                 <div className="col d-flex justify-content-center">{e.description}</div>
 
                 <div className="col d-flex justify-content-end">
-                  {e.kredit}
+                  <NumberFormat value={e.kredit} displayType={'text'} thousandSeparator="&#8228;"/>
                 </div>
               </div>
             );
@@ -43,7 +43,7 @@ export default class FineLists extends Component {
             <div className="col d-flex justify-content-center">Total</div>
 
             <div className="col d-flex justify-content-end">
-              {this.props.sum}
+            <NumberFormat value={this.props.sum} displayType={'text'} thousandSeparator="&#8228;"/>
             </div>
           </div>
         </div>
