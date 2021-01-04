@@ -11,38 +11,33 @@ class HeaderUser extends Component {
             username: "",
             userCode: "",
             userData: [],
-            countCart : ""
+            countCart: ""
         };
     }
-    componentWillMount() {
-        sessionStorage.getItem('userData') && this.setState({
-            userData: JSON.parse(sessionStorage.getItem('userData'))
-        })
-    }
-
+  
     componentDidMount() {
-        if (!sessionStorage.getItem('userData')) {
-            console.log("tidak ada userData")
+        if (!sessionStorage.getItem('userCode')) {
+            console.log("tidak ada userCode")
         } else {
-            sessionStorage.getItem('userData') && this.setState({
-                userData: JSON.parse(sessionStorage.getItem('userData'))
-            })
             console.log("ada local storage")
-            console.log(JSON.parse(sessionStorage.getItem('userData')));
-        }
-        this.setState({
-            // username: this.props.match.params.id
-            username: this.state.userData.data.userName,
-            userCode: this.state.userData.data.userCode
-        })
-        axios.get('http://localhost:8500/api/cart-by-user/' + this.state.userData.data.userCode)
-        .then((res) => {
-            console.log(res)
-            console.log(res.data.length);
-            this.setState({
-                countCart : res.data.length
+            console.log(sessionStorage.getItem('userCode'));
+            axios.get("http://localhost:8500/api/user-by-code/" + sessionStorage.getItem('userCode')).then((e) => {
+                // console.log(e);
+                this.setState({
+                    // saldo: e.data.balance,
+                    username: e.data.userName,
+                    userCode: sessionStorage.getItem('userCode')
+                })
             })
-        })
+            axios.get('http://localhost:8500/api/cart-by-user/' + sessionStorage.getItem('userCode'))
+                .then((res) => {
+                    console.log(res)
+                    console.log(res.data.length);
+                    this.setState({
+                        countCart: res.data.length
+                    })
+                })
+        }
     }
 
     render() {
