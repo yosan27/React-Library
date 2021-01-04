@@ -55,14 +55,14 @@ export default class FineManagement extends Component {
           this.setState({lastCode : code});
         }
       }else{
-        this.setState({lastCode : "F000"});
+        this.setState({lastCode : "F001"});
       }
       this.setState({fineCode: this.state.lastCode});
-    });
 
-    $(function () {
-      $("#fine-list").DataTable({
-        responsive: true,
+      $(function () {
+        $("#fine-list").DataTable({
+          responsive: true,
+        });
       });
     });
   }
