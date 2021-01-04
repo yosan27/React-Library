@@ -19,12 +19,6 @@ class SideBarUser extends Component {
     if (!sessionStorage.getItem('userCode')) {
       console.log("tidak ada userCode")
     } else {
-<<<<<<< HEAD
-      sessionStorage.getItem('userData') && this.setState({
-        userData: JSON.parse(sessionStorage.getItem('userData')),
-      })
-=======
->>>>>>> beeec1f108e9163a9c71567baa16431e26fca880
       console.log("ada local storage")
       console.log(sessionStorage.getItem('userCode'));
       axios.get("http://localhost:8500/api/user-by-code/"+ sessionStorage.getItem('userCode')).then((e) => {
@@ -36,14 +30,6 @@ class SideBarUser extends Component {
           })
       })
     }
-<<<<<<< HEAD
-    this.setState({
-      username: this.state.userData.data.userName,
-      userCode: this.state.userData.data.userCode,
-      saldo: this.state.userData.data.balance,
-    })
-=======
->>>>>>> beeec1f108e9163a9c71567baa16431e26fca880
   }
 
   removesessionStorage = () => {
@@ -51,12 +37,12 @@ class SideBarUser extends Component {
   };
 
   render() {
-    const { condition, username } = this.state;
+    const { condition} = this.state;
     const pathCurrent = window.location.pathname.split("/");
 
     // console.log(pathCurrent[1])
     // console.log(this.state.userCode)
-    if (this.state.userCode.substring(0, 2) == "UU") {
+    if (this.state.userCode.substring(0, 2) === "UU") {
       return (
         <div className="left_col scroll-view">
           <div className="navbar nav_title" style={{ border: 0 }}>
