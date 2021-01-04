@@ -37,12 +37,12 @@ class SideBarUser extends Component {
   };
 
   render() {
-    const { condition, username } = this.state;
+    const { condition} = this.state;
     const pathCurrent = window.location.pathname.split("/");
 
     // console.log(pathCurrent[1])
     // console.log(this.state.userCode)
-    if (this.state.userCode.substring(0, 2) == "UU") {
+    if (this.state.userCode.substring(0, 2) === "UU") {
       return (
         <div className="left_col scroll-view">
           <div className="navbar nav_title" style={{ border: 0 }}>
