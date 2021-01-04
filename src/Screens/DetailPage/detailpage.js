@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { Container, Jumbotron, Modal, Button} from 'react-bootstrap'
-import axios from 'axios'
+import API from "../../api";
 import './detailpage.css'
 import swal from 'sweetalert';
+import Moment from 'react-moment';
 
 
 class DetailPage extends Component {
@@ -20,37 +21,41 @@ class DetailPage extends Component {
       category: '',
       show: false,
       register: '',
-      pages: ''
+      pages: '',
+      descripttions: ''
     }
   }
 
   async componentDidMount() {
 
     try {
-      const res = await axios.get(`https://www.googleapis.com/books/v1/volumes/U_-BBAAAQBAJ`);
-      const bookData = res.data.volumeInfo;
-      const bookDataImage = res.data.volumeInfo.imageLinks.smallThumbnail
+      const res = await API.get(`/api/book/B001`);
+      const bookData = res.data.data;
+      console.log(bookData)
+      const bookDataImage = bookData.bookDetailsEntity.cover
+      console.log(bookDataImage)
 
-      if (res.data.accessInfo.embeddable) {
+      if (bookData.id) {
         this.setState({ bookAvailable: 'Available' });
       } else {
         this.setState({ bookAvailable: 'Not Available' });
       }
 
-      if (bookData.subtitle !== undefined) {
-        this.setState({ subtitle: bookData.subtitle });
+      if (bookData.bookDetailsEntity.subtitle !== undefined) {
+        this.setState({ subtitle: bookData.bookDetailsEntity.subtitle });
       } else {
         this.setState({ subtitle: 'Subtitle not available' });
       }
 
       this.setState({ bookData: bookData });
-      this.setState({ register: res.data.id });
-      this.setState({ title: bookData.title });
-      this.setState({ category: bookData.categories[0] });
+      this.setState({ register: bookData.bookCode });
+      this.setState({ title: bookData.bookDetailsEntity.bookTitle });
+      this.setState({ category: bookData.categoryEntity.categoryName });
       this.setState({ publishedDate: bookData.publishedDate });
-      this.setState({ author: bookData.authors });
-      this.setState({ pages: bookData.pageCount });
+      this.setState({ author: bookData.authorEntity.authorName });
+      this.setState({ pages: bookData.bookDetailsEntity.numberOfPages });
       this.setState({ bookDataImage: bookDataImage })
+      this.setState({ descriptions: bookData.bookDetailsEntity.description })
     } catch (error) {
       console.log(error);
     }
@@ -70,7 +75,7 @@ class DetailPage extends Component {
   }
 
   render() {
-    const { bookData, register, bookDataImage, bookAvailable, title, subtitle, author, category, publishedDate, show, pages } = this.state;
+    const { bookData, register, bookDataImage, bookAvailable, title, subtitle, author, category, publishedDate, show, pages, descriptions } = this.state;
     return (
       <div className="right_col" role="main" style={{ minHeight: '100vh' }}>
         <section className="mt-5 pt-5">
@@ -98,7 +103,11 @@ class DetailPage extends Component {
                           <div className="col-lg col-sm-4 text-center align-self-center">
                             <button id='bookCategories' type="button" className="btn btn-warning novel mb-3">{category}</button>
                             <h1 id='bookTitle' className="text-uppercase mb-3">{title}</h1>
-                            <p id='publishedAt' className='mb-0'>{publishedDate}</p>
+                            <p id='publishedAt' className='mb-0'>
+                              <Moment format="DD/MM/YYYY">
+                                {publishedDate}
+                              </Moment>
+                            </p>
                           </div>
                           <div className="col-lg col-sm-4 text-center align-self-center">
                             <h4 id='isAvailable' className="text-success">{bookAvailable}</h4>
@@ -122,7 +131,7 @@ class DetailPage extends Component {
                             <p>- {author}</p>
                             <div class=" mb-5 text-justify">
                               <p id='bookDescriptionHead'>
-                                In 1990, Milea along with her parents and sister Airin moved from Jakarta to Bandung. Her father is an Army officer. On her way to the school, she met Dilan, most-known as a 'bad boy' and leader of a motorbike gang who convinced her that she will sit on his bike with him as her boyfriend one day. Dilan started to flirt with her by coming to her house, making calls from a payphone and sending her odd but romantic gifts which includes a pre-filled crossword puzzle book: "so you don’t have to think about the answers". Unfortunately, Milea already has a boyfriend named Benni back in Jakarta. Despite that, she is no longer feels comfortable with him since he is perceived as rude and foul-mouthed. With Dilan's frequent overconfident movements, which initially made Nandan – her close friend who is in love with her – uncomfortable, Milea starts to develop feelings for him.
+                                {descriptions}
                               </p>
                             </div>
                           </div>

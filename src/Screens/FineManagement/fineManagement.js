@@ -131,16 +131,7 @@ export default class FineManagement extends Component {
       .then(() => window.location.reload());
   };
 
-  handleShowAdd = () => {
-    this.setState({ showAdd: true });
-  };
-
-  handleCloseModal = () => {
-    this.setState({ showAdd: false, showEdit: false, showDelete: false });
-  };
-
   render() {
-    const { showAdd } = this.state;
     return (
       <>
         <div className="right_col" role="main">
@@ -225,8 +216,6 @@ export default class FineManagement extends Component {
           className="modal fade"
           tabindex="-1"
           id="fineModal"
-          show={showAdd}
-          onHide={this.handleCloseModal}
         >
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content">
@@ -314,10 +303,14 @@ export default class FineManagement extends Component {
                 </div>
               </div>
               <div className="modal-footer">
+               <button className="btn btn-secondary" data-dismiss="modal">
+                  <i class="fa fa-times-circle"></i> Close
+                </button>
                 <Link
-                  className="btn btn-primary disabled add-btn"
+                  className="btn btn-success disabled add-btn"
                   onClick={this.addFine}
                 >
+                  <i class="fa fa-plus mr-1"></i>
                   {this.state.button}
                 </Link>
               </div>

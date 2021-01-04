@@ -27,7 +27,7 @@ class PublisherManagement extends Component {
   async componentDidMount() {
     // DATA TABEL
     try {
-      const res = await API.get(`/api/publisher`);
+      const res = await API.get(`/api/publisher/active`);
       const tabledata = res.data;
       this.setState({ tabledata: tabledata });
     } catch (error) {
@@ -74,14 +74,16 @@ class PublisherManagement extends Component {
   //button edit
   handleShowEdit = (pbid) => {
     this.setState({showEdit: true, publisherId : pbid})
-    API.get(`/api/publisher/get-by-id/${pbid}`).then((res) => {
+    API.get(`/api/publisher/id/${pbid}`).then((res) => {
       let response = res.data;
+      console.log(response)
       this.setState({
         publisherName: response.publisherName,
         address: response.address,
         publisherCode : response.publisherCode
       });
     });
+    console.log("tes pbid : "+this.state.publisherId)
   };
 
   handleSaveEdit = () => {
@@ -101,6 +103,7 @@ class PublisherManagement extends Component {
         }
       )
       .then(() => {
+        this.setState({ publisherId: "" })
         window.location.reload();
         swal("Great!", "Publisher Has Been edited", "success");
       })
@@ -124,7 +127,7 @@ class PublisherManagement extends Component {
 
   //util
   handleCloseModal = () => {
-    this.setState({ showAdd: false, showEdit: false, showDelete: false })
+    this.setState({ showAdd: false, showEdit: false, showDelete: false})
   }
 
   render() {
@@ -168,9 +171,11 @@ class PublisherManagement extends Component {
                                 <td>{pb.publisherCode}</td>
                                 <td>
                                   <div class='d-flex justify-content-around mt-4' style={{ border: 'none' }}>
-                                    <button class="btn btn-primary" data-toggle="modal" data-target="#edit" onClick={()=> this.handleShowEdit(pb.id)}><i
+                                    <button class="btn btn-primary" data-toggle="modal" data-target="#edit" 
+                                                  onClick={ ()=> {this.handleShowEdit(pb.id)}}><i
                                       class="fa fa-edit"></i></button>
-                                    <button class="btn btn-danger" data-toggle="modal" data-target="#delete" onClick={()=> this.handleShowDelete(pb.id)}><i
+                                    <button class="btn btn-danger" data-toggle="modal" data-target="#delete"
+                                                  onClick={()=> this.handleShowDelete(pb.id)}><i
                                       class="fa fa-trash"></i></button>
                                   </div>
                                 </td>
