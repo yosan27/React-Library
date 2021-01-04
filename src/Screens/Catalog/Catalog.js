@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import axios from "axios";
 import {Card, Table, Modal, Form, Row, Col, Badge, Button } from 'react-bootstrap';
 import swal from "sweetalert";
 import Image from 'react-bootstrap/Image'
@@ -14,9 +15,19 @@ import "datatables.net-dt/css/jquery.dataTables.min.css"
 import $ from 'jquery'; 
 
 class Catalog extends Component {
-    constructor(){
-        super()
+    constructor(props){
+        super(props)
         this.state = {
+
+            catalogData: [],
+            id: "",
+            bookCode: "",
+            bookTitle: "",
+            cover: "",
+            authorName: "",
+            categoryName: "",
+            publisherName: "",
+            
             data: [
                 {"id": "2017100251", "title":"Selena", "cover":"https://www.gramedia.com/blog/content/images/2020/05/selena_gramedia.jpg", "author":"Tere Liye", "categories":"Young Adult Fiction", "publisher":"Gramedia Pustaka "},
                 {"id": "2017100251", "title":"Nebula", "cover":"https://www.gramedia.com/blog/content/images/2020/05/nebula_gramedia.jpg", "author":"Tere Liye", "categories":"Young Adult Fiction", "publisher":"Gramedia Pustaka "},
@@ -101,11 +112,16 @@ class Catalog extends Component {
       function returnToOriginalSize() {
           $(this).css({width: "-=10%"});
       }
+
+      axios.get("http://localhost:8500/api/catalog").then((e) => {
+          this.setState({ catalogData: e.data});
+      });
     }
 
     render(){
         const { data, showDetail, showReview, addReview, value, setValue, errors, showAddCategory, disableSubmitting, fields } = this.state,
-      
+        
+       
         Photo = data.map(user => (
             <Image className='photoOfOrder text-center' key={user.id} src={user.cover} wrapped ui={false} style={{width:'30%',height:'auto'}}/>
         ));
@@ -140,26 +156,22 @@ class Catalog extends Component {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                    {
-                                                        data.map(user => {
+                                                    {this.state.catalogData.map((user) => {
                                                             return (
                                                                 <tr>
-                                                                    <td>{user.id}</td>
+                                                                    <td>{user.bookCode}</td>
                                                                     <td>
                                                                         <span className="d-flex justify-content-center" data-toggle="tooltip" title="detail">
                                                                             <button className="btn btn-primary" data-toggle="modal" data-target="#detail" onClick={this.handleShowDetail}><i className="fa fa-info-circle"></i></button>
                                                                         </span>
                                                                     </td>
-                                                                    <td>{user.title}</td>
-                                                                    <td className="text-center"><Image className='photoOfOrder text-center img-book' key={user.id} src={user.cover} wrapped ui={false} style={{width:'30%',height:'auto'}} /></td>
-                                                                    <td>{user.author}</td>
-                                                                    <td>{user.categories}</td>
-                                                                    <td>{user.publisher}</td>
-                                                                    
+                                                                    <td>{user.bookTitle}</td>
+                                                                    <td>{user.authorName}</td>
+                                                                    <td>{user.categoryName}</td>
+                                                                    <td>{user.publisherName}</td>
                                                                 </tr>
-                                                            )
-                                                        })
-                                                    }
+                                                            );
+                                                        })}
                                                 </tbody>
                                         </Table>
                                     </Card.Body>
