@@ -15,27 +15,35 @@ class SideBarUser extends Component {
     };
   }
 
-  componentWillMount() {
-    sessionStorage.getItem('userData') && this.setState({
-      userData: JSON.parse(sessionStorage.getItem('userData'))
-    })
-  }
-
   componentDidMount() {
-    if (!sessionStorage.getItem('userData')) {
-      console.log("tidak ada userData")
+    if (!sessionStorage.getItem('userCode')) {
+      console.log("tidak ada userCode")
     } else {
+<<<<<<< HEAD
       sessionStorage.getItem('userData') && this.setState({
         userData: JSON.parse(sessionStorage.getItem('userData')),
       })
+=======
+>>>>>>> beeec1f108e9163a9c71567baa16431e26fca880
       console.log("ada local storage")
-      console.log(JSON.parse(sessionStorage.getItem('userData')));
+      console.log(sessionStorage.getItem('userCode'));
+      axios.get("http://localhost:8500/api/user-by-code/"+ sessionStorage.getItem('userCode')).then((e) => {
+          // console.log(e);
+          this.setState({
+              saldo: e.data.balance,
+              username: e.data.userName,
+              userCode : sessionStorage.getItem('userCode')
+          })
+      })
     }
+<<<<<<< HEAD
     this.setState({
       username: this.state.userData.data.userName,
       userCode: this.state.userData.data.userCode,
       saldo: this.state.userData.data.balance,
     })
+=======
+>>>>>>> beeec1f108e9163a9c71567baa16431e26fca880
   }
 
   removesessionStorage = () => {
@@ -228,7 +236,7 @@ class SideBarUser extends Component {
           <div className="profile clearfix">
             <div className="profile_pic">
               <img
-                src="assets/images/user.png"
+                src={this.state.profilePict}
                 alt="..."
                 className="img-circle profile_img admin"
               />
