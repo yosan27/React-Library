@@ -6,12 +6,38 @@ export default class Profile extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            userCode : "UA001",
-            fullName : "Admin",
-            email : "admin@gmail.com",
-            profilePict : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBG685vI07-3MsuqJxjCfzIabfFJJG-8yM-ppvjjNpD5QNtWNE4A",
-            phone : "0812388291"
+            userCode: "UA001",
+            fullName: "Admin",
+            email: "admin@gmail.com",
+            profilePict: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBG685vI07-3MsuqJxjCfzIabfFJJG-8yM-ppvjjNpD5QNtWNE4A",
+            phone: "0812388291",
+            userName: ""
         }
+    }
+
+    componentWillMount() {
+        sessionStorage.getItem('userData') && this.setState({
+            userData: JSON.parse(sessionStorage.getItem('userData'))
+        })
+    }
+
+    componentDidMount() {
+        if (!sessionStorage.getItem('userData')) {
+            console.log("tidak ada userData")
+        } else {
+            sessionStorage.getItem('userData') && this.setState({
+                userData: JSON.parse(sessionStorage.getItem('userData'))
+            })
+            console.log("ada local storage")
+            console.log(JSON.parse(sessionStorage.getItem('userData')))
+        }
+        this.setState({
+            // username: this.props.match.params.id
+            userName: this.state.userData.data.userName,
+            userCode: this.state.userData.data.userCode,
+            fullName: this.state.userData.data.fullName,
+            email: this.state.userData.data.email,
+        })
     }
 
     updateBtn = () => {
@@ -94,7 +120,7 @@ export default class Profile extends Component {
                                                         role="tabpanel" aria-labelledby="vert-tabs-home-tab">
                                                         <form className="form-horizontal" action="" method="post"
                                                             encType="multipart/form-data">
-                                                           <div className="form-group row">
+                                                            <div className="form-group row">
                                                                 <label htmlFor="id"
                                                                     className="col-sm-2 col-form-label">User ID</label>
                                                                 <div className="col-sm-10">
@@ -126,7 +152,7 @@ export default class Profile extends Component {
                                                                 <div className="col-sm-10">
                                                                     <input type="text" name="username"
                                                                         className="form-control" id="username"
-                                                                        placeholder="masukan username..." value="admin" readOnly />
+                                                                        placeholder="masukan username..." value={this.state.userName} readOnly />
                                                                 </div>
                                                             </div>
                                                             <div className="form-group row">

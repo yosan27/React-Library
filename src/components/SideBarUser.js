@@ -7,30 +7,49 @@ class SideBarUser extends Component {
     super();
     this.state = {
       condition: false,
-      username : "",
-      userData : [],
+      username: "",
+      userData: [],
       saldo: "",
+      userCode: "",
+      profilePict: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBG685vI07-3MsuqJxjCfzIabfFJJG-8yM-ppvjjNpD5QNtWNE4A"
     };
   }
 
-  componentDidMount(){
-    axios.get("http://localhost:8500/api/user-by-id/1").then((e)=>{
-      this.setState({
-        saldo : e.data[0].balance
-      })
-    })
-    this.setState({
-      username : this.props.match.params.id
+  componentWillMount() {
+    sessionStorage.getItem('userData') && this.setState({
+      userData: JSON.parse(sessionStorage.getItem('userData'))
     })
   }
 
+  componentDidMount() {
+    if (!sessionStorage.getItem('userData')) {
+      console.log("tidak ada userData")
+    } else {
+      sessionStorage.getItem('userData') && this.setState({
+        userData: JSON.parse(sessionStorage.getItem('userData'))
+      })
+      console.log("ada local storage")
+      console.log(JSON.parse(sessionStorage.getItem('userData')));
+    }
+    this.setState({
+      // username: this.props.match.params.id
+      username: this.state.userData.data.userName,
+      userCode: this.state.userData.data.userCode,
+      saldo: this.state.userData.data.balance,
+    })
+  }
+
+  removesessionStorage = () => {
+    sessionStorage.clear();
+  };
+
   render() {
-    const { condition, username} = this.state;
+    const { condition, username } = this.state;
     const pathCurrent = window.location.pathname.split("/");
 
     // console.log(pathCurrent[1])
-    // console.log(condition)
-    if (username === "User") {
+    // console.log(this.state.userCode)
+    if (this.state.userCode.substring(0, 2) == "UU") {
       return (
         <div className="left_col scroll-view">
           <div className="navbar nav_title" style={{ border: 0 }}>
@@ -45,7 +64,7 @@ class SideBarUser extends Component {
           <div className="profile clearfix">
             <div className="profile_pic">
               <img
-                src="assets/images/user.png"
+                src={this.state.profilePict}
                 alt="..."
                 className="img-circle profile_img"
               />
@@ -126,8 +145,8 @@ class SideBarUser extends Component {
                   onClick={() => this.setState({ condition: !condition })}
                   className={
                     this.state.condition ||
-                    pathCurrent[1] === "cart" ||
-                    pathCurrent[1] === "wishlist"
+                      pathCurrent[1] === "cart" ||
+                      pathCurrent[1] === "wishlist"
                       ? "active"
                       : ""
                   }
@@ -141,8 +160,8 @@ class SideBarUser extends Component {
                     style={{
                       display:
                         this.state.condition ||
-                        pathCurrent[1] === "cart" ||
-                        pathCurrent[1] === "wishlist"
+                          pathCurrent[1] === "cart" ||
+                          pathCurrent[1] === "wishlist"
                           ? "block"
                           : "none",
                     }}
@@ -186,7 +205,7 @@ class SideBarUser extends Component {
           </div>
 
           <div className="sidebar-footer hidden-small d-flex flex-row">
-            <Link to="/">
+            <Link to="/" onClick={() => this.removesessionStorage()}>
               <span
                 className="glyphicon glyphicon-off"
                 aria-hidden="true"
@@ -281,8 +300,8 @@ class SideBarUser extends Component {
                       <Link to="/page/manageUser">User</Link>
                     </li>
                     <li className={(pathCurrent[1] === 'managePublisher' ? "current-page" : "")}>
-                        <Link to="/page/managePublisher">
-                            Publisher
+                      <Link to="/page/managePublisher">
+                        Publisher
                         </Link>
                     </li>
                     <li className={pathCurrent[1] === "manageBook" ? "current-page" : ""}>
@@ -320,7 +339,7 @@ class SideBarUser extends Component {
           </div>
 
           <div className="sidebar-footer hidden-small d-flex flex-row">
-            <Link to="/">
+            <Link to="/" onClick={() => this.removesessionStorage()}>
               <span
                 className="glyphicon glyphicon-off"
                 aria-hidden="true"
