@@ -22,31 +22,35 @@ export default class ProfileUser extends Component {
         this.userChange = this.userChange.bind(this)
     }
 
-    componentWillMount() {
-        sessionStorage.getItem('userData') && this.setState({
-            userData: JSON.parse(sessionStorage.getItem('userData'))
-        })
-    }
-
     componentDidMount() {
         if (!sessionStorage.getItem('userData')) {
             console.log("tidak ada userData")
         } else {
-            sessionStorage.getItem('userData') && this.setState({
-                userData: JSON.parse(sessionStorage.getItem('userData'))
-            })
             console.log("ada local storage")
             console.log(JSON.parse(sessionStorage.getItem('userData')))
+            axios.get("http://localhost:8500/api/user-by-code/" + sessionStorage.getItem('userCode')).then((e) => {
+                // console.log(e);
+                this.setState({
+                    // saldo: e.data.balance,
+                    username: e.data.userName,
+                    userCode: sessionStorage.getItem('userCode'),
+                    fullName: e.data.fullName,
+                    email: e.data.email,
+                    phone: e.data.phone,
+                    address: e.data.address,
+                    id: e.data.id
+                })
+            })
         }
-        this.setState({
-            // username: this.props.match.params.id
-            username: this.state.userData.data.userName,
-            userCode: this.state.userData.data.userCode,
-            fullName: this.state.userData.data.fullName,
-            email: this.state.userData.data.email,
-            phone: this.state.userData.data.phone,
-            address: this.state.userData.data.address,
-        })
+        // this.setState({
+        //     // username: this.props.match.params.id
+        //     username: this.state.userData.data.userName,
+        //     userCode: this.state.userData.data.userCode,
+        //     fullName: this.state.userData.data.fullName,
+        //     email: this.state.userData.data.email,
+        //     phone: this.state.userData.data.phone,
+        //     address: this.state.userData.data.address,
+        // })
     }
 
     updateBtn = (id) => {
@@ -79,7 +83,7 @@ export default class ProfileUser extends Component {
                 console.log(response);
             })
         this.setState({
-            password : "",
+            password: "",
         });
         swal("Successfully", "Changed password", "success");
     }
@@ -102,7 +106,7 @@ export default class ProfileUser extends Component {
             document.getElementById("pwmatch").style.color = "#FF0004";
         }
         this.setState({
-            password : e,
+            password: e,
         });
     };
 
@@ -119,7 +123,7 @@ export default class ProfileUser extends Component {
             document.getElementById("pwmatch").style.color = "#FF0004";
         }
         this.setState({
-            password : e,
+            password: e,
         });
     };
 
@@ -242,7 +246,7 @@ export default class ProfileUser extends Component {
                                                         <br />
                                                         <div className="form-group">
                                                             <button
-                                                                className="btn btn-primary btn-block" onClick={() => this.updateBtn(this.state.userData.data.id)}>Update</button>
+                                                                className="btn btn-primary btn-block" onClick={() => this.updateBtn(this.state.id)}>Update</button>
                                                         </div>
                                                         {/* </form> */}
                                                     </div>
@@ -273,7 +277,7 @@ export default class ProfileUser extends Component {
                                                             <br />
                                                             <div className="form-group">
                                                                 <button id="btn-save"
-                                                                    className="btn btn-primary btn-block" onClick={() => this.updatePassword(this.state.userData.data.id)}>Change</button>
+                                                                    className="btn btn-primary btn-block" onClick={() => this.updatePassword(this.state.id)}>Change</button>
                                                             </div>
                                                         </div>
                                                         {/* </form> */}
