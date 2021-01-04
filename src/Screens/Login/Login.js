@@ -93,7 +93,7 @@ class Login extends Component {
   render() {
     return (
       <section class="Form my-10 mx-5 pb-5 card-login">
-        <div class="container">
+        <div class="container mt-3">
           <div class="row no-gutters row-box">
             <div class="col-lg-5">
               <img src="assets/images/cover2.png" class="img-fluid img-page" alt="" />
