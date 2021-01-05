@@ -44,14 +44,14 @@ export default class Payment extends Component {
   }
 
   componentDidMount() {
-      axios.get("http://localhost:8500/api/user-by-code/"+ sessionStorage.getItem('userCode')).then((e) => {
+      axios.get("http://localhost:8500/api/user/code/"+ sessionStorage.getItem('userCode')).then((e) => {
           this.setState({
               saldo: e.data.balance,
               userId: e.data.id,
               userCode : sessionStorage.getItem('userCode')
           })
 
-      axios.get(`http://localhost:8500/api/transaction/get-by-user-code/${this.state.userCode}`)
+      axios.get(`http://localhost:8500/api/transaction/user/${this.state.userCode}`)
         .then((record) => {
           this.setState({paymentRecord: record.data});
           let idCode = this.state.userCode.substring(2,this.state.userCode.length);
@@ -79,7 +79,7 @@ export default class Payment extends Component {
           }
         });
 
-        axios.get(`http://localhost:8500/api/transaction-detail/get-by-user-code/${this.state.userCode}`).then((record) => {
+        axios.get(`http://localhost:8500/api/transaction-detail/user/${this.state.userCode}`).then((record) => {
           let idCode = this.state.userCode.substring(2,this.state.userCode.length);
           if (record.data.length !== 0) {
             let lastDigit = record.data[record.data.length - 1].detailCode.substr(7);
@@ -105,7 +105,7 @@ export default class Payment extends Component {
           }
       });
 
-      axios.get(`http://localhost:8500/api/transaction-detail/get-by-bill/${this.state.userCode}`).then((record)=>{
+      axios.get(`http://localhost:8500/api/transaction-detail/bill/${this.state.userCode}`).then((record)=>{
         record.data.map((d)=>{
           let bill = (parseInt(this.state.sum) + parseInt(d.kredit))
           if(d.rentEntity.status === 4){
@@ -204,7 +204,7 @@ export default class Payment extends Component {
         this.state.rentCodeList.map((e)=>{
           axios.put(`http://localhost:8500/api/rent/code/${e}`, updateStatus)
         });
-        axios.put(`http://localhost:8500/api/user-balance/${this.state.userId}`, updateBalance)
+        axios.put(`http://localhost:8500/api/user/balance/${this.state.userId}`, updateBalance)
           .then(() => {
             this.setState({ saldo: kurang });
             swal(
@@ -278,7 +278,7 @@ export default class Payment extends Component {
           .post("http://localhost:8500/api/transaction-detail", detail)
           .then(() => {
             axios
-              .put(`http://localhost:8500/api/user-balance/${this.state.userId}`, updateBalance)
+              .put(`http://localhost:8500/api/user/balance/${this.state.userId}`, updateBalance)
               .then(() => {
                 this.setState({ saldo: topUp, inputNominal: "" });
                 swal(
