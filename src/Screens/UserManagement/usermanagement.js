@@ -74,11 +74,7 @@ class UserManagement extends Component {
     };
 
     componentDidMount() {
-        $(function () {
-            $('#historyUser').DataTable({
-                responsive: true
-            });
-          });
+       
 
         $('.img-card').hover(makeBigger, returnToOriginalSize);
         function makeBigger() {
@@ -90,7 +86,15 @@ class UserManagement extends Component {
 
         axios.get("http://localhost:8500/api/user").then((e) => {
             this.setState({ userList: e.data });
+
+            $(function () {
+                $('#historyUser').DataTable({
+                    responsive: true
+                });
+              });
         })
+
+        update 
 
     }
 

@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import axios from 'axios'
 import swal from 'sweetalert'
 
 import 'datatables.net-dt/js/dataTables.dataTables'
@@ -9,52 +10,93 @@ import 'jquery/dist/jquery.min.js'
 import $ from 'jquery'
 
 class AuthorManagement extends Component {
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
         this.state = {
-            data: [
-                { "authorCode": "BA001", "authorName": "Andrea Hirata" },
-                { "authorCode": "BA002", "authorName": "Leila S. Chudori" },
-                { "authorCode": "BA003", "authorName": "Pramoedya Ananta Toer" },
-                { "authorCode": "BA004", "authorName": "Raditya Dika" },
-                { "authorCode": "BA005", "authorName": "Tere Liye" }
-            ]
+            author: [],
+            id: '',
+            authorCode: '',
+            authorName: ''
         }
+        this.changeAuthorNameHandler = this.changeAuthorNameHandler.bind(this)
+        this.saveAuthor = this.saveAuthor.bind(this)
+        this.updateAuthor = this.updateAuthor.bind(this)
+        this.deleteAuthor = this.deleteAuthor.bind(this)
     }
 
     componentDidMount() {
-        $(function () {
-            $('#manageAuthor').DataTable({
-                responsive: true
-            });
-        });
+        this.getAll()
+    }
+
+    getAll() {
+        axios.get('http://localhost:8500/api/author/active').then((res) => {
+            this.setState({ author: res.data })
+
+            $(function () {
+                $('#manageAuthor').DataTable({
+                    responsive: true
+                })
+            })
+        })
+    }
+
+    getById(getId) {
+        axios.get(`http://localhost:8500/api/author/id/${getId}`).then((res) => {
+            this.setState({
+                id: res.data.id,
+                authorCode: res.data.authorCode,
+                authorName: res.data.authorName
+            })
+        })
+    }
+
+    changeAuthorNameHandler = (e) => {
+        this.setState({authorName: e.target.value})
+    }
+
+    saveAuthor = (e) => {
+        e.preventDefault();
+        let author = { authorName: this.state.authorName }
+        axios.post('http://localhost:8500/api/author', author).then(() => {
+            this.alertAdd()
+        })
+    }
+
+    updateAuthor = (e) => {
+        e.preventDefault();
+        let author = { authorName: this.state.authorName }
+        axios.put(`http://localhost:8500/api/author/${this.state.id}`, author).then((e) => {
+            this.alertEdit()
+        })
+    }
+
+    deleteAuthor = (id) => {
+        axios.delete(`http://localhost:8500/api/author/${id}`).then(() => {
+            this.alertDelete()
+        })
     }
 
     alertAdd = () => {
-        swal("Success!", "Author Data Has Been Added", "success");
-        this.clearAddModal();
+        swal("Success!", "Author Data Has Been Added", "success")
+        window.location.reload()
     }
 
     alertEdit = () => {
-        swal("Success!", "Author Data Is Updated", "success");
-        this.clearEditModal();
+        swal("Success!", "Author Data Is Updated", "success")
+        window.location.reload()
     }
 
     alertDelete = () => {
-        swal("Deleted!", "Author Data Is Successfully Deleted", "success");
+        swal("Deleted!", "Author Data Is Successfully Deleted", "success")
+        window.location.reload()
     }
 
-    clearAddModal = () => {
-        document.getElementById('addAuthorCode').value='';
-        document.getElementById('addAuthorName').value='';
-    }
-
-    clearEditModal = () => {
-        document.getElementById('editAuthorName').value='';
+    clearModal = () => {
+        document.getElementById('authorName').value = ''
     }
 
     render() {
-        const { data } = this.state
+        const { author } = this.state
         return (
             <div className="right_col" role="main" style={{ minHeight: '100vh' }}>
                 <section className="mt-5 pt-5">
@@ -79,16 +121,16 @@ class AuthorManagement extends Component {
                                             </thead>
                                             <tbody>
                                                 {
-                                                    data.map((author, index ) => {
+                                                    author.map((author, index ) => {
                                                         return (
                                                             <tr key={index}>
                                                                 <td>{author.authorCode}</td>
                                                                 <td>
                                                                     <div className="btn-group" role="group">
-                                                                        <button className="btn btn-primary btn-sm rounded-sm mr-1" data-toggle="modal" data-target="#edit" style={{ width: '30px' }}>
+                                                                        <button className="btn btn-primary btn-sm rounded-sm w-30 mr-1" data-toggle="modal" data-target="#edit" onClick={() => this.getById(author.id)}>
                                                                             <i className="fa fa-edit"></i>
                                                                         </button>
-                                                                        <button className="btn btn-danger btn-sm rounded-sm" data-toggle="modal" data-target="#delete" style={{ width: '30px' }}>
+                                                                        <button className="btn btn-danger btn-sm rounded-sm w-30" onClick={() => this.deleteAuthor(author.id)}>
                                                                             <i className="fa fa-trash"></i>
                                                                         </button>
                                                                     </div>
@@ -122,20 +164,21 @@ class AuthorManagement extends Component {
                                     <div className="form-group row">
                                         <label className="col-sm-3 col-form-label">Author Code</label>
                                         <div className="col-sm-9">
-                                            <input type="text" className="form-control" id="addAuthorCode" />
+                                            <input className="form-control input" name="authorCode" readOnly disabled />
                                         </div>
                                     </div>
                                     <div className="form-group row">
                                         <label className="col-sm-3 col-form-label">Author Name</label>
                                         <div className="col-sm-9">
-                                            <input type="text" className="form-control" id="addAuthorName" />
+                                            <input className="form-control input" name="authorName" id="authorName" placeholder="Enter Author Name"
+                                                onChange={this.changeAuthorNameHandler} />
                                         </div>
                                     </div>
                                 </form>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.clearAddModal}>Cancel</button>
-                                <button type="button" className="btn btn-success" data-dismiss="modal" onClick={this.alertAdd}>Save</button>
+                                <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.clearModal}>Cancel</button>
+                                <button type="button" className="btn btn-success" data-dismiss="modal" onClick={this.saveAuthor}>Add</button>
                             </div>
                         </div>
                     </div>
@@ -156,20 +199,22 @@ class AuthorManagement extends Component {
                                     <div className="form-group row">
                                         <label className="col-sm-3 col-form-label">Author Code</label>
                                         <div className="col-sm-9">
-                                            <input type="text" readOnly className="form-control" id="editAuthorCode" value="BA001" disabled />
+                                            <input className="form-control input" name="authorCode" readOnly disabled
+                                                value={this.state.authorCode} />
                                         </div>
                                     </div>
                                     <div className="form-group row">
                                         <label className="col-sm-3 col-form-label">Author Name</label>
                                         <div className="col-sm-9">
-                                            <input type="text" className="form-control" id="editAuthorName" value="Author" />
+                                            <input className="form-control input" name="authorName"
+                                                value={this.state.authorName} onChange={this.changeAuthorNameHandler} />
                                         </div>
                                     </div>
                                 </form>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.clearEditModal}>Cancel</button>
-                                <button type="button" className="btn btn-success" data-dismiss="modal" onClick={this.alertEdit}>Save</button>
+                                <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.clearModal}>Cancel</button>
+                                <button type="button" className="btn btn-success" data-dismiss="modal" onClick={this.updateAuthor}>Update</button>
                             </div>
                         </div>
                     </div>
@@ -190,7 +235,7 @@ class AuthorManagement extends Component {
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                <button type="button" className="btn btn-warning" data-dismiss="modal" onClick={this.alertDelete}>Delete</button>
+                                <button type="button" className="btn btn-warning" data-dismiss="modal">Delete</button>
                             </div>
                         </div>
                     </div>
