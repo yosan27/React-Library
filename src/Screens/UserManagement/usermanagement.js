@@ -93,9 +93,6 @@ class UserManagement extends Component {
                 });
               });
         })
-
-        update 
-
     }
 
     render(){

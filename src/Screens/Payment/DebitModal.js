@@ -41,56 +41,66 @@ export default class DebitModal extends Component {
         [event.target.name]: event.target.value,
       });
     }
-
-    console.log(value.length)
     if (event.target.name === "cardNumber") {
       if (value.length === 16) {
         this.setState({a : true});
+        if(d && b && c && e && f) {
+          document.querySelector(".debit-modal-pay-btn").classList.remove("disabled");
+        }
       }else{
         this.setState({a : false});
+        document.querySelector(".debit-modal-pay-btn").classList.add("disabled");
       }
     }
     if (event.target.name === "cvc") {
       if (value.length === 3) {
         this.setState({b : true});
+        if(a && d && c && e && f) {
+          document.querySelector(".debit-modal-pay-btn").classList.remove("disabled");
+        }
       }else{
         this.setState({b : false});
+        document.querySelector(".debit-modal-pay-btn").classList.add("disabled");
       }
     }
     if (event.target.name === "expiredMonth") {
       if (value.length === 2) {
         this.setState({c : true});
+        if(a && b && d && e && f) {
+          document.querySelector(".debit-modal-pay-btn").classList.remove("disabled");
+        }
       }else{
         this.setState({c : false});
+        document.querySelector(".debit-modal-pay-btn").classList.add("disabled");
       }
     }
     if (event.target.name === "expiredYear") {
-      if (value.length >= 3) {
+      if (value.length === 4) {
         this.setState({d : true});
+        if(a && b && c && e && f) {
+          document.querySelector(".debit-modal-pay-btn").classList.remove("disabled");
+        }
       }else{
         this.setState({d : false});
+        document.querySelector(".debit-modal-pay-btn").classList.add("disabled");
       }
     }
-    if (this.state.nameCard !== "") {
-      this.setState({e : true});
-    }else{
-      this.setState({e : false});
+    if (event.target.name === "nameCard") {
+      if (value.length !== 0) {
+        this.setState({e : true});
+        if(a && b && c && d && f) {
+          document.querySelector(".debit-modal-pay-btn").classList.remove("disabled");
+        }
+      }else{
+        this.setState({e : false});
+        document.querySelector(".debit-modal-pay-btn").classList.add("disabled");
+      }
     }
     if (this.props.nominalTopUp !== 0) {
       this.setState({f : true});
     }else{
       this.setState({f : false});
     }
-    if(a && b && c && d && e && f) {
-      document
-        .querySelector(".debit-modal-pay-btn")
-        .classList.remove("disabled");
-    }else{
-      document
-      .querySelector(".debit-modal-pay-btn")
-      .classList.add("disabled");
-    }
-    console.log(a, b, c, d, e, f);
   };
 
   maxLengthCheck = (object) => {
