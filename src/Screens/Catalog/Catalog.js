@@ -98,13 +98,7 @@ class Catalog extends Component {
     
 
     componentDidMount() {
-        
-        $(function () {
-            $('#historyUser').DataTable({
-                responsive: true
-            });
-          });
-
+       
     $('.img-book').hover(makeBigger, returnToOriginalSize);
       function makeBigger() {
           $(this).css({width: '+=10%'});
@@ -114,8 +108,17 @@ class Catalog extends Component {
       }
 
       axios.get("http://localhost:8500/api/catalog").then((e) => {
-          this.setState({ catalogData: e.data});
+          this.setState({ catalogData: e.data.data});
+          //console.log(e.data.data[0]);
+
+          $(function () {
+            $('#historyUser').DataTable({
+                responsive: true
+            });
+          });
       });
+
+
     }
 
     render(){
@@ -150,9 +153,9 @@ class Catalog extends Component {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                    {this.state.catalogData.map((user) => {
+                                                    {this.state.catalogData.map((user, index) => {
                                                             return (
-                                                                <tr>
+                                                                <tr key={index}> 
                                                                     <td>{user.bookCode}</td>
                                                                     <td>
                                                                         <span className="d-flex justify-content-center" data-toggle="tooltip" title="detail">
