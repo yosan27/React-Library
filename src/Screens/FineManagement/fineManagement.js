@@ -14,7 +14,7 @@ export default class FineManagement extends Component {
     super(props);
 
     this.state = {
-      lastCode:"",
+      lastCode: "",
       fineList: [],
       allList: [],
       id: "",
@@ -27,37 +27,45 @@ export default class FineManagement extends Component {
   }
 
   componentDidMount() {
+    document.addEventListener('click', this.clearModal);
+
     axios.get("http://localhost:8500/api/fine/active").then((e) => {
       this.setState({ fineList: e.data });
     });
 
     axios.get("http://localhost:8500/api/fine").then((e) => {
       this.setState({
-        allList : e.data
+        allList: e.data,
       });
-      if(this.state.allList.length !== 0){
-        let lastDigit = this.state.allList[this.state.allList.length-1].fineCode.substr(3);
-        let secondDigit = this.state.allList[this.state.allList.length-1].fineCode.substr(2,1);
-        let firstDigit = this.state.allList[this.state.allList.length-1].fineCode.substr(1,1);
-        if(lastDigit === 9){
-          if(secondDigit === 9){
-            let firstPlus = parseInt(firstDigit)+1;
+      if (this.state.allList.length !== 0) {
+        let lastDigit = this.state.allList[
+          this.state.allList.length - 1
+        ].fineCode.substr(3);
+        let secondDigit = this.state.allList[
+          this.state.allList.length - 1
+        ].fineCode.substr(2, 1);
+        let firstDigit = this.state.allList[
+          this.state.allList.length - 1
+        ].fineCode.substr(1, 1);
+        if (lastDigit === 9) {
+          if (secondDigit === 9) {
+            let firstPlus = parseInt(firstDigit) + 1;
             let code = `F${firstPlus}00`;
-            this.setState({lastCode : code});
-          }else{
-            let secondPlus = parseInt(secondDigit)+1;
+            this.setState({ lastCode: code });
+          } else {
+            let secondPlus = parseInt(secondDigit) + 1;
             let code = `F${firstDigit}${secondPlus}0`;
-            this.setState({lastCode : code});
+            this.setState({ lastCode: code });
           }
-        }else{
-          let lastPlus = parseInt(lastDigit)+1;
+        } else {
+          let lastPlus = parseInt(lastDigit) + 1;
           let code = `F${firstDigit}${secondDigit}${lastPlus}`;
-          this.setState({lastCode : code});
+          this.setState({ lastCode: code });
         }
-      }else{
-        this.setState({lastCode : "F001"});
+      } else {
+        this.setState({ lastCode: "F001" });
       }
-      this.setState({fineCode: this.state.lastCode});
+      this.setState({ fineCode: this.state.lastCode });
 
       $(function () {
         $("#fine-list").DataTable({
@@ -67,7 +75,63 @@ export default class FineManagement extends Component {
     });
   }
 
+  clearModal = (e) => {
+    console.log(e.target.className);
+    if(e.target.className === "modal fade" || e.target.className === "btn btn-secondary modal-clear" || e.target.className === "modal-clear"){
+      axios.get("http://localhost:8500/api/fine").then((e) => {
+        if (this.state.button !== "Add Fine") {
+          this.setState({button : "Add Fine"});
+        }
+        if (this.state.allList.length !== 0) {
+          let lastDigit = this.state.allList[
+            this.state.allList.length - 1
+          ].fineCode.substr(3);
+          let secondDigit = this.state.allList[
+            this.state.allList.length - 1
+          ].fineCode.substr(2, 1);
+          let firstDigit = this.state.allList[
+            this.state.allList.length - 1
+          ].fineCode.substr(1, 1);
+          if (lastDigit === 9) {
+            if (secondDigit === 9) {
+              let firstPlus = parseInt(firstDigit) + 1;
+              let code = `F${firstPlus}00`;
+              this.setState({ lastCode: code });
+            } else {
+              let secondPlus = parseInt(secondDigit) + 1;
+              let code = `F${firstDigit}${secondPlus}0`;
+              this.setState({ lastCode: code });
+            }
+          } else {
+            let lastPlus = parseInt(lastDigit) + 1;
+            let code = `F${firstDigit}${secondDigit}${lastPlus}`;
+            this.setState({ lastCode: code });
+          }
+        } else {
+          this.setState({ lastCode: "F001" });
+        }
+        this.setState({ fineCode: this.state.lastCode });
+        this.setState({
+          allList: e.data,
+          fineType: "",
+          nominal: "",
+          validTo: "",
+        });
+      });
+    }
+  };
+
+  maxLengthCheck = (object) => {
+    if (object.target.value.length > object.target.maxLength) {
+      object.target.value = object.target.value.slice(
+        0,
+        object.target.maxLength
+      );
+    }
+  };
+
   handleChange = (event) => {
+    const re = /^[0-9\b]+$/;
     this.setState({
       [event.target.name]: event.target.value,
     });
@@ -147,7 +211,6 @@ export default class FineManagement extends Component {
                     <div className="card-body">
                       <button
                         className="btn btn-success mb-5"
-                        onClick={this.handleShowAdd}
                         data-toggle="modal"
                         data-target="#fineModal"
                       >
@@ -212,11 +275,7 @@ export default class FineManagement extends Component {
           </section>
         </div>
 
-        <div
-          className="modal fade"
-          tabindex="-1"
-          id="fineModal"
-        >
+        <div className="modal fade" tabindex="-1" id="fineModal">
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content">
               <div className="modal-header">
@@ -227,7 +286,9 @@ export default class FineManagement extends Component {
                   data-dismiss="modal"
                   aria-label="Close"
                 >
-                  <span aria-hidden="true">&times;</span>
+                  <span aria-hidden="true" onClick={this.clearModal} className="modal-clear">
+                    &times;
+                  </span>
                 </button>
               </div>
               <div className="modal-body">
@@ -244,7 +305,7 @@ export default class FineManagement extends Component {
                         placeholder="Fine Code"
                         value={this.state.fineCode}
                         onChange={(e) => this.handleChange(e)}
-                        style={{backgroundColor : "lightgray"}}
+                        style={{ backgroundColor: "lightgray" }}
                         readOnly
                       ></input>
                     </div>
@@ -303,7 +364,11 @@ export default class FineManagement extends Component {
                 </div>
               </div>
               <div className="modal-footer">
-               <button className="btn btn-secondary" data-dismiss="modal">
+                <button
+                  className="btn btn-secondary modal-clear"
+                  data-dismiss="modal"
+                  onClick={this.clearModal}
+                >
                   <i class="fa fa-times-circle"></i> Close
                 </button>
                 <Link
