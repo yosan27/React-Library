@@ -23,6 +23,9 @@ export default class FineManagement extends Component {
       nominal: "",
       validTo: "",
       button: "Add Fine",
+      a: false,
+      b: false,
+      c: false,
     };
   }
 
@@ -76,7 +79,6 @@ export default class FineManagement extends Component {
   }
 
   clearModal = (e) => {
-    console.log(e.target.className);
     if(e.target.className === "modal fade" || e.target.className === "btn btn-secondary modal-clear" || e.target.className === "modal-clear"){
       axios.get("http://localhost:8500/api/fine").then((e) => {
         if (this.state.button !== "Add Fine") {
@@ -130,20 +132,96 @@ export default class FineManagement extends Component {
     }
   };
 
-  handleChange = (event) => {
+  handleChange = (event, value) => {
+    let {a,b,c} = this.state;
     const re = /^[0-9\b]+$/;
-    this.setState({
-      [event.target.name]: event.target.value,
-    });
+    const date = /^[0-9/]+$/;
 
-    if (
-      this.state.fineCode !== "" &&
-      this.state.fineList !== "" &&
-      this.state.nominal !== "" &&
-      this.state.validFrom !== "" &&
-      this.state.validTo !== ""
-    ) {
-      document.querySelector(".add-btn").classList.remove("disabled");
+    if (event.target.name === "validTo") {
+      if (value === "" || date.test(value)) {
+        console.log(value.substring(2,3));
+        // Day
+        if(value.substring(0,1).includes("/") || value.substring(0,1)>3){
+          event.target.value = event.target.value.slice(0,0);
+        }
+        if(value.substring(1,2).includes("/") || (value.substring(0,1) === "3" && value.substring(1,2)>1)){
+          event.target.value = event.target.value.slice(0,1);
+        }
+        if(!value.substring(2,3).includes("/")){
+          event.target.value = event.target.value.slice(0,2);
+        }
+        // Month
+        if(value.substring(3,4).includes("/") || value.substring(3,4)>1){
+          event.target.value = event.target.value.slice(0,3);
+        }
+        if(value.substring(4,5).includes("/") || (value.substring(3,4) === "1" && value.substring(4,5)>2)){
+          event.target.value = event.target.value.slice(0,4);
+        }
+        if(!value.substring(5,6).includes("/")){
+          event.target.value = event.target.value.slice(0,5);
+        }
+        // Year
+        if(value.substring(6,10).includes("/")){
+          event.target.value = event.target.value.slice(0,6);
+        }
+        this.setState({
+          [event.target.name]: event.target.value,
+        });
+      }
+    }
+
+    if (event.target.name === "nominal") {
+      if (event.target.value === "" || re.test(event.target.value)) {
+        this.setState({
+          [event.target.name]: event.target.value,
+        });
+      }
+    }
+    
+    if(event.target.name === "fineType") {
+      this.setState({
+        [event.target.name]: event.target.value,
+      });
+    }
+
+    if (value === "") {
+      document.querySelector(".add-btn").classList.add("disabled");
+    }
+
+    if(event.target.name === "validTo"){
+      if(value !== ""){
+        this.setState({a: true});
+        if(b && c){
+          document.querySelector(".add-btn").classList.remove("disabled");
+        }
+      }else{
+        this.setState({a: false});
+        document.querySelector(".add-btn").classList.add("disabled");
+      }
+    }
+
+    if(event.target.name === "nominal"){
+      if(value !== ""){
+        this.setState({b: true});
+        if(a && c){
+          document.querySelector(".add-btn").classList.remove("disabled");
+        }
+      }else{
+        this.setState({b: false});
+        document.querySelector(".add-btn").classList.add("disabled");
+      }
+    }
+
+    if(event.target.name === "fineType"){
+      if(value !== ""){
+        this.setState({c: true});
+        if(b && a){
+          document.querySelector(".add-btn").classList.remove("disabled");
+        }
+      }else{
+        this.setState({c: false});
+        document.querySelector(".add-btn").classList.add("disabled");
+      }
     }
   };
 
@@ -304,7 +382,6 @@ export default class FineManagement extends Component {
                         id="fineCode"
                         placeholder="Fine Code"
                         value={this.state.fineCode}
-                        onChange={(e) => this.handleChange(e)}
                         style={{ backgroundColor: "lightgray" }}
                         readOnly
                       ></input>
@@ -318,12 +395,11 @@ export default class FineManagement extends Component {
                         name="fineType"
                         className="col-sm-6"
                         id="fineType"
-                        placeholder="Fine Type"
-                        autoComplete="off"
-                        required
+                        placeholder="Fold"
                         autoFocus
+                        autoComplete="off"
                         value={this.state.fineType}
-                        onChange={(e) => this.handleChange(e)}
+                        onChange={(e) => this.handleChange(e, e.target.value)}
                       ></input>
                     </div>
 
@@ -335,12 +411,10 @@ export default class FineManagement extends Component {
                         name="nominal"
                         className="col-sm-6"
                         id="nominal"
-                        placeholder="Nominal"
+                        placeholder="5000"
                         autoComplete="off"
-                        required
-                        autoFocus
                         value={this.state.nominal}
-                        onChange={(e) => this.handleChange(e)}
+                        onChange={(e) => this.handleChange(e, e.target.value)}
                       ></input>
                     </div>
 
@@ -349,15 +423,15 @@ export default class FineManagement extends Component {
                         Valid To
                       </label>
                       <input
+                        maxLength="10"
                         name="validTo"
                         className="col-sm-6"
+                        placeholder="dd/mm/yyyy"
                         id="validTo"
-                        placeholder="31/12/9999"
                         autoComplete="off"
-                        required
-                        autoFocus
                         value={this.state.validTo}
-                        onChange={(e) => this.handleChange(e)}
+                        onChange={(e) => this.handleChange(e, e.target.value)}
+                        // onInput={this.maxLengthCheck}
                       ></input>
                     </div>
                   </form>
