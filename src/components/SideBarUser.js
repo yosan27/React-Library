@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
+import NumberFormat from 'react-number-format';
 
 class SideBarUser extends Component {
   constructor() {
@@ -20,7 +21,6 @@ class SideBarUser extends Component {
       console.log("tidak ada userCode")
     } else {
       axios.get("http://localhost:8500/api/user-by-code/"+ sessionStorage.getItem('userCode')).then((e) => {
-          // console.log(e);
           this.setState({
               saldo: e.data.balance,
               username: e.data.userName,
@@ -38,8 +38,6 @@ class SideBarUser extends Component {
     const { condition} = this.state;
     const pathCurrent = window.location.pathname.split("/");
 
-    // console.log(pathCurrent[1])
-    // console.log(this.state.userCode)
     if (this.state.userCode.substring(0, 2) === "UU") {
       return (
         <div className="left_col scroll-view">
@@ -65,7 +63,7 @@ class SideBarUser extends Component {
               <h2>{this.state.username}</h2>
               <div>
                 <Link to="/page/payment">
-                  <h2 className="profile_saldo pt-2">Rp {this.state.saldo}</h2>
+                  <h2 className="profile_saldo pt-2">Rp <NumberFormat value={this.state.saldo} displayType={'text'} thousandSeparator="&#8228;" className="profile_saldo"/></h2>
                 </Link>
               </div>
             </div>
@@ -81,8 +79,7 @@ class SideBarUser extends Component {
               <h5>{this.state.username}</h5>
               <div>
                 <Link to="/page/payment">
-                  {}
-                  <h5 className="profile_saldo pt-2">{this.state.saldo}</h5>
+                  <h5 className="profile_saldo pt-2">Rp <NumberFormat value={this.state.saldo} displayType={'text'} thousandSeparator="&#8228;" className="profile_saldo"/></h5>
                 </Link>
               </div>
             </div>

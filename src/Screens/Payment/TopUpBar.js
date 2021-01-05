@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { IconContext } from "react-icons";
 import * as FaIcons from "react-icons/fa";
+import NumberFormat from 'react-number-format';
 
 export default class TopUpBar extends Component {
   render() {
@@ -16,7 +17,7 @@ export default class TopUpBar extends Component {
 
             <div className="col top-up d-flex justify-content-end">
               <p className="pr-1 saldo-text">Rp</p>
-              <span>{this.props.saldo}</span>
+              <span><NumberFormat value={this.props.saldo} displayType={'text'} thousandSeparator="&#8228;"/></span>
               <div className="history-icon" onClick={() => this.props.history()}>
                 <IconContext.Provider value={{ color: "green" }}>
                   <FaIcons.FaHistory />
