@@ -118,7 +118,6 @@ export default class Payment extends Component {
                 ],
               sum : bill
             })
-            
           }
         })
         if(this.state.listRecord.length === 0){
