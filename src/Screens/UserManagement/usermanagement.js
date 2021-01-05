@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import axios from "axios";
 import Image from 'react-bootstrap/Image'
 import { Modal, Button, Card, Table, Form, Row, Col, Badge } from 'react-bootstrap';
 //Datatable Modules
@@ -12,6 +13,14 @@ class UserManagement extends Component {
     constructor(){
         super()
         this.state = {
+            userList: [],
+            id:"",
+            userName:"",
+            fullName:"",
+            email:"",
+            status:"",
+            address:"",
+
             data: [
                 {"id":"1", "username":"Yosan27", "fullname":"Yosan Fandi", "email":"yosan27@gmail.com", "status":"Active", "card":"https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg"},
                 {"id":"2", "username":"Cleo", "fullname":"Cleoputra", "email":"cleo@gmail.com", "status":"Active", "card":"https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg"},
@@ -65,11 +74,7 @@ class UserManagement extends Component {
     };
 
     componentDidMount() {
-        $(function () {
-            $('#historyUser').DataTable({
-                responsive: true
-            });
-          });
+       
 
         $('.img-card').hover(makeBigger, returnToOriginalSize);
         function makeBigger() {
@@ -79,6 +84,15 @@ class UserManagement extends Component {
             $(this).css({width: "-=30%"});
         }
 
+        axios.get("http://localhost:8500/api/user").then((e) => {
+            this.setState({ userList: e.data });
+
+            $(function () {
+                $('#historyUser').DataTable({
+                    responsive: true
+                });
+              });
+        })
     }
 
     render(){
@@ -110,7 +124,7 @@ class UserManagement extends Component {
                                             </thead>
                                             <tbody>
                                                     {
-                                                        data.map(user => {
+                                                        this.state.userList.map((user) => {
                                                             return (
                                                                 <tr>
                                                                     <td>{user.id}</td>
@@ -121,8 +135,8 @@ class UserManagement extends Component {
                                                                         </Button>
                                                                         </span>
                                                                     </td>
-                                                                    <td>{user.username}</td>
-                                                                    <td>{user.fullname}</td>
+                                                                    <td>{user.userName}</td>
+                                                                    <td>{user.fullName}</td>
                                                                     <td>{user.email}</td>
                                                                     <td>{user.status}</td>
                                                                     <td className="text-center">
@@ -192,17 +206,22 @@ class UserManagement extends Component {
                                 <Image className='photoOfOrder text-center img-card card-img-top' src='https://widgetwhats.com/app/uploads/2019/11/free-profile-photo-whatsapp-4.png' wrapped ui={false} style={{width:'100%',height:'auto'}} />                                    
                                 </div>
                                 <div class="col-md-8">
+                                { this.state.userList.map((usr) => {
+                                    return(
                                     <div class="card-body">
-                                        <h5 class="card-title">Yosan27</h5>
+                                        <h5 class="card-title">{usr.userName}</h5>
                                         <div class="form-group">
-                                       
-                                        <p>Full Name: Yosan Fandi </p>
-                                        <p>Address: Jl. Pengangsaan Timur Blok Charlie No. 17A, Kebon Baru, Tebet Timur, Jakarta Selatan</p>
-                                        <p>Phone: 0812111222333</p>
-                                        <p class="card-text"><small class="text-muted">Active</small></p>
-                
+                                            <div>
+                                            <p>Full Name: {usr.fullName}</p>
+                                            <p>Address: {usr.address}</p>
+                                            <p>Phone: {usr.phone}</p>
+                                            <p class="card-text"><small class="text-muted">{usr.status}</small></p>
+                                            </div>
                                         </div>  
                                     </div>
+                                    )
+                                    })
+                                }
                                 </div>
                             </div>
                         </div>

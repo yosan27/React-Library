@@ -52,7 +52,7 @@ body {
 
   .profile_name h5{
     padding-top: 10px;
-    font-size: 14px;
+    font-size: 10px;
   }
 
   .profile_name .img-circle{
@@ -61,7 +61,7 @@ body {
 
   .profile_saldo{
     margin-top: -10px;
-    font-size: 14px !important;
+    font-size: 12px !important;
     padding-bottom: 20px;
   }
 
