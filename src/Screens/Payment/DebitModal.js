@@ -1,30 +1,106 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import NumberFormat from 'react-number-format';
+import NumberFormat from "react-number-format";
 
 export default class DebitModal extends Component {
   constructor(props) {
-    super(props)
-  
-    this.state = {
-       nameCard : "",
-       cardNumber : "",
-       cvc : "",
-       expiredMonth : "",
-       expiredYear : "",
-    }
-  }
-  
-  handleChange = (event) => {
-    this.setState({
-      [event.target.name] : event.target.value
-    });
+    super(props);
 
-    if(this.state.nameCard !== "" && this.state.cardNumber !== "" && this.state.cvc !== ""
-      && this.state.expiredMonth !== "" && this.state.expiredYear !== "" && this.props.nominalTopUp !== 0){
-          document.querySelector(".debit-modal-pay-btn").classList.remove("disabled");
-      }
+    this.state = {
+      nameCard: "",
+      cardNumber: "",
+      cvc: "",
+      expiredMonth: "",
+      expiredYear: "",
+      a: false,
+      b: false,
+      c: false,
+      d: false,
+      e: false,
+      f: false,
+    };
   }
+
+  handleChange = (event, value) => {
+    const re = /^[0-9\b]+$/;
+    let {a,b,c,d,e,f} = this.state;
+
+    if (
+      event.target.name === "cvc" ||
+      event.target.name === "cardNumber" ||
+      event.target.name === "expiredMonth" ||
+      event.target.name === "expiredYear"
+    ) {
+      if (event.target.value === "" || re.test(event.target.value)) {
+        this.setState({
+          [event.target.name]: event.target.value,
+        });
+      }
+    } else {
+      this.setState({
+        [event.target.name]: event.target.value,
+      });
+    }
+
+    console.log(value.length)
+    if (event.target.name === "cardNumber") {
+      if (value.length === 16) {
+        this.setState({a : true});
+      }else{
+        this.setState({a : false});
+      }
+    }
+    if (event.target.name === "cvc") {
+      if (value.length === 3) {
+        this.setState({b : true});
+      }else{
+        this.setState({b : false});
+      }
+    }
+    if (event.target.name === "expiredMonth") {
+      if (value.length === 2) {
+        this.setState({c : true});
+      }else{
+        this.setState({c : false});
+      }
+    }
+    if (event.target.name === "expiredYear") {
+      if (value.length >= 3) {
+        this.setState({d : true});
+      }else{
+        this.setState({d : false});
+      }
+    }
+    if (this.state.nameCard !== "") {
+      this.setState({e : true});
+    }else{
+      this.setState({e : false});
+    }
+    if (this.props.nominalTopUp !== 0) {
+      this.setState({f : true});
+    }else{
+      this.setState({f : false});
+    }
+    if(a && b && c && d && e && f) {
+      document
+        .querySelector(".debit-modal-pay-btn")
+        .classList.remove("disabled");
+    }else{
+      document
+      .querySelector(".debit-modal-pay-btn")
+      .classList.add("disabled");
+    }
+    console.log(a, b, c, d, e, f);
+  };
+
+  maxLengthCheck = (object) => {
+    if (object.target.value.length > object.target.maxLength) {
+      object.target.value = object.target.value.slice(
+        0,
+        object.target.maxLength
+      );
+    }
+  };
 
   render() {
     return (
@@ -65,7 +141,7 @@ export default class DebitModal extends Component {
                       name="nameCard"
                       autocomplete="off"
                       value={this.state.nameCard}
-                      onChange={(e) => this.handleChange(e)}
+                      onChange={(e) => this.handleChange(e, e.target.value)}
                     />
                   </div>
                 </div>
@@ -78,11 +154,13 @@ export default class DebitModal extends Component {
                     <br />
                     <input
                       className="long-input"
+                      maxLength="16"
                       type="text"
                       name="cardNumber"
                       autocomplete="off"
                       value={this.state.cardNumber}
-                      onChange={(e) => this.handleChange(e)}
+                      onChange={(e) => this.handleChange(e, e.target.value)}
+                      onInput={this.maxLengthCheck}
                     />
                   </div>
                 </div>
@@ -105,13 +183,13 @@ export default class DebitModal extends Component {
                   <div className="col-4 mr-1">
                     <input
                       className="short-input"
+                      maxLength="3"
                       type="text"
                       name="cvc"
                       placeholder="ex. 311"
-                      autocomplete="off"
                       size="3"
                       value={this.state.cvc}
-                      onChange={(e) => this.handleChange(e)}
+                      onChange={(e) => this.handleChange(e, e.target.value)}
                     />
                   </div>
 
@@ -119,25 +197,27 @@ export default class DebitModal extends Component {
                     <input
                       className="short-input"
                       type="text"
+                      maxLength="2"
                       name="expiredMonth"
-                      placeholder="MM"
+                      placeholder="mm"
                       autocomplete="off"
                       size="4"
                       value={this.state.expiredMonth}
-                      onChange={(e) => this.handleChange(e)}
+                      onChange={(e) => this.handleChange(e, e.target.value)}
                     />
                   </div>
 
                   <div className="col d-flex justify-content-end">
                     <input
                       className="short-input"
+                      maxLength="4"
                       type="text"
                       name="expiredYear"
-                      placeholder="YY"
+                      placeholder="yyyy"
                       autocomplete="off"
                       size="4"
-                      value = {this.state.expiredYear}
-                      onChange={(e) => this.handleChange(e)}
+                      value={this.state.expiredYear}
+                      onChange={(e) => this.handleChange(e, e.target.value)}
                     />
                   </div>
                 </div>
@@ -152,7 +232,14 @@ export default class DebitModal extends Component {
 
                     <div className="row">
                       <div className="total col">
-                        <span>Rp <NumberFormat value={this.props.nominalTopUp} displayType={'text'} thousandSeparator="&#8228;" /></span>
+                        <span>
+                          Rp{" "}
+                          <NumberFormat
+                            value={this.props.nominalTopUp}
+                            displayType={"text"}
+                            thousandSeparator="&#8228;"
+                          />
+                        </span>
                       </div>
                     </div>
                   </div>

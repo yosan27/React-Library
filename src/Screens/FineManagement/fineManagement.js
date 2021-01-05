@@ -27,7 +27,7 @@ export default class FineManagement extends Component {
   }
 
   componentDidMount() {
-    axios.get("http://localhost:8500/api/fine/get-active").then((e) => {
+    axios.get("http://localhost:8500/api/fine/active").then((e) => {
       this.setState({ fineList: e.data });
     });
 
@@ -113,7 +113,7 @@ export default class FineManagement extends Component {
       button: "Update Fine",
     });
 
-    axios.get(`http://localhost:8500/api/fine/get-by-id/${getId}`).then((e) => {
+    axios.get(`http://localhost:8500/api/fine/id/${getId}`).then((e) => {
       let res = e.data;
       this.setState({
         fineCode: res.fineCode,
