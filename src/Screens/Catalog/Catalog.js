@@ -136,12 +136,6 @@ class Catalog extends Component {
                                         <h3>Book Catalog</h3>
                                     </Card.Header>
                                     <Card.Body>
-
-                                    <div class="">
-                                        <Button className="mb-5" variant="success" onClick={this.handleShowAddCategory}>
-                                            <i class="fa fa-plus"></i> Add Category
-                                        </Button>
-                                    </div>
                                         <Table responsive striped id="historyUser" style={{ width: '100%' }}>
                                             <thead>
                                                 <tr>
