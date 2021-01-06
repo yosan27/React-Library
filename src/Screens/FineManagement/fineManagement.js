@@ -79,10 +79,10 @@ export default class FineManagement extends Component {
   }
 
   clearModal = (e) => {
-    if(e.target.className === "modal fade" || e.target.className === "btn btn-secondary modal-clear" || e.target.className === "modal-clear"){
+    if (e.target.className === "modal fade" || e.target.className === "btn btn-secondary modal-clear" || e.target.className === "modal-clear") {
       axios.get("http://localhost:8500/api/fine").then((e) => {
         if (this.state.button !== "Add Fine") {
-          this.setState({button : "Add Fine"});
+          this.setState({ button: "Add Fine" });
         }
         if (this.state.allList.length !== 0) {
           let lastDigit = this.state.allList[
@@ -133,36 +133,36 @@ export default class FineManagement extends Component {
   };
 
   handleChange = (event, value) => {
-    let {a,b,c} = this.state;
+    let { a, b, c } = this.state;
     const re = /^[0-9\b]+$/;
     const date = /^[0-9/]+$/;
 
     if (event.target.name === "validTo") {
       if (value === "" || date.test(value)) {
-        console.log(value.substring(2,3));
+        console.log(value.substring(2, 3));
         // Day
-        if(value.substring(0,1).includes("/") || value.substring(0,1)>3){
-          event.target.value = event.target.value.slice(0,0);
+        if (value.substring(0, 1).includes("/") || value.substring(0, 1) > 3) {
+          event.target.value = event.target.value.slice(0, 0);
         }
-        if(value.substring(1,2).includes("/") || (value.substring(0,1) === "3" && value.substring(1,2)>1)){
-          event.target.value = event.target.value.slice(0,1);
+        if (value.substring(1, 2).includes("/") || (value.substring(0, 1) === "3" && value.substring(1, 2) > 1)) {
+          event.target.value = event.target.value.slice(0, 1);
         }
-        if(!value.substring(2,3).includes("/")){
-          event.target.value = event.target.value.slice(0,2);
+        if (!value.substring(2, 3).includes("/")) {
+          event.target.value = event.target.value.slice(0, 2);
         }
         // Month
-        if(value.substring(3,4).includes("/") || value.substring(3,4)>1){
-          event.target.value = event.target.value.slice(0,3);
+        if (value.substring(3, 4).includes("/") || value.substring(3, 4) > 1) {
+          event.target.value = event.target.value.slice(0, 3);
         }
-        if(value.substring(4,5).includes("/") || (value.substring(3,4) === "1" && value.substring(4,5)>2)){
-          event.target.value = event.target.value.slice(0,4);
+        if (value.substring(4, 5).includes("/") || (value.substring(3, 4) === "1" && value.substring(4, 5) > 2)) {
+          event.target.value = event.target.value.slice(0, 4);
         }
-        if(!value.substring(5,6).includes("/")){
-          event.target.value = event.target.value.slice(0,5);
+        if (!value.substring(5, 6).includes("/")) {
+          event.target.value = event.target.value.slice(0, 5);
         }
         // Year
-        if(value.substring(6,10).includes("/")){
-          event.target.value = event.target.value.slice(0,6);
+        if (value.substring(6, 10).includes("/")) {
+          event.target.value = event.target.value.slice(0, 6);
         }
         this.setState({
           [event.target.name]: event.target.value,
@@ -177,8 +177,8 @@ export default class FineManagement extends Component {
         });
       }
     }
-    
-    if(event.target.name === "fineType") {
+
+    if (event.target.name === "fineType") {
       this.setState({
         [event.target.name]: event.target.value,
       });
@@ -188,38 +188,38 @@ export default class FineManagement extends Component {
       document.querySelector(".add-btn").classList.add("disabled");
     }
 
-    if(event.target.name === "validTo"){
-      if(value !== ""){
-        this.setState({a: true});
-        if(b && c){
+    if (event.target.name === "validTo") {
+      if (value !== "") {
+        this.setState({ a: true });
+        if (b && c) {
           document.querySelector(".add-btn").classList.remove("disabled");
         }
-      }else{
-        this.setState({a: false});
+      } else {
+        this.setState({ a: false });
         document.querySelector(".add-btn").classList.add("disabled");
       }
     }
 
-    if(event.target.name === "nominal"){
-      if(value !== ""){
-        this.setState({b: true});
-        if(a && c){
+    if (event.target.name === "nominal") {
+      if (value !== "") {
+        this.setState({ b: true });
+        if (a && c) {
           document.querySelector(".add-btn").classList.remove("disabled");
         }
-      }else{
-        this.setState({b: false});
+      } else {
+        this.setState({ b: false });
         document.querySelector(".add-btn").classList.add("disabled");
       }
     }
 
-    if(event.target.name === "fineType"){
-      if(value !== ""){
-        this.setState({c: true});
-        if(b && a){
+    if (event.target.name === "fineType") {
+      if (value !== "") {
+        this.setState({ c: true });
+        if (b && a) {
           document.querySelector(".add-btn").classList.remove("disabled");
         }
-      }else{
-        this.setState({c: false});
+      } else {
+        this.setState({ c: false });
         document.querySelector(".add-btn").classList.add("disabled");
       }
     }
@@ -431,7 +431,7 @@ export default class FineManagement extends Component {
                         autoComplete="off"
                         value={this.state.validTo}
                         onChange={(e) => this.handleChange(e, e.target.value)}
-                        // onInput={this.maxLengthCheck}
+                      // onInput={this.maxLengthCheck}
                       ></input>
                     </div>
                   </form>
