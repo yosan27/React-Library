@@ -101,8 +101,8 @@ export default class FineManagement extends Component {
         validTo: "",
       });
       document.querySelector(".add-btn").classList.add("disabled");
-      if(this.state.button === "Update Fine"){
-        this.setState({button : "Add Fine"})
+      if (this.state.button === "Update Fine") {
+        this.setState({ button: "Add Fine" })
       }
     }
   };
@@ -121,8 +121,8 @@ export default class FineManagement extends Component {
     const re = /^[0-9\b]+$/;
     const date = /^[0-9/]+$/;
 
-    if(button !== "Add Fine"){
-      this.setState({a:true, b:true, c:true})
+    if (button !== "Add Fine") {
+      this.setState({ a: true, b: true, c: true })
     }
 
     // Validate user input
@@ -196,11 +196,11 @@ export default class FineManagement extends Component {
           [event.target.name]: event.target.value,
           c: true
         });
-        if(value !== " "){
+        if (value !== " ") {
           if (b && a) {
             document.querySelector(".add-btn").classList.remove("disabled");
           }
-        }else {
+        } else {
           this.setState({ c: false });
           document.querySelector(".add-btn").classList.add("disabled");
         }
@@ -421,7 +421,7 @@ export default class FineManagement extends Component {
                         autoComplete="off"
                         value={this.state.validTo}
                         onChange={(e) => this.handleChange(e, e.target.value)}
-                        // onInput={this.maxLengthCheck}
+                      // onInput={this.maxLengthCheck}
                       ></input>
                     </div>
                   </form>

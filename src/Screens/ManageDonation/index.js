@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Table } from "react-bootstrap";
+import { Link } from "react-router-dom";
+
 import axios from "axios";
 import swal from "sweetalert";
 
@@ -23,7 +25,8 @@ class ManageDonation extends Component {
       description: "",
       photo: "",
       status: "",
-      categoryCode: ""
+      categoryCode: "",
+      button: "Update Data",
     }
     this.donationChange = this.donationChange.bind(this)
   }
@@ -36,6 +39,8 @@ class ManageDonation extends Component {
 
   componentDidMount() {
     this.findPerson();
+
+
   }
 
   findPerson() {
@@ -61,6 +66,11 @@ class ManageDonation extends Component {
 
 
   getDetail = (getId) => {
+    this.setState({
+      id: getId,
+
+    });
+
     axios.get(`http://localhost:8500/api/donation/id/${getId}`).then((e) => {
       let res = e.data;
       this.setState({
@@ -73,6 +83,18 @@ class ManageDonation extends Component {
         categoryCode: res.categoryCode
       });
     });
+  };
+
+  addUpdate = () => {
+    let donationList = {
+      author: this.state.author,
+      bookTitle: this.state.bookTitle,
+      year: this.state.year,
+      description: this.state.description,
+    };
+    axios
+      .put(`http://localhost:8500/api/donation-detail/${this.state.id}`, donationList)
+      .then(() => window.location.reload());
   };
 
 
@@ -90,12 +112,35 @@ class ManageDonation extends Component {
   //   });
   // }
 
-  // handleChange = (event) => {
-  //   this.setState({
-  //     [event.target.name]: event.target.value,
-  //   });
+  handleChange = (event) => {
 
-  // };
+
+    if (event.target.name === "bookTitle") {
+      this.setState({
+        [event.target.name]: event.target.value,
+      });
+    }
+
+    if (event.target.name === "author") {
+      this.setState({
+        [event.target.name]: event.target.value,
+      });
+    }
+
+    if (event.target.name === "year") {
+      this.setState({
+        [event.target.name]: event.target.value,
+      });
+    }
+
+    if (event.target.name === "description") {
+      this.setState({
+        [event.target.name]: event.target.value,
+      });
+    }
+
+
+  };
 
 
 
@@ -147,7 +192,7 @@ class ManageDonation extends Component {
                                 <td>
                                   <span className="d-flex justify-content-center">
                                     <button
-                                      className="btn btn-primary"
+                                      className="btn btn-warning"
                                       data-toggle="modal"
                                       data-target="#edit"
                                       onClick={() => this.getDetail(donation.id)}
@@ -160,6 +205,14 @@ class ManageDonation extends Component {
                                       data-target="#delete"
                                     >
                                       <i className="fa fa-check"></i>
+                                    </button>
+                                    <button
+                                      className="btn btn-primary"
+                                      onClick={() => this.getDetail(donation.id)}
+                                      data-toggle="modal"
+                                      data-target="#fineModal"
+                                    >
+                                      <i className="fa fa-edit"></i>
                                     </button>
                                     <button
                                       className="btn btn-danger"
@@ -183,12 +236,137 @@ class ManageDonation extends Component {
                     </div>
                   </div>
 
-                  {/* MODAL */}
+                  {/* MODAL ACC DONATION & UPDATE */}
+                  <div className="modal fade" tabindex="-1" id="fineModal">
+                    <div className="modal-dialog modal-dialog-centered">
+                      <div className="modal-content">
+                        <div className="modal-header">
+                          <h4 className="modal-title">Donation Update Data Form</h4>
+                          <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close"
+                          >
+                            <span aria-hidden="true" onClick={this.clearModal} className="modal-clear">
+                              &times;
+                  </span>
+                          </button>
+                        </div>
+                        <div className="modal-body">
+                          <div class="container">
+                            <form className="mb-4">
+                              <div className="form-group row">
+                                <label for="fineType" className="col-sm-3">
+                                  Title
+                      </label>
+                                <input
+                                  name="bookTitle"
+                                  className="col-sm-6"
+                                  id="bookTitle"
+                                  placeholder="Kisah Tanah Jawa"
+                                  autoFocus
+                                  autoComplete="off"
+                                  value={this.state.bookTitle}
+                                  onChange={(e) => this.handleChange(e, e.target.value)}
+                                ></input>
+                              </div>
+
+                              <div className="form-group row">
+                                <label for="nominal" className="col-sm-3">
+                                  Year
+                      </label>
+                                <input
+                                  name="year"
+                                  className="col-sm-6"
+                                  id="year"
+                                  placeholder="2021"
+                                  autoComplete="off"
+                                  value={this.state.year}
+                                  onChange={(e) => this.handleChange(e, e.target.value)}
+                                ></input>
+                              </div>
+
+                              <div className="form-group row">
+                                <label for="validTo" className="col-sm-3">
+                                  Author
+                      </label>
+                                <input
+                                  name="author"
+                                  className="col-sm-6"
+                                  placeholder="Pramoedya A. TOer"
+                                  id="author"
+                                  autoComplete="off"
+                                  value={this.state.author}
+                                  onChange={(e) => this.handleChange(e, e.target.value)}
+                                // onInput={this.maxLengthCheck}
+                                ></input>
+                              </div>
+
+                              <div className="form-group row">
+                                <label for="validTo" className="col-sm-3">
+                                  Category
+                      </label>
+                                <input
+                                  name="category"
+                                  className="col-sm-6"
+                                  placeholder="History"
+                                  id="category"
+                                  autoComplete="off"
+                                  value={this.state.categoryName}
+                                  onChange={(e) => this.handleChange(e, e.target.value)}
+                                // onInput={this.maxLengthCheck}
+                                ></input>
+                              </div>
+
+                              <div className="form-group row">
+                                <label for="validTo" className="col-sm-3">
+                                  Description/Condition
+                      </label>
+                                <input
+                                  name="description"
+                                  className="col-sm-6"
+                                  placeholder="Description of book"
+                                  id="description"
+                                  autoComplete="off"
+                                  value={this.state.description}
+                                  onChange={(e) => this.handleChange(e, e.target.value)}
+                                // onInput={this.maxLengthCheck}
+                                ></input>
+                              </div>
+
+
+                            </form>
+                          </div>
+                        </div>
+                        <div className="modal-footer">
+                          <button
+                            className="btn btn-secondary modal-clear"
+                            data-dismiss="modal"
+                            onClick=""
+                          >
+                            <i class="fa fa-times-circle"></i> Close
+                </button>
+                          <Link
+                            className="btn btn-success add-btn"
+                            onClick={this.addUpdate}
+                          >
+                            <i class="fa fa-plus mr-1"></i>
+                            {this.state.button}
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+
+                  {/* MODAL DETAIL DATA */}
 
                   <div
                     class="modal fade"
                     id="edit"
-                    tabindex="-1"
+                    tabindex="1"
                     aria-labelledby="editModalLabel"
                     aria-hidden="true"
                     key={this.state.id}
@@ -303,7 +481,9 @@ class ManageDonation extends Component {
                           <button
                             type="button"
                             class="btn btn-warning"
-                            onClick={() => this.submitAccept()}
+                            onClick={() => this.update(this.state.id)}
+                            data-target="#fineModal"
+                            data-toggle="modal"
                           >
                             Update
                         </button>
@@ -311,6 +491,8 @@ class ManageDonation extends Component {
                       </div>
                     </div>
                   </div>
+
+
 
                   {/* MODAL VERIFY */}
                   <div
