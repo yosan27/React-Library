@@ -85,48 +85,6 @@ export default class FineManagement extends Component {
   };
 
   clearModal = (e) => {
-<<<<<<< HEAD
-    if (e.target.className === "modal fade" || e.target.className === "btn btn-secondary modal-clear" || e.target.className === "modal-clear") {
-      axios.get("http://localhost:8500/api/fine").then((e) => {
-        if (this.state.button !== "Add Fine") {
-          this.setState({ button: "Add Fine" });
-        }
-        if (this.state.allList.length !== 0) {
-          let lastDigit = this.state.allList[
-            this.state.allList.length - 1
-          ].fineCode.substr(3);
-          let secondDigit = this.state.allList[
-            this.state.allList.length - 1
-          ].fineCode.substr(2, 1);
-          let firstDigit = this.state.allList[
-            this.state.allList.length - 1
-          ].fineCode.substr(1, 1);
-          if (lastDigit === 9) {
-            if (secondDigit === 9) {
-              let firstPlus = parseInt(firstDigit) + 1;
-              let code = `F${firstPlus}00`;
-              this.setState({ lastCode: code });
-            } else {
-              let secondPlus = parseInt(secondDigit) + 1;
-              let code = `F${firstDigit}${secondPlus}0`;
-              this.setState({ lastCode: code });
-            }
-          } else {
-            let lastPlus = parseInt(lastDigit) + 1;
-            let code = `F${firstDigit}${secondDigit}${lastPlus}`;
-            this.setState({ lastCode: code });
-          }
-        } else {
-          this.setState({ lastCode: "F001" });
-        }
-        this.setState({ fineCode: this.state.lastCode });
-        this.setState({
-          allList: e.data,
-          fineType: "",
-          nominal: "",
-          validTo: "",
-        });
-=======
     // Check click event listener
     if (
       e.target.className === "modal fade" ||
@@ -141,11 +99,10 @@ export default class FineManagement extends Component {
         fineType: "",
         nominal: "",
         validTo: "",
->>>>>>> eed2b4077f38a7e6140972b83eb3dc01d4b36af2
       });
       document.querySelector(".add-btn").classList.add("disabled");
-      if(this.state.button === "Update Fine"){
-        this.setState({button : "Add Fine"})
+      if (this.state.button === "Update Fine") {
+        this.setState({ button: "Add Fine" })
       }
     }
   };
@@ -160,37 +117,25 @@ export default class FineManagement extends Component {
   };
 
   handleChange = (event, value) => {
-<<<<<<< HEAD
-    let { a, b, c } = this.state;
-=======
     let { a, b, c, button } = this.state;
->>>>>>> eed2b4077f38a7e6140972b83eb3dc01d4b36af2
     const re = /^[0-9\b]+$/;
     const date = /^[0-9/]+$/;
 
-    if(button !== "Add Fine"){
-      this.setState({a:true, b:true, c:true})
+    if (button !== "Add Fine") {
+      this.setState({ a: true, b: true, c: true })
     }
 
     // Validate user input
     if (event.target.name === "validTo") {
       if (value === "" || date.test(value)) {
-<<<<<<< HEAD
-        console.log(value.substring(2, 3));
-=======
->>>>>>> eed2b4077f38a7e6140972b83eb3dc01d4b36af2
         // Day
         if (value.substring(0, 1).includes("/") || value.substring(0, 1) > 3) {
           event.target.value = event.target.value.slice(0, 0);
         }
-<<<<<<< HEAD
-        if (value.substring(1, 2).includes("/") || (value.substring(0, 1) === "3" && value.substring(1, 2) > 1)) {
-=======
         if (
           value.substring(1, 2).includes("/") ||
           (value.substring(0, 1) === "3" && value.substring(1, 2) > 1)
         ) {
->>>>>>> eed2b4077f38a7e6140972b83eb3dc01d4b36af2
           event.target.value = event.target.value.slice(0, 1);
         }
         if (!value.substring(2, 3).includes("/")) {
@@ -200,14 +145,10 @@ export default class FineManagement extends Component {
         if (value.substring(3, 4).includes("/") || value.substring(3, 4) > 1) {
           event.target.value = event.target.value.slice(0, 3);
         }
-<<<<<<< HEAD
-        if (value.substring(4, 5).includes("/") || (value.substring(3, 4) === "1" && value.substring(4, 5) > 2)) {
-=======
         if (
           value.substring(4, 5).includes("/") ||
           (value.substring(3, 4) === "1" && value.substring(4, 5) > 2)
         ) {
->>>>>>> eed2b4077f38a7e6140972b83eb3dc01d4b36af2
           event.target.value = event.target.value.slice(0, 4);
         }
         if (!value.substring(5, 6).includes("/")) {
@@ -237,42 +178,6 @@ export default class FineManagement extends Component {
         this.setState({
           [event.target.name]: event.target.value,
         });
-<<<<<<< HEAD
-      }
-    }
-
-    if (event.target.name === "fineType") {
-      this.setState({
-        [event.target.name]: event.target.value,
-      });
-    }
-
-    if (value === "") {
-      document.querySelector(".add-btn").classList.add("disabled");
-    }
-
-    if (event.target.name === "validTo") {
-      if (value !== "") {
-        this.setState({ a: true });
-        if (b && c) {
-          document.querySelector(".add-btn").classList.remove("disabled");
-        }
-      } else {
-        this.setState({ a: false });
-        document.querySelector(".add-btn").classList.add("disabled");
-      }
-    }
-
-    if (event.target.name === "nominal") {
-      if (value !== "") {
-        this.setState({ b: true });
-        if (a && c) {
-          document.querySelector(".add-btn").classList.remove("disabled");
-        }
-      } else {
-        this.setState({ b: false });
-        document.querySelector(".add-btn").classList.add("disabled");
-=======
         if (value !== "" && value.length >= 3) {
           this.setState({ b: true });
           if (a && c) {
@@ -282,34 +187,23 @@ export default class FineManagement extends Component {
           this.setState({ b: false });
           document.querySelector(".add-btn").classList.add("disabled");
         }
->>>>>>> eed2b4077f38a7e6140972b83eb3dc01d4b36af2
       }
     }
 
     if (event.target.name === "fineType") {
       if (value !== "") {
-<<<<<<< HEAD
-        this.setState({ c: true });
-        if (b && a) {
-          document.querySelector(".add-btn").classList.remove("disabled");
-        }
-      } else {
-        this.setState({ c: false });
-        document.querySelector(".add-btn").classList.add("disabled");
-=======
         this.setState({
           [event.target.name]: event.target.value,
           c: true
         });
-        if(value !== " "){
+        if (value !== " ") {
           if (b && a) {
             document.querySelector(".add-btn").classList.remove("disabled");
           }
-        }else {
+        } else {
           this.setState({ c: false });
           document.querySelector(".add-btn").classList.add("disabled");
         }
->>>>>>> eed2b4077f38a7e6140972b83eb3dc01d4b36af2
       }
     }
   };
