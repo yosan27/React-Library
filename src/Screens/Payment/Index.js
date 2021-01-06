@@ -62,8 +62,8 @@ export default class Payment extends Component {
                 let lastDigit = this.state.paymentRecord[this.state.paymentRecord.length - 1].transactionCode.substr(6);
                 let secondDigit = this.state.paymentRecord[this.state.paymentRecord.length - 1].transactionCode.substr(5,1);
                 let firstDigit = this.state.paymentRecord[this.state.paymentRecord.length - 1].transactionCode.substr(4,1);
-                if (lastDigit === 9) {
-                  if (secondDigit === 9) {
+                if (lastDigit === "9") {
+                  if (secondDigit === "9") {
                     let firstPlus = parseInt(firstDigit) + 1;
                     let code = `T${idCode}${firstPlus}00`;
                     this.setState({ lastCode: code });
@@ -88,8 +88,8 @@ export default class Payment extends Component {
                 let lastDigit = record.data[record.data.length - 1].detailCode.substr(7);
                 let secondDigit = record.data[record.data.length - 1].detailCode.substr(6, 1);
                 let firstDigit = record.data[record.data.length - 1].detailCode.substr(5, 1);
-                if (lastDigit === 9) {
-                  if (secondDigit === 9) {
+                if (lastDigit === "9") {
+                  if (secondDigit === "9") {
                     let firstPlus = parseInt(firstDigit) + 1;
                     let code = `TD${idCode}${firstPlus}00`;
                     this.setState({ detailCode: code });

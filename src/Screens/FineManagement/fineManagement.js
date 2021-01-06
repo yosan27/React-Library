@@ -62,8 +62,8 @@ export default class FineManagement extends Component {
         let firstDigit = this.state.allList[
           this.state.allList.length - 1
         ].fineCode.substr(1, 1);
-        if (lastDigit === 9) {
-          if (secondDigit === 9) {
+        if (lastDigit === "9") {
+          if (secondDigit === "9") {
             let firstPlus = parseInt(firstDigit) + 1;
             let code = `F${firstPlus}00`;
             this.setState({ lastCode: code });
