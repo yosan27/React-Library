@@ -15,64 +15,35 @@ class BookManagement extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data:
-        [
-          {
-            bookID: "201710025",
-            bookTitle: "Selena",
-            author: "Tere Liye",
-            publishedDate: "2020-03-16",
-            categories: "Young Adult Fiction",
-            bookCover: "https://www.gramedia.com/blog/content/images/2020/05/selena_gramedia.jpg",
-            isPopular: true
-          }
-        ],
-      showAdd: false,
+      data:[],
+      bookCode: "",
+      showAddExist: false,
+      showAdd1: false,
+      showAdd2: false,
       showEdit: false,
       showDelete: false,
-      fields: {
-        urlImage: "",
-        title: "",
-        subtitle: "",
-        author: "",
-        publisher: "",
-        description: "",
-        pages: "",
-        publishedDate: "",
-        language: "",
-        length: "",
-        isbn: "",
-        weight: "",
-        width: "",
-        isPopular: false,
-        baseImage: ""
-      },
-      errors: {},
-      disableSubmitting: false
+      authorCode: "",
+      bookDetailCode: "",
+      categoryCode: "",
+      publisherCode: "",
+      urlImage: "",
+      title: "",
+      subtitle: "",
+      author: "",
+      publisherName: "",
+      publisherAddress: "",
+      description: "",
+      pages: "",
+      publishedDate: "",
+      language: "",
+      length: "",
+      isbn: "",
+      weight: "",
+      width: "",
+      numberOfPages: "",
+      category: "",
+      baseImage: ""
     };
-
-    this.form = new ReactFormInputValidation(this);
-    this.form.useRules({
-        urlImage: "required",
-        title: "required",
-        subtitle: "",
-        author: "required",
-        publisher: "required",
-        description: "required",
-        pages: "required",
-        publishedDate: "required",
-        language: "required",
-        length: "required",
-        isbn: "required",
-        weight: "required",
-        width: "required",
-        isPopular: false,
-        baseImage: "",
-        
-        // name: "required",
-        // email: "required|email",
-        // phone_number: "required|numeric|digits_between:10,12",
-    });
   }
 
   async componentDidMount() {
@@ -84,19 +55,6 @@ class BookManagement extends Component {
       this.setState({ data: tabledata });
     } catch (error) {
       console.log(error);
-    }
-
-    this.form.onformsubmit = (fields) => {
-      // Do you ajax calls here.
-      console.log(fields);
-    }
-
-    this.form.handleChangeEvent = (event) => {
-      if (event.target.value === "") {
-        this.setState({ submitting: false });
-      } else {
-        this.setState({ submitting: true });;
-      }
     }
 
     $(function () {
@@ -143,41 +101,151 @@ class BookManagement extends Component {
   // }
 
   
-  handleAddBook = () => {
-    this.setState({ showAdd: false })
-    swal("Success!", "Book Has Been Added", "success");
-  }
-
-  handleCloseModal = () => {
-    this.setState({ showAdd: false, showEdit: false, showDelete: false })
+  handleExistOrNot = () => {
+    this.setState({ showAddExist: true })
   }
 
   handleShowAdd = () => {
-    this.setState({ showAdd: true })
+    this.setState({ showAddExist: false, showAdd1: true })
   }
+
+  handleAddBook = () => {
+    this.setState({ showAdd2: false })
+    API.post(
+      `api/newbooks`,
+      {
+        publisherName: this.state.publisherName,
+        address: this.state.publisherAddress,
+        bookTitle: this.state.title,
+        bookSubtitle: this.state.subtitle,
+        authorName: this.state.author,
+        cover: this.state.urlImage,
+        description: this.state.description,
+        categoryName: this.state.category,
+        numberOfPages: this.state.numberOfPages,
+        publishedDate: this.state.publishedDate,
+        isbn: this.state.isbn,
+        language: this.state.language
+      },
+        {
+          headers: {
+            Accept: "*/*",
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then(() => {
+        window.location.reload();
+        swal("Success!", "Book Has Been Added", "success");
+      })
+      .catch((error) => {
+        swal("Oops!", "Please try again", "error");
+        console.log(error);
+      });
+    }
+
+  handleShowAdd2 = () => {
+    this.setState({ showAddExist: false, showAdd2: true })
+  }
+
+  handleAddBook2 = () => {
+    this.setState({ showAdd2: false })
+    API.post(
+      `api/book`,
+      {
+        authorCode: this.state.authorCode,
+        bookDetailCode: this.state.bookDetailCode,
+        categoryCode: this.state.categoryCode,
+        publisherCode: this.state.publisherCode,
+        publishedDate: this.state.publishedDate,
+        isbn: this.state.isbn
+      },
+        {
+          headers: {
+            Accept: "*/*",
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then(() => {
+        window.location.reload();
+        swal("Success!", "Book Has Been Added", "success");
+      })
+      .catch((error) => {
+        swal("Oops!", "Please try again", "error");
+        console.log(error);
+      });
+    }
+
+  //button edit
+  handleShowEdit = (bkcd) => {
+    this.setState({showEdit: true, bookCode : bkcd})
+    API.get(`/api/book/${bkcd}`).then((res) => {
+      let response = res.data.data;
+      console.log("response : ")
+      console.log(response.authorEntity)
+      this.setState({
+        authorCode: response.authorEntity.authorCode,
+        bookDetailCode: response.bookDetailsEntity.bookDetailCode,
+        categoryCode: response.categoryEntity.categoryCode,
+        publisherCode: response.publisherEntity.publisherCode,
+        publishedDate: response.publishedDate,
+        isbn: response.isbn,
+        bookCode: response.bookCode
+      });
+    });
+  };
 
   handleSaveEdit = () => {
     this.setState({ showEdit: false })
-    swal("Success!", "Your Data Is Updated", "success");
+    API.put(
+      `api/book/${this.state.bookCode}`,
+      {
+        authorCode: this.state.authorCode,
+        bookDetailCode: this.state.bookDetailCode,
+        categoryCode: this.state.categoryCode,
+        publisherCode: this.state.publisherCode,
+        publishedDate: this.state.publishedDate,
+        isbn: this.state.isbn,
+        bookCode: this.state.bookCode
+      },
+        {
+          headers: {
+            Accept: "*/*",
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then(() => {
+        this.setState({ bookCode: "" })
+        window.location.reload();
+        swal("Great!", "Book Has Been edited", "success");
+      })
+      .catch((error) => {
+        swal("Oops!", "Please try again", "error");
+        console.log(error);
+      });
   }
 
-  handleShowEdit = () => {
-    this.setState({ showEdit: true })
+  //button delete
+  handleShowDelete = (bkcd) => {
+    this.setState({showDelete: true, bookCode : bkcd})
   }
 
   handleDelete = () => {
-    this.setState({ showDelete: false })
+    this.setState({ showDelete: false });
+    API.delete(`/api/book/${this.state.bookCode}`)
+      .then(()=>window.location.reload())
     swal("Deleted!", "Book Is Successfully Deleted", "success");
   }
 
-  handleShowDelete = () => {
-    this.setState({ showDelete: true })
+  handleCloseModal = () => {
+    this.setState({ showAddExist: false, showAdd1: false, showEdit: false, showDelete: false, showAdd2: false })
   }
-
   
 
   render() {
-    const { data, showAdd, showEdit, showDelete, fields, errors, disableSubmitting, baseImage } = this.state;
+    const { data, showAdd1, showAdd2, showAddExist, showEdit, showDelete, baseImage } = this.state;
    
     return (
       // page content
@@ -193,7 +261,7 @@ class BookManagement extends Component {
                   <div className="card-body">
                     {/* title */}
                     <div class="">
-                      <Button className="mb-5" variant="success" onClick={this.handleShowAdd}>
+                      <Button className="mb-5" variant="success" onClick={this.handleExistOrNot}>
                         <i class="fa fa-plus"></i> Add Book
                       </Button>
                     </div>
@@ -222,9 +290,9 @@ class BookManagement extends Component {
                                 </td>
                                 <td>
                                   <div class='d-flex justify-content-around mt-4' style={{ border: 'none' }}>
-                                    <button class="btn btn-primary" data-toggle="modal" data-target="#edit" onClick={this.handleShowEdit}><i
+                                    <button class="btn btn-primary" data-toggle="modal" data-target="#edit" onClick={ ()=> {this.handleShowEdit(book.bookCode)}}><i
                                       class="fa fa-edit"></i></button>
-                                    <button class="btn btn-danger" data-toggle="modal" data-target="#delete" onClick={this.handleShowDelete}><i
+                                    <button class="btn btn-danger" data-toggle="modal" data-target="#delete" onClick={ ()=> {this.handleShowDelete(book.bookCode)}}><i
                                       class="fa fa-trash"></i></button>
                                   </div>
                                 </td>
@@ -276,51 +344,70 @@ class BookManagement extends Component {
                       </tbody>
                     </Table>
 
-                    {/* modal add */}
-                    <Modal size="lg" show={showAdd} onHide={this.handleCloseModal}>
+
+
+
+                    {/* modal if*/}
+                    <Modal size="lg" show={showAddExist} onHide={this.handleCloseModal}>
+                      <Modal.Header closeButton>
+                        <Modal.Title>Add Book Data</Modal.Title>
+                      </Modal.Header>
+                      <Modal.Body>
+                        <p>Does Author, Book details, Category and Publisher information already exist?</p>
+                      </Modal.Body>
+                      <Modal.Footer>
+                        <Button className="btn btn-secondary" variant="secondary" onClick={this.handleShowAdd}>
+                          <i class="fa fa-times-circle"></i> No
+                        </Button>
+                        <Button id="buttonAddBook" type="submit" className="btn btn-success" variant="primary" onClick={this.handleShowAdd2}>
+                          <i class="fa fa-plus"></i> Yes
+                        </Button>
+                      </Modal.Footer>
+                    </Modal>
+                    {/* modal add if*/}
+
+
+
+
+
+                    {/* modal add if data not exist*/}
+                    <Modal size="lg" show={showAdd1} onHide={this.handleCloseModal}>
                       <Modal.Header closeButton>
                         <Modal.Title>Add Book Data</Modal.Title>
                       </Modal.Header>
                       <Modal.Body>
                         <div class='container'>
                           <div class="modal-body">
-                            <form
-                              noValidate
-                              autoComplete="off"
-                              onSubmit={this.form.handleSubmit}
-                            >
+                          <form>
+                            </form>
+                            <form>
                               <div class="form-group row">
                                 <label for="addTitle" class="col-sm-2 col-form-label">Title</label>
                                 <div class="col-sm-10">
-                                  <input 
+                                <input 
                                   type="text" 
                                   name="title"
                                   class="form-control" 
                                   id="addTitle" 
                                   placeholder="Title..." 
-                                  onBlur={this.form.handleBlurEvent}
-                                  onChange={this.form.handleChangeEvent}
-                                  value={fields.title} 
+                                  onChange={(e) => this.setState({title : e.target.value})}
+                                  value={this.state.title} 
                                   data-attribute-name="Title"
                                   data-async
                                   />
-                                  <label className="error" style={{color: "red"}}>
-                                    {errors.title ? errors.title : ""}
-                                  </label>
                                 </div>
                               </div>
                               <div class="form-group row">
                                 <label for="addSubtitle" class="col-sm-2 col-form-label">Subtitle</label>
                                 <div class="col-sm-10">
-                                  <input 
+                                <input 
                                   type="text" 
                                   name="subtitle"
                                   class="form-control" 
                                   id="addSubtitle" 
                                   placeholder="Subtitle..." 
-                                  onBlur={this.form.handleBlurEvent}
-                                  onChange={this.form.handleChangeEvent}
-                                  value={fields.subtitle} 
+                                  onChange={(e) => this.setState({subtitle : e.target.value})}
+                                  value={this.state.subtitle} 
                                   data-attribute-name="Subtitle"
                                   data-async
                                   />
@@ -329,158 +416,158 @@ class BookManagement extends Component {
                               <div class="form-group row">
                                 <label for="addAuthor" class="col-sm-2 col-form-label">Author</label>
                                 <div class="col-sm-10">
-                                  <input 
+                                <input 
                                   type="text" 
                                   name="author"
                                   class="form-control" 
                                   id="addAuthor" 
                                   placeholder="Author..." 
-                                  onBlur={this.form.handleBlurEvent}
-                                  onChange={this.form.handleChangeEvent}
-                                  value={fields.author} 
+                                  onChange={(e) => this.setState({author : e.target.value})}
+                                  value={this.state.author} 
                                   data-attribute-name="Author"
                                   data-async
                                   />
-                                  <label className="error" style={{color: "red"}}>
-                                    {errors.author ? errors.author : ""}
-                                  </label>
                                 </div>
                               </div>
                               <div class="form-group row">
                                 <label for="addPublisher" class="col-sm-2 col-form-label">Publisher</label>
                                 <div class="col-sm-10">
-                                  <input
-                                  type="text"
+                                <input 
+                                  type="text" 
                                   name="publisher"
-                                  class="form-control"
-                                  id="addPublisher"
-                                  placeholder="Publisher..."
-                                  onBlur={this.form.handleBlurEvent}
-                                  onChange={this.form.handleChangeEvent}
-                                  value={fields.publisher} 
+                                  class="form-control" 
+                                  id="addPublisher" 
+                                  placeholder="Publisher..." 
+                                  onChange={(e) => this.setState({publisherName : e.target.value})}
+                                  value={this.state.publisher} 
                                   data-attribute-name="Publisher"
                                   data-async
                                   />
-                                  <label className="error" style={{color: "red"}}>
-                                    {errors.publisher ? errors.publisher : ""}
-                                  </label>
+                                </div>
+                              </div>
+                              <div class="form-group row">
+                                <label for="addPublisher" class="col-sm-2 col-form-label">Publisher Address</label>
+                                <div class="col-sm-10">
+                                <input 
+                                  type="text" 
+                                  name="publisherAddress"
+                                  class="form-control" 
+                                  id="addPublisherAddress" 
+                                  placeholder="Publisher Adress..." 
+                                  onChange={(e) => this.setState({publisherAddress : e.target.value})}
+                                  value={this.state.publisherAddress} 
+                                  data-attribute-name="publisherAddress"
+                                  data-async
+                                  />
                                 </div>
                               </div>
                               <div class="form-group row">
                                 <label for="addImage" class="col-sm-2 col-form-label">Url Image</label>
                                 <div class="col-sm-10">
-                                  <input 
-                                    type="text" 
-                                    name="urlImage"
-                                    class="form-control" 
-                                    id="addImage" 
-                                    placeholder="Url Image..." 
-                                    onBlur={this.form.handleBlurEvent}
-                                    onChange={this.form.handleChangeEvent}
-                                    value={fields.urlImage} 
-                                    data-attribute-name="Url Image"
-                                    data-async
+                                <input 
+                                  type="text" 
+                                  name="urlImage"
+                                  class="form-control" 
+                                  id="addUrlImage" 
+                                  placeholder="URL Image..." 
+                                  onChange={(e) => this.setState({urlImage : e.target.value})}
+                                  value={this.state.urlImage} 
+                                  data-attribute-name="urlImage"
+                                  data-async
                                   />
-                                  <label className="error" style={{color: "red"}}>
-                                    {errors.urlImage ? errors.urlImage : ""}
-                                  </label>
                                 </div>
                               </div>
                               <div class="form-group row">
                                 <label for="addDesc" class="col-sm-2 col-form-label">Description</label>
                                 <div class="col-sm-10">
-                                  <input
-                                  type="text"
+                                <input 
+                                  type="text" 
                                   name="description"
-                                  class="form-control"
-                                  id="addDesc"
-                                  placeholder="Description..."
-                                  onBlur={this.form.handleBlurEvent}
-                                  onChange={this.form.handleChangeEvent}
-                                  value={fields.description} 
-                                  data-attribute-name="Description"
+                                  class="form-control" 
+                                  id="addDescription" 
+                                  placeholder="Description..." 
+                                  onChange={(e) => this.setState({description : e.target.value})}
+                                  value={this.state.description} 
+                                  data-attribute-name="description"
                                   data-async
                                   />
-                                  <label className="error" style={{color: "red"}}>
-                                    {errors.description ? errors.description : ""}
-                                  </label>
+                                </div>
+                              </div>
+                              <div class="form-group row">
+                                <label for="addDesc" class="col-sm-2 col-form-label">Category</label>
+                                <div class="col-sm-10">
+                                <input 
+                                  type="text" 
+                                  name="category"
+                                  class="form-control" 
+                                  id="addcategory" 
+                                  placeholder="Category..." 
+                                  onChange={(e) => this.setState({category : e.target.value})}
+                                  value={this.state.category} 
+                                  data-attribute-name="category"
+                                  data-async
+                                  />
                                 </div>
                               </div>
                               <hr />
                               <div class="form-group row">
                                 <label for="addPages" class="col-sm-2 col-form-label">Number of Pages</label>
                                 <div class="col-sm-4">
-                                  <input
-                                  type="text"
-                                  name="pages"
-                                  class="form-control"
-                                  id="addPages"
-                                  placeholder="Number of Pages..."
-                                  onBlur={this.form.handleBlurEvent}
-                                  onChange={this.form.handleChangeEvent}
-                                  value={fields.pages} 
-                                  data-attribute-name="Pages"
+                                <input 
+                                  type="text" 
+                                  name="numberOfPages"
+                                  class="form-control" 
+                                  id="addNumberOfPages" 
+                                  placeholder="Number of Pages..." 
+                                  onChange={(e) => this.setState({numberOfPages : e.target.value})}
+                                  value={this.state.numberOfPages} 
+                                  data-attribute-name="numberOfPages"
                                   data-async
                                   />
-                                  <label className="error" style={{color: "red"}}>
-                                    {errors.pages ? errors.pages : ""}
-                                  </label>
                                 </div>
                                 <label for="addIsbn" class="col-sm-2 col-form-label">ISBN</label>
                                 <div class="col-sm-4">
-                                  <input
-                                  type="text"
+                                <input 
+                                  type="text" 
                                   name="isbn"
-                                  class="form-control"
-                                  id="addIsbn"
-                                  placeholder="ISBN..."
-                                  onBlur={this.form.handleBlurEvent}
-                                  onChange={this.form.handleChangeEvent}
-                                  value={fields.isbn} 
-                                  data-attribute-name="ISBN"
+                                  class="form-control" 
+                                  id="isbn" 
+                                  placeholder="ISBN..." 
+                                  onChange={(e) => this.setState({isbn : e.target.value})}
+                                  value={this.state.isbn} 
+                                  data-attribute-name="isbn"
                                   data-async
                                   />
-                                  <label className="error" style={{color: "red"}}>
-                                    {errors.isbn ? errors.isbn : ""}
-                                  </label>
                                 </div>
                               </div>
                               <div class="form-group row">
                                 <label for="addPublishedDate" class="col-sm-2 col-form-label">Published Date</label>
                                 <div class="col-sm-4">
-                                  <input 
+                                <input 
                                   type="text" 
                                   name="publishedDate"
                                   class="form-control" 
-                                  id="addPublishedDate" 
+                                  id="publishedDate" 
                                   placeholder="Published Date..." 
-                                  onBlur={this.form.handleBlurEvent}
-                                  onChange={this.form.handleChangeEvent}
-                                  value={fields.publishedDate} 
-                                  data-attribute-name="Published Date"
+                                  onChange={(e) => this.setState({publishedDate : e.target.value})}
+                                  value={this.state.publishedDate} 
+                                  data-attribute-name="publishedDate"
                                   data-async
                                   />
-                                  <label className="error" style={{color: "red"}}>
-                                    {errors.publishedDate ? errors.publishedDate : ""}
-                                  </label>
                                 </div>
                                 <label for="addWeight" class="col-sm-2 col-form-label">Language</label>
                                 <div class="col-sm-4">
-                                  <input 
+                                <input 
                                   type="text" 
                                   name="language"
                                   class="form-control" 
-                                  id="addLang" 
+                                  id="language" 
                                   placeholder="Language..." 
-                                  onBlur={this.form.handleBlurEvent}
-                                  onChange={this.form.handleChangeEvent}
-                                  value={fields.language} 
-                                  data-attribute-name="Language"
+                                  onChange={(e) => this.setState({language : e.target.value})}
+                                  value={this.state.language} 
+                                  data-attribute-name="language"
                                   data-async
                                   />
-                                  <label className="error" style={{color: "red"}}>
-                                    {errors.language ? errors.language : ""}
-                                  </label>
                                 </div>
                               </div>
                               {/* <div class="form-group row">
@@ -518,12 +605,134 @@ class BookManagement extends Component {
                         <Button className="btn btn-secondary" variant="secondary" onClick={this.handleCloseModal}>
                           <i class="fa fa-times-circle"></i> Close
                         </Button>
-                        <Button id="buttonAddBook" disabled={disableSubmitting} type="submit" className="btn btn-success" variant="primary" onClick={this.handleAddBook}>
+                        <Button id="buttonAddBook" type="submit" className="btn btn-success" variant="primary" onClick={this.handleAddBook}>
                           <i class="fa fa-plus"></i> Add
                         </Button>
                       </Modal.Footer>
                     </Modal>
-                    {/* modal add */}
+                    {/* modal add if data not exist*/}
+
+
+                    {/* modal add data exist*/}
+                    <Modal size="lg" show={showAdd2} onHide={this.handleCloseModal}>
+                      <Modal.Header closeButton>
+                        <Modal.Title>Add Book Data</Modal.Title>
+                      </Modal.Header>
+                      <Modal.Body>
+                      <div class='container'>
+                          <div class="modal-body">
+                          <form>
+
+                            <div class="form-group row">
+                              <label for="addAuthorCode" class="col-sm-2 col-form-label">Author Code</label>
+                              <div class="col-sm-4">
+                              <input 
+                                type="text" 
+                                name="authorCode"
+                                class="form-control" 
+                                id="authorCode" 
+                                placeholder="Author Code..." 
+                                onChange={(e) => this.setState({authorCode : e.target.value})}
+                                value={this.state.authorCode} 
+                                data-attribute-name="authorCode"
+                                data-async
+                                />
+                              </div>
+                              <label for="addBookDetailCode" class="col-sm-2 col-form-label">Book Detail Code</label>
+                              <div class="col-sm-4">
+                              <input 
+                                type="text" 
+                                name="bookDetailCode"
+                                class="form-control" 
+                                id="bookDetailCode" 
+                                placeholder="Book Detail Code..." 
+                                onChange={(e) => this.setState({bookDetailCode : e.target.value})}
+                                value={this.state.bookDetailCode} 
+                                data-attribute-name="bookDetailCode"
+                                data-async
+                                />
+                              </div>
+                            </div>
+
+                            <div class="form-group row">
+                              <label for="addCategoryCode" class="col-sm-2 col-form-label">Category Code</label>
+                              <div class="col-sm-4">
+                              <input 
+                                type="text" 
+                                name="categoryCode"
+                                class="form-control" 
+                                id="categoryCode" 
+                                placeholder="Category Code..." 
+                                onChange={(e) => this.setState({categoryCode : e.target.value})}
+                                value={this.state.categoryCode} 
+                                data-attribute-name="categoryCode"
+                                data-async
+                                />
+                              </div>
+                              <label for="addPublisherCode" class="col-sm-2 col-form-label">Publisher Code</label>
+                              <div class="col-sm-4">
+                              <input 
+                                type="text" 
+                                name="publisherCode"
+                                class="form-control" 
+                                id="publisherCode" 
+                                placeholder="Publisher Code..." 
+                                onChange={(e) => this.setState({publisherCode : e.target.value})}
+                                value={this.state.publisherCode} 
+                                data-attribute-name="publisherCode"
+                                data-async
+                                />
+                              </div>
+                            </div>
+
+                            <div class="form-group row">
+                              <label for="addPublishedDate" class="col-sm-2 col-form-label">Published Date</label>
+                              <div class="col-sm-4">
+                              <input 
+                                type="text" 
+                                name="publishedDate"
+                                class="form-control" 
+                                id="publishedDate" 
+                                placeholder="Published Date..." 
+                                onChange={(e) => this.setState({publishedDate : e.target.value})}
+                                value={this.state.publishedDate} 
+                                data-attribute-name="publishedDate"
+                                data-async
+                                />
+                              </div>
+                              <label for="addIsbn" class="col-sm-2 col-form-label">ISBN</label>
+                              <div class="col-sm-4">
+                              <input 
+                                type="text" 
+                                name="isbn"
+                                class="form-control" 
+                                id="isbn" 
+                                placeholder="ISBN..." 
+                                onChange={(e) => this.setState({isbn : e.target.value})}
+                                value={this.state.isbn} 
+                                data-attribute-name="isbn"
+                                data-async
+                                />
+                              </div>
+                            </div>
+
+                          </form>
+                          </div>
+                        </div>
+                      </Modal.Body>
+                      <Modal.Footer>
+                        <Button className="btn btn-secondary" variant="secondary" onClick={this.handleCloseModal}>
+                          <i class="fa fa-times-circle"></i> Close
+                        </Button>
+                        <Button id="buttonAddBook" type="submit" className="btn btn-success" variant="primary" onClick={this.handleAddBook2}>
+                          <i class="fa fa-plus"></i> Add
+                        </Button>
+                      </Modal.Footer>
+                    </Modal>
+                    {/* modal add data exist*/}
+
+
+
 
                     {/* modal edit */}
                     <Modal show={showEdit} onHide={this.handleCloseModal}>
@@ -531,40 +740,104 @@ class BookManagement extends Component {
                         <Modal.Title>Edit Data</Modal.Title>
                       </Modal.Header>
                       <Modal.Body>
-                        <div class='container'>
+                      <div class='container'>
                           <div class="modal-body">
-                            <form onSubmit={this.form.handleSubmit}>
-                              <div class="form-group row">
-                                <label for="editImage" class="col-sm-2 col-form-label">Book ID</label>
-                                <div class="col-sm-10">
-                                  <input type="text" class="form-control" id="editIdentityExist" placeholder="Please input ID" value='' />
-                                </div>
+                          <form>
+
+                            <div class="form-group row">
+                              <label for="addAuthorCode" class="col-sm-2 col-form-label">Author Code</label>
+                              <div class="col-sm-4">
+                              <input 
+                                type="text" 
+                                name="authorCode"
+                                class="form-control" 
+                                id="authorCode" 
+                                placeholder="Author Code..." 
+                                onChange={(e) => this.setState({authorCode : e.target.value})}
+                                value={this.state.authorCode} 
+                                data-attribute-name="authorCode"
+                                data-async
+                                />
                               </div>
-                              <div class="form-group row">
-                                <label for="editTitle" class="col-sm-2 col-form-label">Book Title</label>
-                                <div class="col-sm-10">
-                                  <input type="text" class="form-control" id="editTitleExist" placeholder="Please input title" value='' />
-                                </div>
+                              <label for="addBookDetailCode" class="col-sm-2 col-form-label">Book Detail Code</label>
+                              <div class="col-sm-4">
+                              <input 
+                                type="text" 
+                                name="bookDetailCode"
+                                class="form-control" 
+                                id="bookDetailCode" 
+                                placeholder="Book Detail Code..." 
+                                onChange={(e) => this.setState({bookDetailCode : e.target.value})}
+                                value={this.state.bookDetailCode} 
+                                data-attribute-name="bookDetailCode"
+                                data-async
+                                />
                               </div>
-                              <div class="form-group row">
-                                <label for="editDesc" class="col-sm-2 col-form-label">Author</label>
-                                <div class="col-sm-10">
-                                  <input type="text" class="form-control" id="editAuthorExist" placeholder="Please input author" value='' />
-                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                              <label for="addCategoryCode" class="col-sm-2 col-form-label">Category Code</label>
+                              <div class="col-sm-4">
+                              <input 
+                                type="text" 
+                                name="categoryCode"
+                                class="form-control" 
+                                id="categoryCode" 
+                                placeholder="Category Code..." 
+                                onChange={(e) => this.setState({categoryCode : e.target.value})}
+                                value={this.state.categoryCode} 
+                                data-attribute-name="categoryCode"
+                                data-async
+                                />
                               </div>
-                              <div class="form-group row">
-                                <label for="editDesc" class="col-sm-2 col-form-label">Published Date</label>
-                                <div class="col-sm-10">
-                                  <input type="text" class="form-control" id="editPublishedDateExist" placeholder="Please input published date" value='' />
-                                </div>
+                              <label for="addPublisherCode" class="col-sm-2 col-form-label">Publisher Code</label>
+                              <div class="col-sm-4">
+                              <input 
+                                type="text" 
+                                name="publisherCode"
+                                class="form-control" 
+                                id="publisherCode" 
+                                placeholder="Publisher Code..." 
+                                onChange={(e) => this.setState({publisherCode : e.target.value})}
+                                value={this.state.publisherCode} 
+                                data-attribute-name="publisherCode"
+                                data-async
+                                />
                               </div>
-                              <div class="form-group row">
-                                <label for="editDesc" class="col-sm-2 col-form-label">Categories</label>
-                                <div class="col-sm-10">
-                                  <input type="text" class="form-control" id="editCategoriesExist" placeholder="Please input categories" value='' />
-                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                              <label for="addPublishedDate" class="col-sm-2 col-form-label">Published Date</label>
+                              <div class="col-sm-4">
+                              <input 
+                                type="text" 
+                                name="publishedDate"
+                                class="form-control" 
+                                id="publishedDate" 
+                                placeholder="Published Date..." 
+                                onChange={(e) => this.setState({publishedDate : e.target.value})}
+                                value={this.state.publishedDate} 
+                                data-attribute-name="publishedDate"
+                                data-async
+                                />
                               </div>
-                            </form>
+                              <label for="addIsbn" class="col-sm-2 col-form-label">ISBN</label>
+                              <div class="col-sm-4">
+                              <input 
+                                type="text" 
+                                name="isbn"
+                                class="form-control" 
+                                id="isbn" 
+                                placeholder="ISBN..." 
+                                onChange={(e) => this.setState({isbn : e.target.value})}
+                                value={this.state.isbn} 
+                                data-attribute-name="isbn"
+                                data-async
+                                />
+                              </div>
+                            </div>
+
+                          </form>
                           </div>
                         </div>
                       </Modal.Body>
