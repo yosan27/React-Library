@@ -15,7 +15,8 @@ class ReturnForm extends Component {
             dueDate: '',
             status: '',
             late: '',
-            fine: []
+            fine: [],
+            lateNominal: "",
         }
     }
 
@@ -46,6 +47,9 @@ class ReturnForm extends Component {
                 if(e.fineType !== "Late"){
                     this.setState({ fine: [...this.state.fine, e] })
                 }
+                if(e.fineType === "Late"){
+                    this.setState({ lateNominal: e.nominal })
+                }
             })
         })
     }
@@ -72,7 +76,7 @@ class ReturnForm extends Component {
         if (limit < current) {
             var diffTime = Math.abs(current - limit)
             var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-            var latefine = diffDays * 1000
+            var latefine = diffDays * parseFloat(this.state.lateNominal)
         } else {
             diffDays = 0
             latefine = 0
