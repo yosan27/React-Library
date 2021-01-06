@@ -17,18 +17,19 @@ export default class ProfileUser extends Component {
             username: "",
             userData: [],
             id: "",
-            password: ""
+            password: "",
+            password2: "",
+            notNullPhone: "",
         }
         this.userChange = this.userChange.bind(this)
     }
 
     componentDidMount() {
-        if (!sessionStorage.getItem('userData')) {
+        if (!sessionStorage.getItem('userCode')) {
             console.log("tidak ada userData")
         } else {
             console.log("ada local storage")
-            console.log(JSON.parse(sessionStorage.getItem('userData')))
-            axios.get("http://localhost:8500/api/user-by-code/" + sessionStorage.getItem('userCode')).then((e) => {
+            axios.get("http://localhost:8500/api/user/code/" + sessionStorage.getItem('userCode')).then((e) => {
                 // console.log(e);
                 this.setState({
                     // saldo: e.data.balance,
@@ -42,49 +43,40 @@ export default class ProfileUser extends Component {
                 })
             })
         }
-        // this.setState({
-        //     // username: this.props.match.params.id
-        //     username: this.state.userData.data.userName,
-        //     userCode: this.state.userData.data.userCode,
-        //     fullName: this.state.userData.data.fullName,
-        //     email: this.state.userData.data.email,
-        //     phone: this.state.userData.data.phone,
-        //     address: this.state.userData.data.address,
-        // })
     }
 
     updateBtn = (id) => {
         const userDto = {
-            fullName: this.state.fullName,
             phone: this.state.phone,
             address: this.state.address,
             profilePict: this.state.profilePict,
         }
 
-        console.log(userDto)
-        sessionStorage.clear();
-        axios.put('http://localhost:8500/api/user-profile/' + id, userDto)
-            .then((response) => {
-                sessionStorage.setItem('userData', JSON.stringify(response))
-                console.log(response);
-            })
-
-        swal("Successfully", "Changed profile", "success");
+        console.log(this.state.phone)
+        if (!this.state.phone || !this.state.address) {
+            swal("Failed", "Changed profile", "failed");
+        } else {
+            axios.put('http://localhost:8500/api/user/profile/' + id, userDto)
+                .then((response) => {
+                    console.log(response);
+                })
+            swal("Successfully", "Changed profile", "success");
+        }
     };
 
     updatePassword = (id) => {
         const userDto = {
             password: this.state.password
         }
-        sessionStorage.clear();
-        axios.put('http://localhost:8500/api/user-password/' + id, userDto)
+        axios.put('http://localhost:8500/api/user/password/' + id, userDto)
             .then((response) => {
-                sessionStorage.setItem('userData', JSON.stringify(response))
                 console.log(response);
             })
         this.setState({
             password: "",
+            password2: "",
         });
+        document.getElementById("passmatch").style.display = "none";
         swal("Successfully", "Changed password", "success");
     }
 
@@ -92,10 +84,23 @@ export default class ProfileUser extends Component {
         this.setState({
             [event.target.name]: event.target.value,
         });
+        console.log(this.state.phone.length)
+        if (this.state.phone.length < 12) {
+            this.setState({
+                notNullPhone: "minimal 12 digit",
+            });
+        } else {
+            this.setState({
+                notNullPhone: "",
+            });
+        }
     }
 
     cekPass1 = (e) => {
         // alert(e);
+        this.setState({
+            password: e,
+        });
         if (document.getElementById("password2").value === e) {
             document.getElementById("pwmatch").classList.remove("fa-close");
             document.getElementById("pwmatch").classList.add("fa-check");
@@ -105,9 +110,6 @@ export default class ProfileUser extends Component {
             document.getElementById("pwmatch").classList.add("fa-close");
             document.getElementById("pwmatch").style.color = "#FF0004";
         }
-        this.setState({
-            password: e,
-        });
     };
 
     cekPass2 = (e) => {
@@ -123,7 +125,7 @@ export default class ProfileUser extends Component {
             document.getElementById("pwmatch").style.color = "#FF0004";
         }
         this.setState({
-            password: e,
+            password2: e,
         });
     };
 
@@ -205,21 +207,27 @@ export default class ProfileUser extends Component {
                                                             <div className="col-sm-10">
                                                                 <input type="text" name="username"
                                                                     className="form-control" id="username"
-                                                                    placeholder="masukan username..." value="admin" readOnly />
+                                                                    placeholder="masukan username..." value={this.state.username} readOnly />
                                                             </div>
                                                         </div>
                                                         <div className=" form-group row">
-                                                            <label htmlFor="no_hp" className="col-sm-2 col-form-label">Phone</label>
+                                                            <label htmlFor="phone" className="col-sm-2 col-form-label">Phone</label>
                                                             <div className="col-sm-10">
-                                                                <input type="tel" name="no_hp" className="form-control"
-                                                                    id="no_hp" placeholder="masukan nomer hp..."
-                                                                    pattern="[0-9]+" value={this.state.phone} onChange={this.userChange} />
+                                                                <input type="number" name="phone" className="form-control"
+                                                                    id="phone" value={this.state.phone} onChange={this.userChange} />
+                                                                <small className="text-danger">
+                                                                    {this.state.notNullPhone}
+                                                                    {!this.state.phone ? '- not null -' : ""}
+                                                                </small>
                                                             </div>
                                                         </div>
                                                         <div className=" form-group row">
                                                             <label htmlFor="address" className="col-sm-2 col-form-label">Address</label>
                                                             <div className="col-sm-10">
                                                                 <textarea className="form-control" id="exampleFormControlTextarea1" name="address" rows="3" value={this.state.address} onChange={this.userChange}></textarea>
+                                                                <small className="text-danger">
+                                                                    {!this.state.address ? '- not null -' : ""}
+                                                                </small>
                                                             </div>
                                                         </div>
 
@@ -245,7 +253,7 @@ export default class ProfileUser extends Component {
                                                         </div>
                                                         <br />
                                                         <div className="form-group">
-                                                            <button
+                                                            <button disabled={!this.state.phone || !this.state.address || this.state.phone.length < 12}
                                                                 className="btn btn-primary btn-block" onClick={() => this.updateBtn(this.state.id)}>Update</button>
                                                         </div>
                                                         {/* </form> */}
@@ -258,25 +266,28 @@ export default class ProfileUser extends Component {
                                                             <div className="form-group">
                                                                 <label htmlFor="password1" className="">
                                                                     New Password
-                                                                    </label>
+                                                                </label>
                                                                 <input type="password" onChange={(e) => this.cekPass1(e.target.value)} value={this.state.password} name="password" required
                                                                     autoComplete="off" id="password1"
                                                                     className="form-control simm-inv" />
+                                                                <small className="text-danger">
+                                                                    {this.state.password.length < 8 ? '- minimal 8 digit -' : ""}
+                                                                </small>
                                                             </div>
                                                             <div className="form-group">
                                                                 <label htmlFor="password2" className="">Confirm
-                                                                        Password</label><br />
-                                                                <input onChange={(e) => this.cekPass2(e.target.value)} type="password" value={this.state.password} name="password_confirm"
+                                                                    Password</label><br />
+                                                                <input onChange={(e) => this.cekPass2(e.target.value)} type="password" value={this.state.password2} name="password_confirm"
                                                                     required autoComplete="off" id="password2"
                                                                     className="form-control simm-inv" />
                                                                 <small id="passmatch" style={{ display: 'none' }}><i
                                                                     id="pwmatch" className="fa fa-close"
                                                                     style={{ color: '#FF0004' }}></i> Passwords
-                                                                        Match</small>
+                                                                    Match</small>
                                                             </div>
                                                             <br />
                                                             <div className="form-group">
-                                                                <button id="btn-save"
+                                                                <button id="btn-save" disabled={this.state.password.length < 8 || this.state.password2 != this.state.password}
                                                                     className="btn btn-primary btn-block" onClick={() => this.updatePassword(this.state.id)}>Change</button>
                                                             </div>
                                                         </div>

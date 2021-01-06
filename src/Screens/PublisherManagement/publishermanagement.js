@@ -127,7 +127,8 @@ class PublisherManagement extends Component {
 
   //util
   handleCloseModal = () => {
-    this.setState({ showAdd: false, showEdit: false, showDelete: false})
+    this.setState({ showAdd: false, showEdit: false, showDelete: false, publisherName: "",
+    publisherCode: "", address: ""})
   }
 
   render() {
