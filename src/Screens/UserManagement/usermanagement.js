@@ -94,8 +94,30 @@ class UserManagement extends Component {
               });
         })
 
-        update 
+        
 
+    }
+
+    getById(id) {
+        axios.get(`http://localhost:8500/api/user-by-id/${id}`).then((res) =>{
+            this.setState({
+                userName: res.data.userName,
+                fullName: res.data.fullName,
+                address: res.data.address,
+                phone: res.data.phone,
+                status: res.data.status
+            })
+        })
+    }
+
+    setStatus(status) {
+        if(status === 1) {
+            return <span>Active</span>
+        } else if(status === 2) {
+            return <span>Suspend</span>
+        } else if(status === 0) {
+            return <span>Delete</span>
+        } 
     }
 
     render(){
@@ -141,10 +163,10 @@ class UserManagement extends Component {
                                                                     <td>{user.userName}</td>
                                                                     <td>{user.fullName}</td>
                                                                     <td>{user.email}</td>
-                                                                    <td>{user.status}</td>
+                                                                    <td>{this.setStatus(user.status)}</td>
                                                                     <td className="text-center">
                                                                     <span className="d-flex justify-content-center" data-toggle="tooltip" title="card">
-                                                                        <Button variant="primary" size="sm" data-toggle="modal" data-target="#detail" onClick={this.handleShowCard}>
+                                                                        <Button variant="primary" size="sm" data-toggle="modal" data-target="#card" onClick={() => this.getById(user.id)}>
                                                                             <i className="fa fa-credit-card"></i>
                                                                         </Button>
                                                                         </span>
@@ -218,7 +240,7 @@ class UserManagement extends Component {
                                             <p>Full Name: {usr.fullName}</p>
                                             <p>Address: {usr.address}</p>
                                             <p>Phone: {usr.phone}</p>
-                                            <p class="card-text"><small class="text-muted">{usr.status}</small></p>
+                                            <p class="card-text"><small class="text-muted">{this.setStatus(usr.status)}</small></p>
                                             </div>
                                         </div>  
                                     </div>
@@ -238,7 +260,49 @@ class UserManagement extends Component {
                     </Button> 
                 </Modal.Footer>
             </Modal>                                         
-             {/* modal iden card */}    
+             {/* modal iden card */}   
+             {/* MODAL iden */}
+             <div className="modal fade" id="card" tabIndex="-1" aria-labelledby="infoLabel" aria-hidden="true">
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title" id="infoLabel">Info</h5>
+                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                            <div class="card mb-3">
+                            <div class="row no-gutters">
+                                <div class="col-md-4">
+                                <Image className='photoOfOrder text-center img-card card-img-top' src='https://widgetwhats.com/app/uploads/2019/11/free-profile-photo-whatsapp-4.png' wrapped ui={false} style={{width:'100%',height:'auto'}} />                                    
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><input type="text" readOnly className="form-control-plaintext" value={this.state.userName} />           
+                            </h5>
+                                        <div class="form-group">
+                                            <div>
+                                            <input type="text" readOnly className="form-control-plaintext" value={this.state.fullName} />
+                                            <input type="text" readOnly className="form-control-plaintext" value={this.state.address} />           
+                                            <input type="text" readOnly className="form-control-plaintext" value={this.state.phone} />           
+                                            <input type="text" readOnly className="form-control-plaintext" value={this.state.description} />           
+                            
+                                            
+                                            <p class="card-text"><small class="text-muted">{this.setStatus(this.state.status)}</small></p>
+                                            </div>
+                                        </div>  
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
             </div >
         )
 
