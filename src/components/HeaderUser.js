@@ -1,19 +1,43 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom'
 import './HeaderUser.style.css';
+import axios from "axios";
+
 class HeaderUser extends Component {
     constructor() {
         super();
         this.state = {
             condition: false,
             username: "",
+            userCode: "",
+            userData: [],
+            countCart: ""
         };
     }
-
+  
     componentDidMount() {
-        this.setState({
-            username: this.props.match.params.id
-        })
+        if (!sessionStorage.getItem('userCode')) {
+            console.log("tidak ada userCode")
+        } else {
+            console.log("ada local storage")
+            console.log(sessionStorage.getItem('userCode'));
+            axios.get("http://localhost:8500/api/user/code/" + sessionStorage.getItem('userCode')).then((e) => {
+                // console.log(e);
+                this.setState({
+                    // saldo: e.data.balance,
+                    username: e.data.userName,
+                    userCode: sessionStorage.getItem('userCode')
+                })
+            })
+            axios.get('http://localhost:8500/api/cart/usercode/' + sessionStorage.getItem('userCode'))
+                .then((res) => {
+                    console.log(res)
+                    console.log(res.data.length);
+                    this.setState({
+                        countCart: res.data.length
+                    })
+                })
+        }
     }
 
     render() {
@@ -38,7 +62,7 @@ class HeaderUser extends Component {
             this.setState({ condition: !condition })
         };
 
-        if (username === "User") {
+        if (this.state.userCode.substring(0, 2) == "UU") {
             return (
                 <nav className="navbar navbar-expand navbar-dark nav_menu shadow">
                     <ul className="navbar-nav">
@@ -87,7 +111,7 @@ class HeaderUser extends Component {
                         <li className="nav-item" style={{ paddingLeft: "15px" }}>
                             <Link to="/page/cart" className="nav-link">
                                 <i className="fa fa-shopping-cart fa-lg" style={{ fontSize: '17px' }}></i>
-                                <span id="cartCount" className="badge badge-danger navbar-badge">2</span>
+                                <span id="cartCount" className="badge badge-danger navbar-badge">{this.state.countCart}</span>
                             </Link>
                         </li>
                         <li id="searchInput" className="nav-item" style={{ paddingLeft: '15px' }}>

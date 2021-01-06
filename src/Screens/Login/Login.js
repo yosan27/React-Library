@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
 import "./Login-style.css";
 import { FormErrors } from './FormErrors';
+import axios from "axios";
 
 class Login extends Component {
   constructor(props) {
@@ -13,8 +14,20 @@ class Login extends Component {
       emailValid: false,
       passwordValid: false,
       formValid: false,
-      user: ""
+      user: "",
+      userData: [],
+      userCode: "",
     }
+  }
+
+  componentDidMount() {
+    axios.get("http://localhost:8500/api/user/code/UA001").then((e) => {
+      // console.log(e);
+      sessionStorage.setItem('userCode', e.data.userCode)
+      this.setState({
+        userCode: e.data.userCode
+      })
+    })
   }
 
   handleUserInput = (e) => {
@@ -55,16 +68,16 @@ class Login extends Component {
   errorClass(error) {
     return (error.length === 0 ? '' : 'has-error');
   }
-      
+
   userHandling = (event) => {
     this.setState({
-        [event.target.name] : event.target.value
+      [event.target.name]: event.target.value
     })
-}
+  }
 
-loginClick = () => {
+  loginClick = () => {
     this.props.history.push(`/${this.state.user}`)
-}
+  }
 
   userHandling = (event) => {
     this.setState({
@@ -80,7 +93,7 @@ loginClick = () => {
   render() {
     return (
       <section class="Form my-10 mx-5 pb-5 card-login">
-        <div class="container">
+        <div class="container mt-3">
           <div class="row no-gutters row-box">
             <div class="col-lg-5">
               <img src="assets/images/cover2.png" class="img-fluid img-page" alt="" />

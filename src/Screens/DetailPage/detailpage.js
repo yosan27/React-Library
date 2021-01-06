@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Container, Jumbotron, Modal, Button} from 'react-bootstrap'
+import { Container, Jumbotron, Modal, Button } from 'react-bootstrap'
 import API from "../../api";
 import './detailpage.css'
 import swal from 'sweetalert';
@@ -71,7 +71,7 @@ class DetailPage extends Component {
 
   handleCart = () => {
     this.setState({ show: false })
-    swal("Success!","Book Has Been Added To Your Cart","success")
+    swal("Success!", "Book Has Been Added To Your Cart", "success")
   }
 
   handleShow = () => {

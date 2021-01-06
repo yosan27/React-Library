@@ -3,17 +3,21 @@ import { withRouter } from 'react-router-dom'
 import swal from 'sweetalert'
 import './donation-styles.css'
 import { FormErrors } from '../Login/FormErrors';
+import axios from "axios";
+import Select from 'react-select';
 
 class DonationForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            categoryList: [],
             title: '',
             author: '',
             category: '',
             year: '',
             condition: '',
             photo: '',
+            categoryName: '',
 
             formErrors: {
                 title: '',
@@ -32,6 +36,22 @@ class DonationForm extends Component {
         }
     }
 
+    async getCategory() {
+        const res = await axios.get('http://localhost:8500/api/category')
+        const data = res.data
+
+        const options = data.map(d => ({
+            "label": d.categoryName
+
+        }))
+
+        this.setState({ categoryList: options })
+
+    }
+
+    handleChange(e) {
+        this.setState({ categoryName: e.label })
+    }
     handleUserInput = (e) => {
         const name = e.target.name;
         const value = e.target.value;
@@ -101,7 +121,12 @@ class DonationForm extends Component {
         swal("Thank You", "Book Donation Successfully Received", "success");
     }
 
+    componentDidMount() {
+        this.getCategory();
+    }
+
     render() {
+        console.log(this.state.categoryList);
         return (
             <div class="right_col" role="main">
                 <div class="container history">
@@ -118,15 +143,11 @@ class DonationForm extends Component {
                                 <input type="text" class="form-control" name="title" value={this.state.title} onChange={this.handleUserInput}
                                     placeholder="Bumi Manusia" />
                             </div>
-                            <div className={`form-group ${this.errorClass(this.state.formErrors.category)}`}>
+                            <div className="">
                                 <label for="exampleFormControlSelect1">Category</label>
-                                <select class="form-control" name="category" id="exampleFormControlSelect1" value={this.state.category} onChange={this.handleUserInput}>
-                                    <option>Romance</option>
-                                    <option>History</option>
-                                    <option>Fiction</option>
-                                    <option>Novel</option>
-                                    <option>Education</option>
-                                </select>
+                                <Select options={this.state.categoryList} onChange={this.handleChange.bind(this)} />
+                                {/* <option>{this.state.categoryName}</option> */}
+
                             </div>
                             <div className={`form-group ${this.errorClass(this.state.formErrors.year)}`}>
                                 <label for="exampleFormControlInput1">Year</label>

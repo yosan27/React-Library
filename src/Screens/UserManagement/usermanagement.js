@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import axios from "axios";
 import Image from 'react-bootstrap/Image'
 import { Modal, Button, Card, Table, Form, Row, Col, Badge } from 'react-bootstrap';
 //Datatable Modules
@@ -12,6 +13,14 @@ class UserManagement extends Component {
     constructor(){
         super()
         this.state = {
+            userList: [],
+            id:"",
+            userName:"",
+            fullName:"",
+            email:"",
+            status:"",
+            address:"",
+
             data: [
                 {"id":"1", "username":"Yosan27", "fullname":"Yosan Fandi", "email":"yosan27@gmail.com", "status":"Active", "card":"https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg"},
                 {"id":"2", "username":"Cleo", "fullname":"Cleoputra", "email":"cleo@gmail.com", "status":"Active", "card":"https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg"},
@@ -26,6 +35,14 @@ class UserManagement extends Component {
 
     handleCloseSuspend = () => {
         this.setState({ showSuspend: false})
+    }
+
+    handleShowCard = () => {
+        this.setState({ showCard: true})
+    }
+
+    handleCloseCard = () => {
+        this.setState({ showCard: false})
     }
 
     suspend = () => {
@@ -57,11 +74,7 @@ class UserManagement extends Component {
     };
 
     componentDidMount() {
-        $(function () {
-            $('#historyUser').DataTable({
-                responsive: true
-            });
-          });
+       
 
         $('.img-card').hover(makeBigger, returnToOriginalSize);
         function makeBigger() {
@@ -71,10 +84,19 @@ class UserManagement extends Component {
             $(this).css({width: "-=30%"});
         }
 
+        axios.get("http://localhost:8500/api/user").then((e) => {
+            this.setState({ userList: e.data });
+
+            $(function () {
+                $('#historyUser').DataTable({
+                    responsive: true
+                });
+              });
+        })
     }
 
     render(){
-        const { data, showSuspend} = this.state;
+        const { data, showSuspend, showCard} = this.state;
 
         return(
             <div className="right_col" role="main" style={{ minHeight: '100vh' }}>
@@ -102,7 +124,7 @@ class UserManagement extends Component {
                                             </thead>
                                             <tbody>
                                                     {
-                                                        data.map(user => {
+                                                        this.state.userList.map((user) => {
                                                             return (
                                                                 <tr>
                                                                     <td>{user.id}</td>
@@ -113,12 +135,17 @@ class UserManagement extends Component {
                                                                         </Button>
                                                                         </span>
                                                                     </td>
-                                                                    <td>{user.username}</td>
-                                                                    <td>{user.fullname}</td>
+                                                                    <td>{user.userName}</td>
+                                                                    <td>{user.fullName}</td>
                                                                     <td>{user.email}</td>
                                                                     <td>{user.status}</td>
-                                                                    <td className="text-center"><Image className='photoOfOrder text-center img-card' key={user.id} src={user.card} wrapped ui={false} style={{width:'40%',height:'auto'}} /></td>
-                                                                    
+                                                                    <td className="text-center">
+                                                                    <span className="d-flex justify-content-center" data-toggle="tooltip" title="card">
+                                                                        <Button variant="primary" size="sm" data-toggle="modal" data-target="#detail" onClick={this.handleShowCard}>
+                                                                            <i className="fa fa-credit-card"></i>
+                                                                        </Button>
+                                                                        </span>
+                                                                    </td>
                                                                 </tr>
                                                             )
                                                         })
@@ -162,7 +189,53 @@ class UserManagement extends Component {
                     </Button> 
                 </Modal.Footer>
             </Modal>                                         
-             {/* modal suspend */}    
+             {/* modal suspend */}
+             {/* modal iden card */}
+            <Modal size="lg" show={showCard} onHide={this.handleCloseCard}>
+                <Modal.Header closeButton>
+                    <Modal.Title> Identification Card </Modal.Title>                                     
+                </Modal.Header>
+                <Modal.Body>
+                    <div className='container'>
+                        <div className='modal-body'>
+                            
+                            
+                        <div class="card mb-3">
+                            <div class="row no-gutters">
+                                <div class="col-md-4">
+                                <Image className='photoOfOrder text-center img-card card-img-top' src='https://widgetwhats.com/app/uploads/2019/11/free-profile-photo-whatsapp-4.png' wrapped ui={false} style={{width:'100%',height:'auto'}} />                                    
+                                </div>
+                                <div class="col-md-8">
+                                { this.state.userList.map((usr) => {
+                                    return(
+                                    <div class="card-body">
+                                        <h5 class="card-title">{usr.userName}</h5>
+                                        <div class="form-group">
+                                            <div>
+                                            <p>Full Name: {usr.fullName}</p>
+                                            <p>Address: {usr.address}</p>
+                                            <p>Phone: {usr.phone}</p>
+                                            <p class="card-text"><small class="text-muted">{usr.status}</small></p>
+                                            </div>
+                                        </div>  
+                                    </div>
+                                    )
+                                    })
+                                }
+                                </div>
+                            </div>
+                        </div>
+                            
+                        </div>
+                    </div>                                                            
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button className="btn btn-secondary" variant="secondary" onClick={this.handleCloseCard}>
+                            <i class="fa fa-times-circle"></i> Close
+                    </Button> 
+                </Modal.Footer>
+            </Modal>                                         
+             {/* modal iden card */}    
             </div >
         )
 

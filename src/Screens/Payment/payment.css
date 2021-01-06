@@ -19,7 +19,7 @@
 }
 
 .header-logo-bar .top-up span{
-  font-size: 1.5em;
+  font-size: 1.2em;
   color: green;
   text-align: center;
   padding-right: 15px;
@@ -106,7 +106,7 @@
 
 .modal-sm .modal-debit .container-fluid .total{
   font-weight: bolder;
-  font-size: 16px;
+  font-size: 15px;
   color: white;
 }
 
@@ -179,8 +179,17 @@
 }
 
 @media only screen and (max-width: 425px) {
+  .header-logo-bar .logo h4{
+    font-size: 23px;
+  }
+
   .header-logo-bar .logo{
     padding-bottom: 30px;
+  }
+
+  .header-logo-bar .top-up span{
+    font-size: 16px;
+    padding-right: 8px;
   }
 
   .list-box{
@@ -206,20 +215,24 @@
 }
 
 @media only screen and (max-width: 375px) {
+  .header-logo-bar .logo h4{
+    font-size: 18px;
+  }
+
   .top-up-btn{
     font-size: 11px;
   }
 
   .header-logo-bar .top-up span{
-    font-size: 1.3em;
+    font-size: 14px;
     color: green;
     text-align: center;
-    padding-right: 10px;
+    padding-right: 5px;
   }
   
   .header-logo-bar .top-up p{
     color: green;
-    font-size: 1em;
+    font-size: 0.8em;
   }
 
   .header-logo-bar .top-up i{
@@ -242,14 +255,18 @@
   }
 
   .header-logo-bar .top-up span{
-    font-size: 1.1em;
+    font-size: 10px;
     color: green;
     text-align: center;
   }
   
   .header-logo-bar .top-up p{
     color: green;
-    font-size: 0.8em;
+    font-size: 0.7em;
+  }
+
+  .history-icon{
+    padding-right: 10px;
   }
 
   .header-logo-bar .top-up i{
@@ -258,7 +275,7 @@
   }
 
   .saldo-text{
-    margin-left: 5px;
+    margin-left: 3px;
   }
 
   .modal .modal-debit{
@@ -277,7 +294,7 @@
   .modal .modal-debit .container-fluid .total{
     font-weight: bolder;
     font-size: 14px;
-    color: black;
+    color: white;
   }
 
   .history-payment-title{
