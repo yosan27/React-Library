@@ -20,13 +20,25 @@ class Catalog extends Component {
         this.state = {
 
             catalogData: [],
+            detailData: [],
+            reviewData: [],
             id: "",
             bookCode: "",
             bookTitle: "",
             cover: "",
             authorName: "",
             categoryName: "",
-            publisherName: "",
+            publisherName: '',
+            isbn: '',
+            language: '',
+            numberOfPages: '',
+            description: '',
+            publishedDate: '',
+            bookSubtitle: '',
+            review: '',
+            rate: "",
+            userName: "",
+
             
             data: [
                 {"id": "2017100251", "title":"Selena", "cover":"https://www.gramedia.com/blog/content/images/2020/05/selena_gramedia.jpg", "author":"Tere Liye", "categories":"Young Adult Fiction", "publisher":"Gramedia Pustaka "},
@@ -44,7 +56,7 @@ class Catalog extends Component {
             showAddCategory: false,
             showDetail: false,
             showReview: false,
-            value: 0,
+            
             fields : [
                 
             ],
@@ -92,7 +104,7 @@ class Catalog extends Component {
         swal("Success!", "Category Has Been Added", "success");
     }
 
-    rating = (event, newValue) => {
+    rating = (value, newValue) => {
             this.setState({ value: this.state.value + 1})
     }
     
@@ -121,10 +133,70 @@ class Catalog extends Component {
 
     }
 
+    getById(id) {
+        axios.get(`http://localhost:8500/api/detailBook/${id}`).then((res) => {
+            this.setState({
+                description: res.data.bookDetailsEntity.description,
+                numberOfPages: res.data.bookDetailsEntity.numberOfPages,
+                publishedDate: res.data.publishedDate,
+                language: res.data.bookDetailsEntity.language,
+                publisher: res.data.publisherEntity.publisherName,
+                isbn: res.data.isbn,
+                bookSubtitle: res.data.bookDetailsEntity.bookSubtitle,
+                bookCode: res.data.bookCode,
+            });
+        })
+    }
+
+    review(bookCode) {
+        axios.get(`http://localhost:8500/api/reviewLook/${bookCode}`).then((e) => {
+            this.setState({ reviewData: e.data});
+            console.log(e.data.data);
+        });
+    }
+
+    setRate(rate) {
+        if(rate == 1) {
+            return <div> <span class="fa fa-star checked"></span>
+            <span class="fa fa-star"></span>
+            <span class="fa fa-star "></span>
+            <span class="fa fa-star"></span>
+            <span class="fa fa-star"></span>
+            </div>
+        } else if(rate == 2) {
+            return <div> <span class="fa fa-star checked"></span>
+            <span class="fa fa-star checked"></span>
+            <span class="fa fa-star "></span>
+            <span class="fa fa-star"></span>
+            <span class="fa fa-star"></span>
+            </div>
+        } else if(rate == 3) {
+            return <div> <span class="fa fa-star checked"></span>
+            <span class="fa fa-star checked"></span>
+            <span class="fa fa-star checked"></span>
+            <span class="fa fa-star"></span>
+            <span class="fa fa-star"></span>
+            </div>
+        } else if(rate == 4) {
+            return <div> <span class="fa fa-star checked"></span>
+            <span class="fa fa-star checked"></span>
+            <span class="fa fa-star checked"></span>
+            <span class="fa fa-star checked"></span>
+            <span class="fa fa-star "></span>
+            </div>
+        } else if(rate == 5) {
+            return <div> <span class="fa fa-star checked"></span>
+            <span class="fa fa-star checked"></span>
+            <span class="fa fa-star checked"></span>
+            <span class="fa fa-star checked"></span>
+            <span class="fa fa-star checked"></span>
+            </div>
+        } 
+    }
+
     render(){
         const { data, showDetail, showReview, addReview, value, setValue, errors, showAddCategory, disableSubmitting, fields } = this.state,
-        
-       
+   
         Photo = data.map(user => (
             <Image className='photoOfOrder text-center' key={user.id} src={user.cover} wrapped ui={false} style={{width:'30%',height:'auto'}}/>
         ));
@@ -153,22 +225,62 @@ class Catalog extends Component {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                    {this.state.catalogData.map((user, index) => {
+                                            {this.state.catalogData.map((user, index) => {
                                                             return (
                                                                 <tr key={index}> 
                                                                     <td>{user.bookCode}</td>
+                                                                    <td>{Object.keys(user.bookDetailsEntity?user.bookDetailsEntity:"").map(key => {
+                                                                        if (key === "bookTitle"){
+                                                                            const judul = (user.bookDetailsEntity[key])
+                                                                            return judul;
+                                                                        }
+                                                                        })}   
+                                                                    </td>
                                                                     <td>
                                                                         <span className="d-flex justify-content-center" data-toggle="tooltip" title="detail">
-                                                                            <button className="btn btn-primary" data-toggle="modal" data-target="#detail" onClick={this.handleShowDetail}><i className="fa fa-info-circle"></i></button>
+                                                                            <button className="btn btn-primary" data-toggle="modal" data-target="#detail" onClick={() => this.getById(user.id)}>
+                                                                                <i className="fa fa-info-circle"></i>
+                                                                            </button>
+                                                                            <button className="btn btn-warning" data-toggle="modal" data-target="#">
+                                                                                <i className="fa fa-shopping-cart"></i>
+                                                                            </button>
+                                                                            <button className="btn btn-info" data-toggle="modal" data-target="#">
+                                                                                <i className="fa fa-bookmark"></i>
+                                                                            </button>
                                                                         </span>
                                                                     </td>
-                                                                    <td>{user.bookTitle}</td>
-                                                                    <td>{user.authorName}</td>
-                                                                    <td>{user.categoryName}</td>
-                                                                    <td>{user.publisherName}</td>
+                                                                    <td>{Object.keys(user.bookDetailsEntity?user.bookDetailsEntity:"").map(key => {
+                                                                        if (key === "cover"){
+                                                                            const cover = (user.bookDetailsEntity[key])
+                                                                            return cover;
+                                                                        }
+                                                                        })}   
+                                                                    </td>
+                                                                    <td>{Object.keys(user.authorEntity?user.authorEntity:"").map(key => {
+                                                                        if (key === "authorName"){
+                                                                            const author = (user.authorEntity[key])
+                                                                            return author;
+                                                                        }
+                                                                        })}   
+                                                                    </td>
+                                                                    <td>{Object.keys(user.categoryEntity?user.categoryEntity:"").map(key => {
+                                                                        if (key === "categoryName"){
+                                                                            const category = (user.categoryEntity[key])
+                                                                            return category;
+                                                                        }
+                                                                        })}   
+                                                                    </td>
+                                                                    <td>{Object.keys(user.publisherEntity?user.publisherEntity:"").map(key => {
+                                                                        if (key === "publisherName"){
+                                                                            const publisher = (user.publisherEntity[key])
+                                                                            return publisher;
+                                                                        }
+                                                                        })}   
+                                                                    </td>
                                                                 </tr>
                                                             );
                                                         })}
+
                                                 </tbody>
                                         </Table>
                                     </Card.Body>
@@ -178,153 +290,116 @@ class Catalog extends Component {
                     </div >
                 </section >
 
-            {/* modal detail */}
-            <Modal size="lg" show={showDetail} onHide={this.handleCloseDetail}>
-                <Modal.Header closeButton>
-                    <Modal.Title> Book  Detail </Modal.Title>                                     
-                </Modal.Header>
-                <Modal.Body>
-                    <div className='container'>
-                        <div className='modal-body'>
+           
+
+             {/* MODAL INFO */}
+             <div className="modal fade" id="detail" tabIndex="-1" aria-labelledby="infoLabel" aria-hidden="true">
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title" id="infoLabel">Info</h5>
+                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
                             <form>
                             <div class="form-group row">
                             <label for="editImage" class="col-sm-2 col-form-label">Description</label>
                             <div class="col-sm-10" >
-                                <p>"Selena" dan "Nebula" adalah buku ke-8 dan ke-9 yang menceritakan siapa orangtua Raib dalam serial petualangan dunia paralel. Dua buku ini sebaiknya dibaca berurutan. Kedua buku ini juga bercerita tentang Akademi Bayangan Tingkat Tinggi, sekolah terbaik di seluruh Klan Bulan. Tentang persahabatan tiga mahasiswa, yang diam-diam memiliki rencana bertualang ke tempat-tempat jauh. Tapi petualangan itu berakhir buruk, saat persahabatan mereka diuji dengan rasa suka, egoisme, dan pengkhianatan. Ada banyak karakter baru, tempat-tempat baru, juga sejarah dunia paralel yang diungkap. Di dua buku ini kalian akan berkenalan dengan salah satu karakter paling kuat di dunia paralel sejauh ini. Tapi itu jika kalian bisa menebaknya. Dua buku ini bukan akhir. Justru awal terbukanya kembali portal menuju Klan Aldebaran.</p>
+                            <input type="text" readOnly className="form-control-plaintext" value={this.state.description} />           
                             </div>
                             </div>
                             <hr />
                             <div class="form-group row">
                             <label for="editTitle" class="col-sm-2 col-form-label">Number of Pages</label>
                             <div class="col-sm-4">
-                                <p>368</p>
+                            <input type="text" readOnly className="form-control-plaintext" value={this.state.numberOfPages} />           
                             </div>
                             <label class="col-sm-2 col-form-label">ISBN</label>
                             <div class="col-sm-4">
-                                <p>9786020639512</p>
+                            <input type="text" readOnly className="form-control-plaintext" value={this.state.isbn} />           
+                            
                             </div>
                             </div>
                             <div class="form-group row">
                             <label for="editDesc" class="col-sm-2 col-form-label">Published Date</label>
                             <div class="col-sm-4">
-                                <p>20 Mar 2016</p>
+                            <input type="text" readOnly className="form-control-plaintext" value={this.state.publishedDate} />           
+                            
                             </div>
-                            <label class="col-sm-2 col-form-label">Weight</label>
-                            <div class="col-sm-4">
-                                <p>0.25 kg</p>
-                            </div>
-                            </div>
-                            <div class="form-group row">
                             <label for="editTitle" class="col-sm-2 col-form-label">Language</label>
                             <div class="col-sm-4">
-                                <p>Indonesia</p>
-                            </div>
-                            <label class="col-sm-2 col-form-label">Width</label>
-                            <div class="col-sm-4">
-                                <p>13.5 cm</p>
-                            </div>
+                            <input type="text" readOnly className="form-control-plaintext" value={this.state.language} />           
+                             </div>
                             </div>
                             <div class="form-group row">
                             <label for="editTitle" class="col-sm-2 col-form-label">Publisher</label>
                             <div class="col-sm-4">
-                                <p>Gramedia Pustaka Utama</p>
+                            <input type="text" readOnly className="form-control-plaintext" value={this.state.publisher} />           
                             </div>
-                            <label class="col-sm-2 col-form-label">Length</label>
+                            <label class="col-sm-2 col-form-label">Subtitle</label>
                             <div class="col-sm-4">
-                                <p>20.0 cm</p>
+                            <input type="text" readOnly className="form-control-plaintext" value={this.state.bookSubtitle} />           
                             </div>
                             </div>
-                        </form>                         
+                        </form>   
+                         
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button className="btn btn-primary" data-toggle="modal" data-target="#review" onClick={() => this.review(this.state.bookCode)}>
+                                   Review
+                                </button>
+                            </div>
                         </div>
-                    </div>                                                            
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button className="btn btn-info" variant="secondary" onClick={this.handleShowReview}>
-                            <i class="fa fa-book"></i> Review
-                    </Button> 
-                    <Button className="btn btn-secondary" variant="secondary" onClick={this.handleCloseDetail}>
-                            <i class="fa fa-times-circle"></i> Close
-                    </Button> 
-                </Modal.Footer>
-            </Modal>                                         
-             {/* modal detail */}
+                    </div>
+                </div>
 
-             {/* modal review */}
-            <Modal size="lg" show={showReview} onHide={this.handleCloseReview}>
-                <Modal.Header closeButton>
-                    <Modal.Title> Book  Review </Modal.Title>                                     
-                </Modal.Header>
-                <Modal.Body>
-                    <div className='container'>
-                        <div className='modal-body'>
-                            <form>
-                                <div class="form-group row">
-                                    <label for="editImage" class="col-sm-2 col-form-label">By Afiff <br /><span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star"></span>
-                                    <span class="fa fa-star"></span>
-                                    </label>
-                                    <div class="col-sm-10" >
-                                        <p>Tarik napas....fiuhhhhhhh..
-                                        Selesai juga baca buku ke-8 series tersayang sekaligus terkampret ini, kampret krn buku pertama terbit dr 2015, 5 tahun umurku aku pake buat nunggu buku ini🤣 Buku serial bumi ini menceritakan tentang biografi Selena (pasti tau dong siapa dia kalau ngikutin).</p>
+                {/* MODAL */}
+                <div className="modal fade" id="review" tabIndex="-1" aria-labelledby="infoLabel" aria-hidden="true">
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title" id="infoLabel">Info</h5>
+                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                                <div className="modal-body">
+                                {this.state.reviewData.map((book, index) => {
+                                return(
+                                    <form key={index}>
+                                            <div class="form-group row">
+                                            <label for="editImage" class="col-sm-2 col-form-label">By   
+                                            {Object.keys(book.userEntity?book.userEntity:"").map(key => {
+                                                if (key === "userName"){
+                                                const name = (book.userEntity[key])
+                                                return name;
+                                                }
+                                            })}                       
+                                            <br />       
+                                            {this.setRate(book.rate)}         
+                                            </label>
+                                            <div class="col-sm-10" >
+                                                {book.review}
+                                            </div>
+                                            </div>
+                                            <hr />
+                                    </form>   
+                                    );
+                                })}  
                                     </div>
-                                    </div>
-                                    <hr />
-                                    <div class="form-group row">
-                                    <label for="editImage" class="col-sm-2 col-form-label">By Desti <br /> <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    </label>
-                                    <div class="col-sm-10" >
-                                        <p>** spoiler alert ** Selena dan Nebula.
-
-                                        Satu, eh, dua buku fantasi yang dibumbui romantika. Diulang: fantasi dibumbui romantika, bukan romantika berbumbu fantasi—seperti kata Tere Liye di salah satu status Facebooknya, "... membaca kisah roman dalam serial fantasi ..." Tapi, tenang. Karena cerita utamanya genre fantasi—bukan roman—nggak ada adegan bergalau ria disini. </p>
-                                    </div>
-                                    </div>
-                                    <hr />
-                                    <div class="form-group row">
-                                    <label for="editImage" class="col-sm-2 col-form-label">By omnivoreader <br /><span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star"></span>
-                                    </label>
-                                    <div class="col-sm-10" >
-                                        <p>Iseng mulai baca, eh keterusan sampai selesai.
-                                        Kisah tentang Miss Selena ini seru juga ya. Sejarah akan guru matematikanya Raib dan kawan-kawannya ini ternyata asyik juga diikuti. Dan untuk masalah tentang dua sahabatnya alias Mata dan Tazk mah udah jelas lah ya siapa mereka.</p>
-                                    </div>
-                                    </div>
-                                    <hr />
-                                    <div class="form-group row">
-                                    <label for="editImage" class="col-sm-2 col-form-label">By  Hamim <br /><span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star"></span>
-                                    </label>
-                                    <div class="col-sm-10" >
-                                        <p>Bagi yang telah menunggu kelanjutan pertualangan raib, Ali Dan seli pasti udah ga sabar pengen baca cerita nya..
-                                        Ets tapi harus bersabar karena buku ke 8 ini banyak menceritakan tokoh baru yang pasti bakal bikin kalian penasaran.
-                                        Jelas sekali di judul nya, siapa yang tidak kenal dengan nama itu, yaps</p>
-                                    </div>
-                                </div>
-                            </form>                   
+                                
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <Button className="btn btn-primary" variant="primary" onClick={this.handleAddReview}>
+                                        <i class=""></i> Add Review
+                                </Button> 
+                             </div>
                         </div>
-                    </div>                                                            
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button className="btn btn-secondary" variant="secondary" onClick={this.handleCloseReview}>
-                            <i class="fa fa-times-circle"></i> Close
-                    </Button> 
-                    <Button className="btn btn-primary" variant="primary" onClick={this.handleAddReview}>
-                            <i class=""></i> Add Review
-                    </Button> 
-                </Modal.Footer>
-            </Modal>                                         
-             {/* modal review */}
+                    </div>
+                </div>                                           
 
              {/* modal create review */}
             <Modal size="lg" show={addReview} onHide={this.handleCloseAddReview}>
@@ -335,6 +410,7 @@ class Catalog extends Component {
                     <div className='container'>
                         <div className='modal-body'>
                             <form>
+                            
                                 <div class="form-group row">
                                     <div class="col-sm-12 text-center">
                                     <Image className='' src={"https://www.gramedia.com/blog/content/images/2020/05/selena_gramedia.jpg"} wrapped ui={false} style={{width:'20%',height:'auto'}}/>
@@ -346,8 +422,12 @@ class Catalog extends Component {
                                     <Box component="fieldset" mb={3} borderColor="transparent">
                                         <Rating
                                         name="simple-controlled"
+                                        rate={value}
+                                        name="rating"
+                                        onChange={(event, newValue) => {
+                                            this.setState({ value: newValue});
+                                        }}
                                         
-                                        onClick={this.rating}
                                         />
                                     </Box>           
                                     </div>
@@ -369,69 +449,6 @@ class Catalog extends Component {
                 </Modal.Footer>
             </Modal>                                         
              {/* modal create review */}
-
-             {/* modal add */}
-             <Modal size="lg" show={showAddCategory} onHide={this.handleCloseCategory}>
-                      <Modal.Header closeButton>
-                        <Modal.Title>Add Book Data</Modal.Title>
-                      </Modal.Header>
-                      <Modal.Body>
-                        <div class='container'>
-                          <div class="modal-body">
-                            <form
-                              noValidate
-                              autoComplete="off"
-                            >
-                              <div class="form-group row">
-                                <label for="addCategoryCode" class="col-sm-2 col-form-label">Category Code</label>
-                                <div class="col-sm-10">
-                                  <input 
-                                    type="text" 
-                                    name="categoryCode"
-                                    class="form-control" 
-                                    id="addCategoryCode" 
-                                    placeholder="Category Code..." 
-                                    value={fields.categoryCode} 
-                                    data-attribute-name="Category Code"
-                                    data-async
-                                  />
-                                  <label className="error" style={{color: "red"}}>
-                                    {errors.categoryCode ? errors.categoryCode : ""}
-                                  </label>
-                                </div>
-                              </div>
-                              <div class="form-group row">
-                                <label for="addCategoryCode" class="col-sm-2 col-form-label">Category Name</label>
-                                <div class="col-sm-10">
-                                  <input 
-                                    type="text" 
-                                    name="categoryName"
-                                    class="form-control" 
-                                    id="addCategoryCode" 
-                                    placeholder="Category Name..." 
-                                    value={fields.categoryName} 
-                                    data-attribute-name="Category Name"
-                                    data-async
-                                  />
-                                  <label className="error" style={{color: "red"}}>
-                                    {errors.categoryName ? errors.categoryName : ""}
-                                  </label>
-                                </div>
-                              </div>
-                            </form>
-                          </div>
-                        </div>
-                      </Modal.Body>
-                      <Modal.Footer>
-                        <Button className="btn btn-secondary" variant="secondary" onClick={this.handleCloseCategory}>
-                          <i class="fa fa-times-circle"></i> Close
-                        </Button>
-                        <Button id="buttonAddBook" disabled={disableSubmitting} type="submit" className="btn btn-success" variant="primary" onClick={this.handleAddCategory}>
-                          <i class="fa fa-plus"></i> Add
-                        </Button>
-                      </Modal.Footer>
-                    </Modal>
-                    {/* modal add */}
 
             </div >                
         )
