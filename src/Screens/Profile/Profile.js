@@ -11,21 +11,21 @@ export default class Profile extends Component {
             email: "admin@gmail.com",
             profilePict: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBG685vI07-3MsuqJxjCfzIabfFJJG-8yM-ppvjjNpD5QNtWNE4A",
             phone: "0812388291",
-            userName: "",
-            password : "",
-            password2 : "",
-            id : ""
+            username: "",
+            password: "",
+            password2: "",
+            id: ""
         }
         this.userChange = this.userChange.bind(this)
     }
 
     componentDidMount() {
-        if (!sessionStorage.getItem('userData')) {
-            console.log("tidak ada userData")
+        if (!sessionStorage.getItem('userCode')) {
+            console.log("tidak ada userCode")
         } else {
             console.log("ada local storage")
-            console.log(JSON.parse(sessionStorage.getItem('userData')))
-            axios.get("http://localhost:8500/api/user-by-code/" + sessionStorage.getItem('userCode')).then((e) => {
+            console.log(sessionStorage.getItem('userCode'))
+            axios.get("http://localhost:8500/api/user/code/" + sessionStorage.getItem('userCode')).then((e) => {
                 // console.log(e);
                 this.setState({
                     // saldo: e.data.balance,
@@ -33,7 +33,7 @@ export default class Profile extends Component {
                     userCode: sessionStorage.getItem('userCode'),
                     fullName: e.data.fullName,
                     email: e.data.email,
-                    id : e.data.id
+                    id: e.data.id
                 })
             })
         }
@@ -47,16 +47,15 @@ export default class Profile extends Component {
         const userDto = {
             password: this.state.password
         }
-        sessionStorage.clear();
-        axios.put('http://localhost:8500/api/user-password/' + id, userDto)
+        axios.put('http://localhost:8500/api/user/password/' + id, userDto)
             .then((response) => {
-                sessionStorage.setItem('userData', JSON.stringify(response))
                 console.log(response);
             })
         this.setState({
             password: "",
             password2: "",
         });
+        document.getElementById("passmatch").style.display = "none";
         swal("Successfully", "Changed password", "success");
     }
 
@@ -68,6 +67,9 @@ export default class Profile extends Component {
 
     cekPass1 = (e) => {
         // alert(e);
+        this.setState({
+            password: e,
+        });
         if (document.getElementById("password2").value === e) {
             document.getElementById("pwmatch").classList.remove("fa-close");
             document.getElementById("pwmatch").classList.add("fa-check");
@@ -77,9 +79,6 @@ export default class Profile extends Component {
             document.getElementById("pwmatch").classList.add("fa-close");
             document.getElementById("pwmatch").style.color = "#FF0004";
         }
-        this.setState({
-            password: e,
-        });
     };
 
     cekPass2 = (e) => {
@@ -176,7 +175,7 @@ export default class Profile extends Component {
                                                                 <div className="col-sm-10">
                                                                     <input type="text" name="username"
                                                                         className="form-control" id="username"
-                                                                        placeholder="masukan username..." value={this.state.userName} readOnly />
+                                                                        placeholder="masukan username..." value={this.state.username} readOnly />
                                                                 </div>
                                                             </div>
                                                             <div className="form-group row">
@@ -209,32 +208,35 @@ export default class Profile extends Component {
                                                     <div className="tab-pane fade" id="vert-tabs-password" role="tabpanel"
                                                         aria-labelledby="vert-tabs-password-tab">
                                                         {/* <form action="" method="post"> */}
-                                                            <div className="card-body">
-                                                                <div className="form-group">
-                                                                    <label htmlFor="password1" className="">
-                                                                        New Password
+                                                        <div className="card-body">
+                                                            <div className="form-group">
+                                                                <label htmlFor="password1" className="">
+                                                                    New Password
                                                                     </label>
-                                                                    <input type="password" onChange={(e) => this.cekPass1(e.target.value)} value={this.state.password} name="password" required
-                                                                        autoComplete="off" id="password1"
-                                                                        className="form-control simm-inv" />
-                                                                </div>
-                                                                <div className="form-group">
-                                                                    <label htmlFor="password2" className="">Confirm
-                                                                        Password</label><br />
-                                                                    <input onChange={(e) => this.cekPass2(e.target.value)} type="password" value={this.state.password2} name="password_confirm"
-                                                                        required autoComplete="off" id="password2"
-                                                                        className="form-control simm-inv" />
-                                                                    <small id="passmatch" style={{ display: 'none' }}><i
-                                                                        id="pwmatch" className="fa fa-close"
-                                                                        style={{ color: '#FF0004' }}></i> Passwords
-                                                                        Match</small>
-                                                                </div>
-                                                                <br />
-                                                                <div className="form-group">
-                                                                    <button type="submit" id="btn-save"
-                                                                        className="btn btn-primary btn-block" onClick={() => this.updatePassword(this.state.id)}>Change</button>
-                                                                </div>
+                                                                <input type="password" onChange={(e) => this.cekPass1(e.target.value)} value={this.state.password} name="password" required
+                                                                    autoComplete="off" id="password1"
+                                                                    className="form-control simm-inv" />
+                                                                <small className="text-danger">
+                                                                    {this.state.password.length < 8 ? '- minimal 8 digit -' : ""}
+                                                                </small>
                                                             </div>
+                                                            <div className="form-group">
+                                                                <label htmlFor="password2" className="">Confirm
+                                                                        Password</label><br />
+                                                                <input onChange={(e) => this.cekPass2(e.target.value)} type="password" value={this.state.password2} name="password_confirm"
+                                                                    required autoComplete="off" id="password2"
+                                                                    className="form-control simm-inv" />
+                                                                <small id="passmatch" style={{ display: 'none' }}><i
+                                                                    id="pwmatch" className="fa fa-close"
+                                                                    style={{ color: '#FF0004' }}></i> Passwords
+                                                                        Match</small>
+                                                            </div>
+                                                            <br />
+                                                            <div className="form-group">
+                                                                <button type="submit" id="btn-save" disabled={this.state.password.length < 8 || this.state.password2 != this.state.password}
+                                                                    className="btn btn-primary btn-block" onClick={() => this.updatePassword(this.state.id)}>Change</button>
+                                                            </div>
+                                                        </div>
                                                         {/* </form> */}
                                                     </div>
                                                 </div>

@@ -11,17 +11,17 @@ class HeaderUser extends Component {
             username: "",
             userCode: "",
             userData: [],
-            countCart: ""
+            countCart: "0"
         };
     }
-  
+
     componentDidMount() {
         if (!sessionStorage.getItem('userCode')) {
             console.log("tidak ada userCode")
         } else {
             console.log("ada local storage")
             console.log(sessionStorage.getItem('userCode'));
-            axios.get("http://localhost:8500/api/user-by-code/" + sessionStorage.getItem('userCode')).then((e) => {
+            axios.get("http://localhost:8500/api/user/code/" + sessionStorage.getItem('userCode')).then((e) => {
                 // console.log(e);
                 this.setState({
                     // saldo: e.data.balance,
@@ -29,15 +29,17 @@ class HeaderUser extends Component {
                     userCode: sessionStorage.getItem('userCode')
                 })
             })
-            axios.get('http://localhost:8500/api/cart-by-user/' + sessionStorage.getItem('userCode'))
-                .then((res) => {
-                    console.log(res)
-                    console.log(res.data.length);
-                    this.setState({
-                        countCart: res.data.length
-                    })
-                })
         }
+        axios.get('http://localhost:8500/api/cart/usercode/' + sessionStorage.getItem('userCode'))
+            .then((res) => {
+                // console.log(res)
+                // console.log(res.data.length);
+                this.setState({
+                    countCart: res.data.data.length
+                })
+            }).catch(function (error) {
+                console.log(error);
+            })
     }
 
     render() {
