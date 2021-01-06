@@ -217,7 +217,7 @@ class BookManagement extends Component {
         }
       )
       .then(() => {
-        this.setState({ bookCode: "" })
+        this.setState({ bookCode: "", authorCode: "", bookDetailCode: "", categoryCode: "", publisherCode: "", publishedDate: "", isbn: "" })
         window.location.reload();
         swal("Great!", "Book Has Been edited", "success");
       })
@@ -240,7 +240,8 @@ class BookManagement extends Component {
   }
 
   handleCloseModal = () => {
-    this.setState({ showAddExist: false, showAdd1: false, showEdit: false, showDelete: false, showAdd2: false })
+    this.setState({ showAddExist: false, showAdd1: false, showEdit: false, showDelete: false, showAdd2: false,
+      bookCode: "", authorCode: "", bookDetailCode: "", categoryCode: "", publisherCode: "", publishedDate: "", isbn: "" })
   }
   
 
