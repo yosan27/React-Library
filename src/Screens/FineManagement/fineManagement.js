@@ -14,7 +14,7 @@ export default class FineManagement extends Component {
     super(props);
 
     this.state = {
-      lastCode:"",
+      lastCode: "",
       fineList: [],
       allList: [],
       id: "",
@@ -23,41 +23,52 @@ export default class FineManagement extends Component {
       nominal: "",
       validTo: "",
       button: "Add Fine",
+      a: false,
+      b: false,
+      c: false,
     };
   }
 
   componentDidMount() {
-    axios.get("http://localhost:8500/api/fine/get-active").then((e) => {
+    document.addEventListener('click', this.clearModal);
+
+    axios.get("http://localhost:8500/api/fine/active").then((e) => {
       this.setState({ fineList: e.data });
     });
 
     axios.get("http://localhost:8500/api/fine").then((e) => {
       this.setState({
-        allList : e.data
+        allList: e.data,
       });
-      if(this.state.allList.length !== 0){
-        let lastDigit = this.state.allList[this.state.allList.length-1].fineCode.substr(3);
-        let secondDigit = this.state.allList[this.state.allList.length-1].fineCode.substr(2,1);
-        let firstDigit = this.state.allList[this.state.allList.length-1].fineCode.substr(1,1);
-        if(lastDigit === 9){
-          if(secondDigit === 9){
-            let firstPlus = parseInt(firstDigit)+1;
+      if (this.state.allList.length !== 0) {
+        let lastDigit = this.state.allList[
+          this.state.allList.length - 1
+        ].fineCode.substr(3);
+        let secondDigit = this.state.allList[
+          this.state.allList.length - 1
+        ].fineCode.substr(2, 1);
+        let firstDigit = this.state.allList[
+          this.state.allList.length - 1
+        ].fineCode.substr(1, 1);
+        if (lastDigit === 9) {
+          if (secondDigit === 9) {
+            let firstPlus = parseInt(firstDigit) + 1;
             let code = `F${firstPlus}00`;
-            this.setState({lastCode : code});
-          }else{
-            let secondPlus = parseInt(secondDigit)+1;
+            this.setState({ lastCode: code });
+          } else {
+            let secondPlus = parseInt(secondDigit) + 1;
             let code = `F${firstDigit}${secondPlus}0`;
-            this.setState({lastCode : code});
+            this.setState({ lastCode: code });
           }
-        }else{
-          let lastPlus = parseInt(lastDigit)+1;
+        } else {
+          let lastPlus = parseInt(lastDigit) + 1;
           let code = `F${firstDigit}${secondDigit}${lastPlus}`;
-          this.setState({lastCode : code});
+          this.setState({ lastCode: code });
         }
-      }else{
-        this.setState({lastCode : "F001"});
+      } else {
+        this.setState({ lastCode: "F001" });
       }
-      this.setState({fineCode: this.state.lastCode});
+      this.setState({ fineCode: this.state.lastCode });
 
       $(function () {
         $("#fine-list").DataTable({
@@ -67,19 +78,150 @@ export default class FineManagement extends Component {
     });
   }
 
-  handleChange = (event) => {
-    this.setState({
-      [event.target.name]: event.target.value,
-    });
+  clearModal = (e) => {
+    if(e.target.className === "modal fade" || e.target.className === "btn btn-secondary modal-clear" || e.target.className === "modal-clear"){
+      axios.get("http://localhost:8500/api/fine").then((e) => {
+        if (this.state.button !== "Add Fine") {
+          this.setState({button : "Add Fine"});
+        }
+        if (this.state.allList.length !== 0) {
+          let lastDigit = this.state.allList[
+            this.state.allList.length - 1
+          ].fineCode.substr(3);
+          let secondDigit = this.state.allList[
+            this.state.allList.length - 1
+          ].fineCode.substr(2, 1);
+          let firstDigit = this.state.allList[
+            this.state.allList.length - 1
+          ].fineCode.substr(1, 1);
+          if (lastDigit === 9) {
+            if (secondDigit === 9) {
+              let firstPlus = parseInt(firstDigit) + 1;
+              let code = `F${firstPlus}00`;
+              this.setState({ lastCode: code });
+            } else {
+              let secondPlus = parseInt(secondDigit) + 1;
+              let code = `F${firstDigit}${secondPlus}0`;
+              this.setState({ lastCode: code });
+            }
+          } else {
+            let lastPlus = parseInt(lastDigit) + 1;
+            let code = `F${firstDigit}${secondDigit}${lastPlus}`;
+            this.setState({ lastCode: code });
+          }
+        } else {
+          this.setState({ lastCode: "F001" });
+        }
+        this.setState({ fineCode: this.state.lastCode });
+        this.setState({
+          allList: e.data,
+          fineType: "",
+          nominal: "",
+          validTo: "",
+        });
+      });
+    }
+  };
 
-    if (
-      this.state.fineCode !== "" &&
-      this.state.fineList !== "" &&
-      this.state.nominal !== "" &&
-      this.state.validFrom !== "" &&
-      this.state.validTo !== ""
-    ) {
-      document.querySelector(".add-btn").classList.remove("disabled");
+  maxLengthCheck = (object) => {
+    if (object.target.value.length > object.target.maxLength) {
+      object.target.value = object.target.value.slice(
+        0,
+        object.target.maxLength
+      );
+    }
+  };
+
+  handleChange = (event, value) => {
+    let {a,b,c} = this.state;
+    const re = /^[0-9\b]+$/;
+    const date = /^[0-9/]+$/;
+
+    if (event.target.name === "validTo") {
+      if (value === "" || date.test(value)) {
+        console.log(value.substring(2,3));
+        // Day
+        if(value.substring(0,1).includes("/") || value.substring(0,1)>3){
+          event.target.value = event.target.value.slice(0,0);
+        }
+        if(value.substring(1,2).includes("/") || (value.substring(0,1) === "3" && value.substring(1,2)>1)){
+          event.target.value = event.target.value.slice(0,1);
+        }
+        if(!value.substring(2,3).includes("/")){
+          event.target.value = event.target.value.slice(0,2);
+        }
+        // Month
+        if(value.substring(3,4).includes("/") || value.substring(3,4)>1){
+          event.target.value = event.target.value.slice(0,3);
+        }
+        if(value.substring(4,5).includes("/") || (value.substring(3,4) === "1" && value.substring(4,5)>2)){
+          event.target.value = event.target.value.slice(0,4);
+        }
+        if(!value.substring(5,6).includes("/")){
+          event.target.value = event.target.value.slice(0,5);
+        }
+        // Year
+        if(value.substring(6,10).includes("/")){
+          event.target.value = event.target.value.slice(0,6);
+        }
+        this.setState({
+          [event.target.name]: event.target.value,
+        });
+      }
+    }
+
+    if (event.target.name === "nominal") {
+      if (event.target.value === "" || re.test(event.target.value)) {
+        this.setState({
+          [event.target.name]: event.target.value,
+        });
+      }
+    }
+    
+    if(event.target.name === "fineType") {
+      this.setState({
+        [event.target.name]: event.target.value,
+      });
+    }
+
+    if (value === "") {
+      document.querySelector(".add-btn").classList.add("disabled");
+    }
+
+    if(event.target.name === "validTo"){
+      if(value !== ""){
+        this.setState({a: true});
+        if(b && c){
+          document.querySelector(".add-btn").classList.remove("disabled");
+        }
+      }else{
+        this.setState({a: false});
+        document.querySelector(".add-btn").classList.add("disabled");
+      }
+    }
+
+    if(event.target.name === "nominal"){
+      if(value !== ""){
+        this.setState({b: true});
+        if(a && c){
+          document.querySelector(".add-btn").classList.remove("disabled");
+        }
+      }else{
+        this.setState({b: false});
+        document.querySelector(".add-btn").classList.add("disabled");
+      }
+    }
+
+    if(event.target.name === "fineType"){
+      if(value !== ""){
+        this.setState({c: true});
+        if(b && a){
+          document.querySelector(".add-btn").classList.remove("disabled");
+        }
+      }else{
+        this.setState({c: false});
+        document.querySelector(".add-btn").classList.add("disabled");
+      }
     }
   };
 
@@ -113,7 +255,7 @@ export default class FineManagement extends Component {
       button: "Update Fine",
     });
 
-    axios.get(`http://localhost:8500/api/fine/get-by-id/${getId}`).then((e) => {
+    axios.get(`http://localhost:8500/api/fine/id/${getId}`).then((e) => {
       let res = e.data;
       this.setState({
         fineCode: res.fineCode,
@@ -147,7 +289,6 @@ export default class FineManagement extends Component {
                     <div className="card-body">
                       <button
                         className="btn btn-success mb-5"
-                        onClick={this.handleShowAdd}
                         data-toggle="modal"
                         data-target="#fineModal"
                       >
@@ -212,11 +353,7 @@ export default class FineManagement extends Component {
           </section>
         </div>
 
-        <div
-          className="modal fade"
-          tabindex="-1"
-          id="fineModal"
-        >
+        <div className="modal fade" tabindex="-1" id="fineModal">
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content">
               <div className="modal-header">
@@ -227,7 +364,9 @@ export default class FineManagement extends Component {
                   data-dismiss="modal"
                   aria-label="Close"
                 >
-                  <span aria-hidden="true">&times;</span>
+                  <span aria-hidden="true" onClick={this.clearModal} className="modal-clear">
+                    &times;
+                  </span>
                 </button>
               </div>
               <div className="modal-body">
@@ -243,8 +382,7 @@ export default class FineManagement extends Component {
                         id="fineCode"
                         placeholder="Fine Code"
                         value={this.state.fineCode}
-                        onChange={(e) => this.handleChange(e)}
-                        style={{backgroundColor : "lightgray"}}
+                        style={{ backgroundColor: "lightgray" }}
                         readOnly
                       ></input>
                     </div>
@@ -257,12 +395,11 @@ export default class FineManagement extends Component {
                         name="fineType"
                         className="col-sm-6"
                         id="fineType"
-                        placeholder="Fine Type"
-                        autoComplete="off"
-                        required
+                        placeholder="Fold"
                         autoFocus
+                        autoComplete="off"
                         value={this.state.fineType}
-                        onChange={(e) => this.handleChange(e)}
+                        onChange={(e) => this.handleChange(e, e.target.value)}
                       ></input>
                     </div>
 
@@ -274,12 +411,10 @@ export default class FineManagement extends Component {
                         name="nominal"
                         className="col-sm-6"
                         id="nominal"
-                        placeholder="Nominal"
+                        placeholder="5000"
                         autoComplete="off"
-                        required
-                        autoFocus
                         value={this.state.nominal}
-                        onChange={(e) => this.handleChange(e)}
+                        onChange={(e) => this.handleChange(e, e.target.value)}
                       ></input>
                     </div>
 
@@ -288,22 +423,26 @@ export default class FineManagement extends Component {
                         Valid To
                       </label>
                       <input
+                        maxLength="10"
                         name="validTo"
                         className="col-sm-6"
+                        placeholder="dd/mm/yyyy"
                         id="validTo"
-                        placeholder="31/12/9999"
                         autoComplete="off"
-                        required
-                        autoFocus
                         value={this.state.validTo}
-                        onChange={(e) => this.handleChange(e)}
+                        onChange={(e) => this.handleChange(e, e.target.value)}
+                        // onInput={this.maxLengthCheck}
                       ></input>
                     </div>
                   </form>
                 </div>
               </div>
               <div className="modal-footer">
-               <button className="btn btn-secondary" data-dismiss="modal">
+                <button
+                  className="btn btn-secondary modal-clear"
+                  data-dismiss="modal"
+                  onClick={this.clearModal}
+                >
                   <i class="fa fa-times-circle"></i> Close
                 </button>
                 <Link

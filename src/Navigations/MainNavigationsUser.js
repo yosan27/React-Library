@@ -18,7 +18,6 @@ import Donation from "../Screens/DonationUser/index";
 import DonationForm from "../Screens/DonationUser/indexForm";
 import Profile from "../Screens/Profile/Profile";
 import History from "../Screens/History/History";
-import ExtendForm from "../Screens/Form/ExtendForm";
 import ReturnForm from "../Screens/Form/ReturnForm";
 import UserManagement from "../Screens/UserManagement/usermanagement";
 import ManageDonation from "../Screens/ManageDonation/index";
@@ -105,10 +104,7 @@ class MainNavigationsUser extends Component {
             <Route path="/page/history">
               <History />
             </Route>
-            <Route path="/page/extendForm">
-              <ExtendForm />
-            </Route>
-            <Route path="/page/returnForm">
+            <Route path="/page/return/:id">
               <ReturnForm />
             </Route>
             <Route path="/page/manageFine">
