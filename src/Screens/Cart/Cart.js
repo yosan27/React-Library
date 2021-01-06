@@ -6,26 +6,18 @@ import 'datatables.net-responsive-dt/css/responsive.dataTables.css'
 import 'jquery/dist/jquery.min.js'
 import $ from 'jquery'
 import swal from "sweetalert";
+import axios from "axios";
 
 export default class Cart extends Component {
     constructor(props) {
         super(props);
         this.state = {
             value: '',
-            data: [
-                {
-                    "id": "2017100251",
-                    "title": "Selena",
-                    "author": "Tere Liye",
-                    "cover": "https://www.gramedia.com/blog/content/images/2020/05/selena_gramedia.jpg",
-                },
-                {
-                    "id": "2017100244",
-                    "title": "Nebula",
-                    "author": "Tere Liye",
-                    "cover": "https://www.gramedia.com/blog/content/images/2020/05/nebula_gramedia.jpg",
-                }
-            ]
+            fullName: "",
+            userCode: "",
+            id: "",
+            dataCart: [],
+            dataStatus: []
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -33,15 +25,49 @@ export default class Cart extends Component {
 
     componentDidMount() {
         this.getTglNow()
-        $(function () {
-            $('#example').DataTable({
-                responsive: true
+
+        axios.get("http://localhost:8500/api/user/code/" + sessionStorage.getItem('userCode')).then((e) => {
+            this.setState({
+                userCode: sessionStorage.getItem('userCode'),
+                fullName: e.data.fullName,
+                id: e.data.id
+            })
+        })
+        axios.get("http://localhost:8500/api/cart/usercode/" + sessionStorage.getItem('userCode')).then((e) => {
+            // console.log(e.data.data)
+            this.setState({
+                dataCart: e.data.data
+            })
+            // console.log(this.state.dataCart)
+            this.state.dataCart.map((cart, i) => {
+                axios.get("http://localhost:8500/api/book/detailcode/" + cart.bookDetailsEntity.bookDetailCode).then((resp) => {
+                    // console.log(resp)
+                    this.setState({
+                        dataStatus: [...this.state.dataStatus, {
+                            'dataCart': cart,
+                            'detailbooks': resp.data.data
+                        }]
+                    })
+                    $(function () {
+                        $('#cartlist_table').DataTable({
+                            responsive: true
+                        });
+                    });
+                })
+            })
+        }).catch(function (error) {
+            console.log(error);
+            $(function () {
+                $('#cartlist_table').DataTable({
+                    responsive: true
+                });
             });
-        });
+        })
     }
 
     async getTglNow() {
         var today = new Date();
+        var datenow = new Date();
         var dd = today.getDate();
         var mm = today.getMonth() + 1; //January is 0!
         var yyyy = today.getFullYear();
@@ -53,8 +79,9 @@ export default class Cart extends Component {
         }
 
         today = yyyy + "-" + mm + "-" + dd;
+        datenow = dd + "-" + mm + "-" + yyyy;
         document.getElementById("tgl_pinjam").setAttribute("min", today);
-        document.getElementById("date-now").innerHTML = "Date : " + today;
+        document.getElementById("date-now").innerHTML = "Date : " + datenow;
     }
 
     handleChange(event) {
@@ -88,10 +115,12 @@ export default class Cart extends Component {
         document.getElementById("cartCount").innerHTML = "0";
         swal("Thank You", "Please wait for validation admin", "success");
     };
-    
-    deleteBtn(data) {
-        document.getElementById("data"+data).style.display = "none";
-        document.getElementById("cartCount").innerHTML = "1";
+
+    deleteBtn = (id) => {
+        axios.delete('http://localhost:8500/api/cart/' + id).then
+            (() => {
+                window.location.reload()
+            })
     }
 
     render() {
@@ -99,9 +128,7 @@ export default class Cart extends Component {
             color: "white",
             cursor: 'pointer',
         };
-
-        const { data } = this.state
-
+        console.log(this.state.dataStatus)
         return (
             <div className="right_col" role="main" style={{ minHeight: '100vh' }}>
                 <section className="mt-5 pt-5">
@@ -118,10 +145,10 @@ export default class Cart extends Component {
                                                 <div className="callout callout-info">
                                                     <h5>Profile Peminjam</h5>
                                                     <p>
-                                                        Name : User Baginda
+                                                        Name : {this.state.fullName}
                                                     </p>
                                                     <p>
-                                                        ID Number : 123
+                                                        ID Number : {this.state.userCode}
                                                     </p>
                                                     <p id="date-now"></p>
                                                 </div>
@@ -129,8 +156,7 @@ export default class Cart extends Component {
                                         </div>
                                         <h5 className="text-center">Book List</h5>
                                         <div className="table-responsive">
-                                            <table id="example" className="table table-striped table-white"
-                                                style={{ width: "100%" }}>
+                                            <table id="cartlist_table" className="table table-white" style={{ width: '100%' }}>
                                                 <thead>
                                                     <tr>
                                                         <th>ID Book</th>
@@ -141,25 +167,23 @@ export default class Cart extends Component {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {
-                                                        data.map((book, i) => {
-                                                            return (
-                                                                <tr id={"data" + i}>
-                                                                    <td>{book.id}</td>
-                                                                    <td>
-                                                                        <a id={"btn-data" + i} style={mystyleBtn} onClick={() => this.deleteBtn(i)} className="btn btn-sm btn-danger">
-                                                                            <i className="fa fa-trash"></i>
-                                                                        </a>
-                                                                    </td>
-                                                                    <td>{book.title}</td>
-                                                                    <td>{book.author}</td>
-                                                                    <td className="text-center">
-                                                                        <img height="100" src={book.cover} />
-                                                                    </td>
-                                                                </tr>
-                                                            )
-                                                        })
-                                                    }
+                                                    {this.state.dataStatus.map((cart, i) => {
+                                                        return (
+                                                            <tr>
+                                                                <td>{cart.dataCart.bookDetailsEntity.bookDetailCode}</td>
+                                                                <td>
+                                                                    <a id={"btn-data" + i} style={mystyleBtn} onClick={() => this.deleteBtn(cart.dataCart.id)} className="btn btn-sm btn-danger">
+                                                                        <i className="fa fa-trash"></i>
+                                                                    </a>
+                                                                </td>
+                                                                <td>{cart.dataCart.bookDetailsEntity.bookTitle}</td>
+                                                                <td>{cart.detailbooks.authorEntity.authorName}</td>
+                                                                <td className="text-center">
+                                                                    <img height="100" src={cart.dataCart.bookDetailsEntity.cover} />
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    })}
                                                 </tbody>
                                             </table>
                                         </div>
