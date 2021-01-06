@@ -30,16 +30,28 @@ export default class FineManagement extends Component {
   }
 
   componentDidMount() {
-    document.addEventListener('click', this.clearModal);
+    // Click Outside
+    document.addEventListener("click", this.clearModal);
 
+    // Get Data On List
     axios.get("http://localhost:8500/api/fine/active").then((e) => {
       this.setState({ fineList: e.data });
+      $(function () {
+        $("#fine-list").DataTable({
+          responsive: true,
+        });
+      });
     });
+    // Get All Fine
+    this.getCode();
+  }
 
+  getCode = () => {
     axios.get("http://localhost:8500/api/fine").then((e) => {
       this.setState({
         allList: e.data,
       });
+      // Get Fine Code
       if (this.state.allList.length !== 0) {
         let lastDigit = this.state.allList[
           this.state.allList.length - 1
@@ -69,16 +81,11 @@ export default class FineManagement extends Component {
         this.setState({ lastCode: "F001" });
       }
       this.setState({ fineCode: this.state.lastCode });
-
-      $(function () {
-        $("#fine-list").DataTable({
-          responsive: true,
-        });
-      });
     });
-  }
+  };
 
   clearModal = (e) => {
+<<<<<<< HEAD
     if (e.target.className === "modal fade" || e.target.className === "btn btn-secondary modal-clear" || e.target.className === "modal-clear") {
       axios.get("http://localhost:8500/api/fine").then((e) => {
         if (this.state.button !== "Add Fine") {
@@ -119,7 +126,27 @@ export default class FineManagement extends Component {
           nominal: "",
           validTo: "",
         });
+=======
+    // Check click event listener
+    if (
+      e.target.className === "modal fade" ||
+      e.target.className === "btn btn-secondary modal-clear" ||
+      e.target.className === "modal-clear" ||
+      e.target.className === "fa fa-times-circle"
+    ) {
+      // Get Fine Code
+      this.getCode();
+      // Clear Modal Form
+      this.setState({
+        fineType: "",
+        nominal: "",
+        validTo: "",
+>>>>>>> eed2b4077f38a7e6140972b83eb3dc01d4b36af2
       });
+      document.querySelector(".add-btn").classList.add("disabled");
+      if(this.state.button === "Update Fine"){
+        this.setState({button : "Add Fine"})
+      }
     }
   };
 
@@ -133,18 +160,37 @@ export default class FineManagement extends Component {
   };
 
   handleChange = (event, value) => {
+<<<<<<< HEAD
     let { a, b, c } = this.state;
+=======
+    let { a, b, c, button } = this.state;
+>>>>>>> eed2b4077f38a7e6140972b83eb3dc01d4b36af2
     const re = /^[0-9\b]+$/;
     const date = /^[0-9/]+$/;
 
+    if(button !== "Add Fine"){
+      this.setState({a:true, b:true, c:true})
+    }
+
+    // Validate user input
     if (event.target.name === "validTo") {
       if (value === "" || date.test(value)) {
+<<<<<<< HEAD
         console.log(value.substring(2, 3));
+=======
+>>>>>>> eed2b4077f38a7e6140972b83eb3dc01d4b36af2
         // Day
         if (value.substring(0, 1).includes("/") || value.substring(0, 1) > 3) {
           event.target.value = event.target.value.slice(0, 0);
         }
+<<<<<<< HEAD
         if (value.substring(1, 2).includes("/") || (value.substring(0, 1) === "3" && value.substring(1, 2) > 1)) {
+=======
+        if (
+          value.substring(1, 2).includes("/") ||
+          (value.substring(0, 1) === "3" && value.substring(1, 2) > 1)
+        ) {
+>>>>>>> eed2b4077f38a7e6140972b83eb3dc01d4b36af2
           event.target.value = event.target.value.slice(0, 1);
         }
         if (!value.substring(2, 3).includes("/")) {
@@ -154,7 +200,14 @@ export default class FineManagement extends Component {
         if (value.substring(3, 4).includes("/") || value.substring(3, 4) > 1) {
           event.target.value = event.target.value.slice(0, 3);
         }
+<<<<<<< HEAD
         if (value.substring(4, 5).includes("/") || (value.substring(3, 4) === "1" && value.substring(4, 5) > 2)) {
+=======
+        if (
+          value.substring(4, 5).includes("/") ||
+          (value.substring(3, 4) === "1" && value.substring(4, 5) > 2)
+        ) {
+>>>>>>> eed2b4077f38a7e6140972b83eb3dc01d4b36af2
           event.target.value = event.target.value.slice(0, 4);
         }
         if (!value.substring(5, 6).includes("/")) {
@@ -167,6 +220,15 @@ export default class FineManagement extends Component {
         this.setState({
           [event.target.name]: event.target.value,
         });
+        if (value !== "" && value.length === 10) {
+          this.setState({ a: true });
+          if (b && c) {
+            document.querySelector(".add-btn").classList.remove("disabled");
+          }
+        } else {
+          this.setState({ a: false });
+          document.querySelector(".add-btn").classList.add("disabled");
+        }
       }
     }
 
@@ -175,6 +237,7 @@ export default class FineManagement extends Component {
         this.setState({
           [event.target.name]: event.target.value,
         });
+<<<<<<< HEAD
       }
     }
 
@@ -209,11 +272,23 @@ export default class FineManagement extends Component {
       } else {
         this.setState({ b: false });
         document.querySelector(".add-btn").classList.add("disabled");
+=======
+        if (value !== "" && value.length >= 3) {
+          this.setState({ b: true });
+          if (a && c) {
+            document.querySelector(".add-btn").classList.remove("disabled");
+          }
+        } else {
+          this.setState({ b: false });
+          document.querySelector(".add-btn").classList.add("disabled");
+        }
+>>>>>>> eed2b4077f38a7e6140972b83eb3dc01d4b36af2
       }
     }
 
     if (event.target.name === "fineType") {
       if (value !== "") {
+<<<<<<< HEAD
         this.setState({ c: true });
         if (b && a) {
           document.querySelector(".add-btn").classList.remove("disabled");
@@ -221,11 +296,26 @@ export default class FineManagement extends Component {
       } else {
         this.setState({ c: false });
         document.querySelector(".add-btn").classList.add("disabled");
+=======
+        this.setState({
+          [event.target.name]: event.target.value,
+          c: true
+        });
+        if(value !== " "){
+          if (b && a) {
+            document.querySelector(".add-btn").classList.remove("disabled");
+          }
+        }else {
+          this.setState({ c: false });
+          document.querySelector(".add-btn").classList.add("disabled");
+        }
+>>>>>>> eed2b4077f38a7e6140972b83eb3dc01d4b36af2
       }
     }
   };
 
   addFine = () => {
+    // Check button name
     if (this.state.button === "Add Fine") {
       let fineList = {
         fineCode: this.state.fineCode,
@@ -237,6 +327,7 @@ export default class FineManagement extends Component {
         .post("http://localhost:8500/api/fine", fineList)
         .then(() => window.location.reload());
     } else {
+      // Button name : Update Fine
       let fineList = {
         fineCode: this.state.fineCode,
         fineType: this.state.fineType,
@@ -250,11 +341,13 @@ export default class FineManagement extends Component {
   };
 
   update = (getId) => {
+    document.querySelector(".add-btn").classList.remove("disabled");
     this.setState({
       id: getId,
       button: "Update Fine",
     });
 
+    // Get data by id and fill form
     axios.get(`http://localhost:8500/api/fine/id/${getId}`).then((e) => {
       let res = e.data;
       this.setState({
@@ -276,6 +369,7 @@ export default class FineManagement extends Component {
   render() {
     return (
       <>
+        {/* Header & Data Table*/}
         <div className="right_col" role="main">
           <section className="mt-5 pt-5">
             <div className="container-fluid">
@@ -353,6 +447,7 @@ export default class FineManagement extends Component {
           </section>
         </div>
 
+        {/* Modal*/}
         <div className="modal fade" tabindex="-1" id="fineModal">
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content">
@@ -364,7 +459,11 @@ export default class FineManagement extends Component {
                   data-dismiss="modal"
                   aria-label="Close"
                 >
-                  <span aria-hidden="true" onClick={this.clearModal} className="modal-clear">
+                  <span
+                    aria-hidden="true"
+                    onClick={this.clearModal}
+                    className="modal-clear"
+                  >
                     &times;
                   </span>
                 </button>
@@ -391,16 +490,13 @@ export default class FineManagement extends Component {
                       <label for="fineType" className="col-sm-3">
                         Fine Type
                       </label>
-                      <input
-                        name="fineType"
-                        className="col-sm-6"
-                        id="fineType"
-                        placeholder="Fold"
-                        autoFocus
-                        autoComplete="off"
-                        value={this.state.fineType}
-                        onChange={(e) => this.handleChange(e, e.target.value)}
-                      ></input>
+                      <select value={this.state.fineType} name="fineType" onChange={(e) => this.handleChange(e, e.target.value)}>
+                        <option value=" ">- Select -</option>
+                        <option value="Late">Late</option>
+                        <option value="Fold">Fold</option>
+                        <option value="Torn">Torn</option>
+                        <option value="Lost">Lost</option>
+                      </select>
                     </div>
 
                     <div className="form-group row">

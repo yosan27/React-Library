@@ -14,7 +14,9 @@ class ReturnForm extends Component {
             dateBorrow: '',
             dueDate: '',
             status: '',
-            fine: []
+            late: '',
+            fine: [],
+            lateNominal: "",
         }
     }
 
@@ -40,8 +42,15 @@ class ReturnForm extends Component {
     }
 
     getFine() {
-        axios.get('http://localhost:8500/api/fine').then((res) => {
-            this.setState({ fine: res.data })
+        axios.get('http://localhost:8500/api/fine/active').then((res) => {
+            res.data.map((e)=>{
+                if(e.fineType !== "Late"){
+                    this.setState({ fine: [...this.state.fine, e] })
+                }
+                if(e.fineType === "Late"){
+                    this.setState({ lateNominal: e.nominal })
+                }
+            })
         })
     }
 
@@ -63,21 +72,28 @@ class ReturnForm extends Component {
         var today = this.formatDate(Date.now())
         var limit = new Date(due)
         var current = new Date(today)
-        var diffTime = Math.abs(current - limit)
-        var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-        var fine = diffDays * 1000;
+
+        if (limit < current) {
+            var diffTime = Math.abs(current - limit)
+            var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+            var latefine = diffDays * parseFloat(this.state.lateNominal)
+        } else {
+            diffDays = 0
+            latefine = 0
+        }
 
         document.getElementById("dateReturn").value = today
-        document.getElementById("latePrice").value = "Rp " + fine
+        document.getElementById("latePrice").value = "Rp " + latefine
         document.getElementById("lateDays").innerText = diffDays + " day(s) late"
 
-        this.setTotal(fine)
+        this.setState({ late: latefine })
+        this.setTotal()
     }
 
-    setTotal = (late) => {
+    setTotal = () => {
         var input = document.getElementsByClassName("damage")
-        var total = 9000
-
+        var total = this.state.late
+        
         for (var i = 0; i < input.length; i++) {
             if (input[i].checked) {
                 total += parseFloat(input[i].value)
@@ -159,21 +175,21 @@ class ReturnForm extends Component {
                                             <div className="form-group row pb-2">
                                                 <label className="col-sm-3 col-form-label">Damage</label>
                                                 <div className="col-sm-9">
-                                                    {
-                                                        fine.map((fine, index) => {
-                                                            return(
-                                                                <div className="form-group" key={index}>
-                                                                    <div className="form-check">
-                                                                        <input type="checkbox" className="form-check-input damage" value={fine.nominal} onClick={this.setTotal} />
-                                                                        <label className="form-check-label">{fine.fineType + " - " + fine.nominal}</label>
-                                                                    </div>
-                                                                    <div className="mt-2">
-                                                                        <input type="number" className="replyNumber" min="0" defaultValue="0" data-bind="value:replyNumber" hidden="true" />
-                                                                    </div>
+                                                {
+                                                    fine.map((fine, index) => {
+                                                        return(
+                                                            <div className="form-group" key={index}>
+                                                                <div className="form-check">
+                                                                    <input type="checkbox" className="form-check-input damage" value={fine.nominal} onClick={this.setTotal} />
+                                                                    <label className="form-check-label">{fine.fineType + " - " + fine.nominal}</label>
                                                                 </div>
-                                                            )
-                                                        })
-                                                    }
+                                                                <div className="mt-2">
+                                                                    <input type="number" className="replyNumber" min="0" defaultValue="0" data-bind="value:replyNumber" hidden="true" />
+                                                                </div>
+                                                            </div>
+                                                        )
+                                                    })
+                                                }
                                                 </div>
                                             </div>
                                             <div className="form-group row">
