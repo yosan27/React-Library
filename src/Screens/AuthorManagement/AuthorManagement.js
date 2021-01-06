@@ -18,14 +18,15 @@ class AuthorManagement extends Component {
             authorCode: '',
             authorName: ''
         }
-        this.changeAuthorNameHandler = this.changeAuthorNameHandler.bind(this)
-        this.saveAuthor = this.saveAuthor.bind(this)
-        this.updateAuthor = this.updateAuthor.bind(this)
-        this.deleteAuthor = this.deleteAuthor.bind(this)
+        // this.changeAuthorNameHandler = this.changeAuthorNameHandler.bind(this)
+        // this.insertAuthor = this.insertAuthor.bind(this)
+        // this.updateAuthor = this.updateAuthor.bind(this)
+        // this.deleteAuthor = this.deleteAuthor.bind(this)
     }
 
     componentDidMount() {
         this.getAll()
+        document.addEventListener('click', this.clearModal);
     }
 
     getAll() {
@@ -54,7 +55,7 @@ class AuthorManagement extends Component {
         this.setState({authorName: e.target.value})
     }
 
-    saveAuthor = (e) => {
+    insertAuthor = (e) => {
         e.preventDefault();
         let author = { authorName: this.state.authorName }
         axios.post('http://localhost:8500/api/author', author).then(() => {
@@ -70,29 +71,35 @@ class AuthorManagement extends Component {
         })
     }
 
-    deleteAuthor = (id) => {
-        axios.delete(`http://localhost:8500/api/author/${id}`).then(() => {
+    deleteAuthor = () => {
+        axios.delete(`http://localhost:8500/api/author/${this.state.id}`).then(() => {
             this.alertDelete()
         })
     }
 
     alertAdd = () => {
-        swal("Success!", "Author Data Has Been Added", "success")
-        window.location.reload()
+        swal("Success!", "Author Data Has Been Added", "success").then(() => {
+            window.location.reload()
+        })
     }
 
     alertEdit = () => {
-        swal("Success!", "Author Data Is Updated", "success")
-        window.location.reload()
+        swal("Success!", "Author Data Is Updated", "success").then(() => {
+            window.location.reload()
+        })
     }
 
     alertDelete = () => {
-        swal("Deleted!", "Author Data Is Successfully Deleted", "success")
-        window.location.reload()
+        swal("Deleted!", "Author Data Is Successfully Deleted", "success").then(() => {
+            window.location.reload()
+        })
     }
 
-    clearModal = () => {
-        document.getElementById('authorName').value = ''
+    clearModal = (e) => {
+        // console.log(e.target.className)
+        if (e.target.className === "modal fade" || e.target.className === "modal-clear" || e.target.className === "btn btn-secondary modal-clear") {
+            document.getElementById('authorName').value = ''
+        }
     }
 
     render() {
@@ -120,26 +127,26 @@ class AuthorManagement extends Component {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {
-                                                    author.map((author, index ) => {
-                                                        return (
-                                                            <tr key={index}>
-                                                                <td>{author.authorCode}</td>
-                                                                <td>
-                                                                    <div className="btn-group" role="group">
-                                                                        <button className="btn btn-primary btn-sm rounded-sm w-30 mr-1" data-toggle="modal" data-target="#edit" onClick={() => this.getById(author.id)}>
-                                                                            <i className="fa fa-edit"></i>
-                                                                        </button>
-                                                                        <button className="btn btn-danger btn-sm rounded-sm w-30" onClick={() => this.deleteAuthor(author.id)}>
-                                                                            <i className="fa fa-trash"></i>
-                                                                        </button>
-                                                                    </div>
-                                                                </td>
-                                                                <td>{author.authorName}</td>
-                                                            </tr>
-                                                        )
-                                                    })
-                                                }
+                                            {
+                                                author.map((author, index ) => {
+                                                    return (
+                                                        <tr key={index}>
+                                                            <td>{author.authorCode}</td>
+                                                            <td>
+                                                                <div className="btn-group" role="group">
+                                                                    <button className="btn btn-primary btn-sm rounded-sm w-30 mr-1" data-toggle="modal" data-target="#edit" onClick={() => this.getById(author.id)}>
+                                                                        <i className="fa fa-edit"></i>
+                                                                    </button>
+                                                                    <button className="btn btn-danger btn-sm rounded-sm w-30" data-toggle="modal" data-target="#delete" onClick={() => this.getById(author.id)}>
+                                                                        <i className="fa fa-trash"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </td>
+                                                            <td>{author.authorName}</td>
+                                                        </tr>
+                                                    )
+                                                })
+                                            }
                                             </tbody>
                                         </table>
                                     </div>
@@ -156,7 +163,7 @@ class AuthorManagement extends Component {
                             <div className="modal-header">
                                 <h5 className="modal-title" id="addLabel">Add Author</h5>
                                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
+                                    <span aria-hidden="true" className="modal-clear">&times;</span>
                                 </button>
                             </div>
                             <div className="modal-body">
@@ -177,8 +184,8 @@ class AuthorManagement extends Component {
                                 </form>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.clearModal}>Cancel</button>
-                                <button type="button" className="btn btn-success" data-dismiss="modal" onClick={this.saveAuthor}>Add</button>
+                                <button className="btn btn-secondary modal-clear" data-dismiss="modal">Cancel</button>
+                                <button className="btn btn-success" data-dismiss="modal" onClick={this.insertAuthor}>Add</button>
                             </div>
                         </div>
                     </div>
@@ -213,8 +220,8 @@ class AuthorManagement extends Component {
                                 </form>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.clearModal}>Cancel</button>
-                                <button type="button" className="btn btn-success" data-dismiss="modal" onClick={this.updateAuthor}>Update</button>
+                                <button className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <button className="btn btn-success" data-dismiss="modal" onClick={this.updateAuthor}>Update</button>
                             </div>
                         </div>
                     </div>
@@ -234,8 +241,8 @@ class AuthorManagement extends Component {
                                 <p>Are you sure you want to delete author data?</p>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                <button type="button" className="btn btn-warning" data-dismiss="modal">Delete</button>
+                                <button className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <button className="btn btn-warning" data-dismiss="modal" onClick={() => this.deleteAuthor()}>Delete</button>
                             </div>
                         </div>
                     </div>
