@@ -7,7 +7,9 @@ import 'datatables.net-dt/js/dataTables.dataTables'
 import 'datatables.net-dt/css/jquery.dataTables.min.css'
 import 'datatables.net-responsive-dt/js/responsive.dataTables.js'
 import 'datatables.net-responsive-dt/css/responsive.dataTables.css'
+import API from "../../api";
 import $ from 'jquery'; 
+import Moment from 'react-moment';
  
 class BookManagement extends Component {
   constructor(props) {
@@ -23,87 +25,6 @@ class BookManagement extends Component {
             categories: "Young Adult Fiction",
             bookCover: "https://www.gramedia.com/blog/content/images/2020/05/selena_gramedia.jpg",
             isPopular: true
-          },
-          {
-            bookID: "201710025",
-            bookTitle: "Nebula",
-            author: "Tere Liye",
-            publishedDate: "2019-12-01",
-            categories: "Young Adult Fiction",
-            bookCover: "https://www.gramedia.com/blog/content/images/2020/05/nebula_gramedia.jpg",
-            isPopular: true
-          },
-          {
-            bookID: "201710025",
-            bookTitle: "Misteri Terakhir#1",
-            author: "S. Mara Gd	",
-            publishedDate: "2020-04-06",
-            categories: "Young Adult Fiction",
-            bookCover: "https://www.gramedia.com/blog/content/images/2020/05/misteri-terakhir_gramedia.jpg",
-            isPopular: true
-          },
-          {
-            bookID: "201710025",
-            bookTitle: "After The Funeral",
-            author: "Agatha Christie",
-            publishedDate: "2011",
-            categories: "Detective and mystery stories",
-            bookCover: "https://www.gramedia.com/blog/content/images/2020/05/after-the-funeral_gramedia.jpg",
-            isPopular: false
-          },
-          {
-            bookID: "201710025",
-            bookTitle: "MetroPop: Ganjil Genap",
-            author: "	Almira Bastari",
-            publishedDate: "2020-08-18",
-            categories: "Young Adult Fiction",
-            bookCover: "https://www.gramedia.com/blog/content/images/2020/05/metropop-ganjil-genap_gramedia.jpg",
-            isPopular: false
-          },
-          {
-            bookID: "201710025",
-            bookTitle: "Tokyo dan Perayaan Kesedihan",
-            author: "Ruth Priscillia Angelina",
-            publishedDate: "2020-04-16",
-            categories: "Young Adult Fiction",
-            bookCover: "https://www.gramedia.com/blog/content/images/2020/05/tokyo-dan-perayaan-kesedihan_gramedia.jpg",
-            isPopular: false
-          },
-          {
-            bookID: "201710025",
-            bookTitle: "SEGI TIGA (sebuah novel)",
-            author: "Sapardi Djoko Damono",
-            publishedDate: "2020-03-23",
-            categories: "Young Adult Fiction",
-            bookCover: "https://www.gramedia.com/blog/content/images/2020/05/Segi-Tiga_gramedia.jpg",
-            isPopular: false
-          },
-          {
-            bookID: "201710025",
-            bookTitle: "Ibuk",
-            author: "Iwan Setyawan",
-            publishedDate: "2016-05-16",
-            categories: "Juvenile Fiction",
-            bookCover: "https://www.gramedia.com/blog/content/images/2020/05/Ibuk_Gramedia.jpg",
-            isPopular: false
-          },
-          {
-            bookID: "201710025",
-            bookTitle: "Laut Bercerita",
-            author: "Leila S. Chudori",
-            publishedDate: "2017-10-23",
-            categories: "Foreign Language Study",
-            bookCover: "https://www.gramedia.com/blog/content/images/2020/05/Laut-bercerita_gramedia.jpg",
-            isPopular: false
-          },
-          {
-            bookID: "201710025",
-            bookTitle: "Defending Jacob",
-            author: "William Landay",
-            publishedDate: "2017-12-18",
-            categories: "Juvenile Fiction",
-            bookCover: "https://www.gramedia.com/blog/content/images/2020/05/defending-jacob_gramedia.jpg",
-            isPopular: false
           }
         ],
       showAdd: false,
@@ -146,14 +67,25 @@ class BookManagement extends Component {
         weight: "required",
         width: "required",
         isPopular: false,
-        baseImage: ""
+        baseImage: "",
+        
         // name: "required",
         // email: "required|email",
         // phone_number: "required|numeric|digits_between:10,12",
     });
   }
 
-  componentDidMount(){
+  async componentDidMount() {
+    // DATA TABEL
+    try {
+      const res = await API.get(`/api/books`);
+      const tabledata = res.data.data;
+      
+      this.setState({ data: tabledata });
+    } catch (error) {
+      console.log(error);
+    }
+
     this.form.onformsubmit = (fields) => {
       // Do you ajax calls here.
       console.log(fields);
@@ -173,6 +105,27 @@ class BookManagement extends Component {
       });
     });
   }
+
+  // componentDidMount(){
+  //   this.form.onformsubmit = (fields) => {
+  //     // Do you ajax calls here.
+  //     console.log(fields);
+  //   }
+
+  //   this.form.handleChangeEvent = (event) => {
+  //     if (event.target.value === "") {
+  //       this.setState({ submitting: false });
+  //     } else {
+  //       this.setState({ submitting: true });;
+  //     }
+  //   }
+
+  //   $(function () {
+  //     $('#bookmanagement').DataTable({
+  //         responsive: true
+  //     });
+  //   });
+  // }
   
   // pickImage = (e) => {
   //   const file = e.target.files[0];
@@ -189,6 +142,7 @@ class BookManagement extends Component {
   //   console.log(this.state.baseImage)
   // }
 
+  
   handleAddBook = () => {
     this.setState({ showAdd: false })
     swal("Success!", "Book Has Been Added", "success");
@@ -263,7 +217,9 @@ class BookManagement extends Component {
                         data.map((book, index) => {
                           return (
                               <tr key={index}>
-                                <td>{book.bookID}</td>
+                                <td>
+                                  <p>{book.bookCode}</p>
+                                </td>
                                 <td>
                                   <div class='d-flex justify-content-around mt-4' style={{ border: 'none' }}>
                                     <button class="btn btn-primary" data-toggle="modal" data-target="#edit" onClick={this.handleShowEdit}><i
@@ -272,12 +228,46 @@ class BookManagement extends Component {
                                       class="fa fa-trash"></i></button>
                                   </div>
                                 </td>
-                                <td>{book.bookTitle}</td>
-                                <td>{book.author}</td>
-                                <td>{book.publishedDate}</td>
-                                <td>{book.categories}</td>
+                                <td>
+                                  {Object.keys(book.bookDetailsEntity?book.bookDetailsEntity:"").map(key => {
+                                    if(key === "bookTitle"){
+                                      const judul = (book.bookDetailsEntity[key])
+                                      return judul;
+                                    }
+                                  })}
+                                </td>
+                                <td>
+                                {Object.keys(book.authorEntity?book.authorEntity:"").map(key => {
+                                    if(key === "authorName"){
+                                      const author = (book.authorEntity[key])
+                                      return author;
+                                    }
+                                  })}
+                                </td>
+                                <td>
+                                  <Moment format="DD/MM/YYYY">
+                                    {book.publishedDate}
+                                  </Moment>
+                                </td>
+                                <td>
+                                {Object.keys(book.categoryEntity?book.categoryEntity:"").map(key => {
+                                    if(key === "categoryName"){
+                                      const category = (book.categoryEntity[key])
+                                      return category;
+                                    }
+                                  })}
+                                </td>
                                 <td class="text-center">
-                                  <img height="80" src={book.bookCover} alt="bookimage"/>
+                                  {
+                                    Object.keys(book.bookDetailsEntity?book.bookDetailsEntity:"").map(key => {
+                                      if(key === "cover"){
+                                        const cover = (book.bookDetailsEntity[key])
+                                        return <img height="80"
+                                        src={cover}
+                                        alt="bookimage"/>
+                                      }
+                                    })
+                                  }
                                 </td>
                               </tr>
                           )
