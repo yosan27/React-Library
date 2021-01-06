@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Container, Jumbotron, Modal, Button} from 'react-bootstrap'
+import { Container, Jumbotron, Modal, Button } from 'react-bootstrap'
 import API from "../../api";
 import './detailpage.css'
 import swal from 'sweetalert';
@@ -11,6 +11,7 @@ class DetailPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      heart: '\u2661',
       bookData: '',
       imageAvailable: false,
       bookAvailable: '',
@@ -22,7 +23,7 @@ class DetailPage extends Component {
       show: false,
       register: '',
       pages: '',
-      descripttions: ''
+      descriptions: ''
     }
   }
 
@@ -31,9 +32,7 @@ class DetailPage extends Component {
     try {
       const res = await API.get(`/api/book/B001`);
       const bookData = res.data.data;
-      console.log(bookData)
       const bookDataImage = bookData.bookDetailsEntity.cover
-      console.log(bookDataImage)
 
       if (bookData.id) {
         this.setState({ bookAvailable: 'Available' });
@@ -56,9 +55,14 @@ class DetailPage extends Component {
       this.setState({ pages: bookData.bookDetailsEntity.numberOfPages });
       this.setState({ bookDataImage: bookDataImage })
       this.setState({ descriptions: bookData.bookDetailsEntity.description })
+      console.log(this.state.descriptions)
     } catch (error) {
       console.log(error);
     }
+  }
+
+  handleWishlist = () => {
+    
   }
 
   handleClose = () => {
@@ -67,7 +71,7 @@ class DetailPage extends Component {
 
   handleCart = () => {
     this.setState({ show: false })
-    swal("Success!","Book Has Been Added To Your Cart","success")
+    swal("Success!", "Book Has Been Added To Your Cart", "success")
   }
 
   handleShow = () => {
@@ -89,7 +93,7 @@ class DetailPage extends Component {
                   <div className="card-body">
                     {/* banner */}
                     <Jumbotron className="bannerDetail"
-                      style={{ backgroundImage: `url(${(!!bookData && !!bookDataImage) ? bookDataImage : 'https://res.cloudinary.com/todidewantoro/image/upload/v1604943658/bootcamp/covernya_ejy4v1.jpg'})` }}
+                      style={{ backgroundImage: `url(${(!!bookData && !!bookDataImage) ? bookDataImage : "/assets/images/cover.png"})` }}
                       fluid>
                       <Container>
                       </Container>
@@ -103,19 +107,22 @@ class DetailPage extends Component {
                           <div className="col-lg col-sm-4 text-center align-self-center">
                             <button id='bookCategories' type="button" className="btn btn-warning novel mb-3">{category}</button>
                             <h1 id='bookTitle' className="text-uppercase mb-3">{title}</h1>
-                            <p id='publishedAt' className='mb-0'>
+                            <p id='publishedAt' className='mb-3'>
                               <Moment format="DD/MM/YYYY">
                                 {publishedDate}
                               </Moment>
                             </p>
+                            <button id='bookWishlist' type="button" className="btn btn-outline-dark mb-3" onClick={this.handleWishlist}>
+                              <i class="fa fa-heart" ></i>
+                            </button>
                           </div>
                           <div className="col-lg col-sm-4 text-center align-self-center">
                             <h4 id='isAvailable' className="text-success">{bookAvailable}</h4>
                           </div>
                           <div className="col-lg col-sm-4 text-center align-self-center">
                             <img id='bookCover'
-                              src={bookDataImage ? bookDataImage : 'https://res.cloudinary.com/todidewantoro/image/upload/v1604943658/bootcamp/covernya_ejy4v1.jpg'}
-                              alt="Dilan 1990" className="rounded novel" />
+                              src={bookDataImage ? bookDataImage : "/assets/images/cover.png"}
+                              alt="cover" className="rounded novel" />
                           </div>
                         </div>
                         {/* info atas */}

@@ -1,5 +1,8 @@
 import React, { Component } from "react";
-import { Table, Form, Modal, Button } from "react-bootstrap";
+import { Table } from "react-bootstrap";
+import { Link } from "react-router-dom";
+
+import axios from "axios";
 import swal from "sweetalert";
 
 import "datatables.net-dt/js/dataTables.dataTables";
@@ -9,58 +12,137 @@ import "datatables.net-responsive-dt/css/responsive.dataTables.css";
 import $ from "jquery";
 
 class ManageDonation extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+
     this.state = {
-      data: [
-        {
-          id: "202010052078",
-          book: "Unbranding",
-          author: "S. Mara Gd",
-          borrowed: "2020/10/05",
-          category: "Fiction",
-          image:
-            "https://www.gramedia.com/blog/content/images/2020/05/selena_gramedia.jpg",
-        },
-        {
-          id: "202010052079",
-          book: "Koala Kumal",
-          author: "Tere Liye",
-          borrowed: "2020/10/05",
-          category: "Fiction",
-          image:
-            "https://www.gramedia.com/blog/content/images/2020/05/misteri-terakhir_gramedia.jpg",
-        },
-        {
-          id: "202010082453",
-          book: "Laut Bercerita",
-          author: "Pramoedya A. Toer",
-          borrowed: "2020/10/08",
-          category: "Romance",
-          image:
-            "https://www.gramedia.com/blog/content/images/2020/05/tokyo-dan-perayaan-kesedihan_gramedia.jpg",
-        },
-        {
-          id: "202010092605",
-          book: "Pulang",
-          author: "Tere Liye",
-          borrowed: "2020/10/09",
-          category: "Horror",
-          image:
-            "https://www.gramedia.com/blog/content/images/2020/05/misteri-terakhir_gramedia.jpg",
-        },
-        {
-          id: "202010092606",
-          book: "Becoming",
-          author: "S. Mara gd",
-          borrowed: "2020/10/09",
-          category: "Fiction",
-          image:
-            "https://www.gramedia.com/blog/content/images/2020/05/selena_gramedia.jpg",
-        },
-      ],
-    };
+      donationList: [],
+      allList: [],
+      id: "",
+      bookTitle: "",
+      author: "",
+      year: "",
+      description: "",
+      photo: "",
+      status: "",
+      categoryCode: "",
+      button: "Update Data",
+    }
+    this.donationChange = this.donationChange.bind(this)
   }
+
+  donationChange = (event) => {
+    this.setState({
+      [event.target.name]: event.target.value,
+    });
+  }
+
+  componentDidMount() {
+    this.findPerson();
+
+
+  }
+
+  findPerson() {
+    axios.get("http://localhost:8500/api/donation")
+      .then((response) => {
+        console.log(response);
+        this.setState({
+          donationList: response.data
+        })
+        $(function () {
+          $("#donation-list").DataTable({
+            responsive: true,
+          });
+        });
+      });
+  }
+
+  delete = (getId) => {
+    axios
+      .delete(`http://localhost:8500/api/donation/${getId}`)
+      .then(() => window.location.reload());
+  };
+
+
+  getDetail = (getId) => {
+    this.setState({
+      id: getId,
+
+    });
+
+    axios.get(`http://localhost:8500/api/donation/id/${getId}`).then((e) => {
+      let res = e.data;
+      this.setState({
+        author: res.author,
+        bookTitle: res.bookTitle,
+        year: res.year,
+        description: res.description,
+        photo: res.photo,
+        status: res.status,
+        categoryCode: res.categoryCode
+      });
+    });
+  };
+
+  addUpdate = () => {
+    let donationList = {
+      author: this.state.author,
+      bookTitle: this.state.bookTitle,
+      year: this.state.year,
+      description: this.state.description,
+    };
+    axios
+      .put(`http://localhost:8500/api/donation-detail/${this.state.id}`, donationList)
+      .then(() => window.location.reload());
+  };
+
+
+  // componentDidMount() {
+  //   axios.get("http://localhost:8500/api/donation").then((e) => {
+  //     this.setState({
+  //       allList: e.data
+  //     });
+
+  //     $(function () {
+  //       $("#donation-list").DataTable({
+  //         responsive: true,
+  //       });
+  //     });
+  //   });
+  // }
+
+  handleChange = (event) => {
+
+
+    if (event.target.name === "bookTitle") {
+      this.setState({
+        [event.target.name]: event.target.value,
+      });
+    }
+
+    if (event.target.name === "author") {
+      this.setState({
+        [event.target.name]: event.target.value,
+      });
+    }
+
+    if (event.target.name === "year") {
+      this.setState({
+        [event.target.name]: event.target.value,
+      });
+    }
+
+    if (event.target.name === "description") {
+      this.setState({
+        [event.target.name]: event.target.value,
+      });
+    }
+
+
+  };
+
+
 
   submitReject = () => {
     swal("Rejected", "Book Donation Rejected", "warning");
@@ -70,266 +152,402 @@ class ManageDonation extends Component {
     swal("Thank You", "Book Donation Successfully Received", "success");
   };
 
-  componentDidMount() {
-    $(function () {
-      $("#bookmanagement").DataTable({
-        responsive: true,
-      });
-    });
-  }
+
 
   render() {
-    const { data } = this.state;
+    const { author, bookTitle, year, description, photo, status } = this.state;
     return (
-      <div className="right_col" role="main" style={{ minHeight: "100vh" }}>
-        <section className="mt-5 pt-5">
-          <div className="container-fluid">
-            <div className="row">
-              <div className="col-12 col-lg-12">
-                <div className="card">
-                  <div className="card-header">
-                    <h3 className="card-title">Donation Management</h3>
+      <>
+        <div className="right_col" role="main" style={{ minHeight: "100vh" }}>
+          <section className="mt-5 pt-5">
+            <div className="container-fluid">
+              <div className="row">
+                <div className="col-12 col-lg-12">
+                  <div className="card">
+                    <div className="card-header">
+                      <h3 className="card-title">Donation Management</h3>
+                    </div>
+                    <div className="card-body">
+                      <Table
+                        responsive
+                        striped
+                        id="donation-list"
+                        style={{ width: "100%" }}
+                      >
+                        <thead>
+                          <tr>
+                            <th>Book ID</th>
+                            <th>Action</th>
+                            <th>Book Title</th>
+                            <th>Author</th>
+                            <th>Categories</th>
+                            <th>Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {this.state.donationList.map((donation, index) => {
+                            return (
+                              <tr>
+                                <td>{donation.id}</td>
+                                <td>
+                                  <span className="d-flex justify-content-center">
+                                    <button
+                                      className="btn btn-warning"
+                                      data-toggle="modal"
+                                      data-target="#edit"
+                                      onClick={() => this.getDetail(donation.id)}
+                                    >
+                                      <i className="fa fa-eye"></i>
+                                    </button>
+                                    <button
+                                      className="btn btn-success"
+                                      data-toggle="modal"
+                                      data-target="#delete"
+                                    >
+                                      <i className="fa fa-check"></i>
+                                    </button>
+                                    <button
+                                      className="btn btn-primary"
+                                      onClick={() => this.getDetail(donation.id)}
+                                      data-toggle="modal"
+                                      data-target="#fineModal"
+                                    >
+                                      <i className="fa fa-edit"></i>
+                                    </button>
+                                    <button
+                                      className="btn btn-danger"
+                                      onClick={() => this.delete(donation.id)}
+                                    >
+                                      <i className="fa fa-eraser"></i>
+                                    </button>
+                                  </span>
+                                </td>
+                                <td>{donation.bookTitle}</td>
+                                <td>{donation.author}</td>
+                                <td>{donation.categoryEntity.categoryName}</td>
+                                {donation.status === 3 && <td>Rejected</td>}
+                                {donation.status === 2 && <td>Accepted</td>}
+                                {donation.status === 1 && <td>Pending</td>}
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </Table>
+                    </div>
                   </div>
-                  <div className="card-body">
-                    <Table
-                      responsive
-                      striped
-                      id="bookmanagement"
-                      style={{ width: "100%" }}
-                    >
-                      <thead>
-                        <tr>
-                          <th>Book ID</th>
-                          <th>Book Title</th>
-                          <th>Author</th>
-                          <th>Donation Date</th>
-                          <th>Categories</th>
-                          <th>Book Photo</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {data.map((user) => {
-                          return (
-                            <tr>
-                              <td>{user.id}</td>
-                              <td>
-                                <span className="d-flex justify-content-center">
-                                  <button
-                                    className="btn btn-primary"
-                                    data-toggle="modal"
-                                    data-target="#edit"
-                                  >
-                                    <i className="fa fa-eye"></i>
-                                  </button>
-                                  <button
-                                    className="btn btn-success"
-                                    data-toggle="modal"
-                                    data-target="#delete"
-                                  >
-                                    <i className="fa fa-check"></i>
-                                  </button>
-                                </span>
-                              </td>
-                              <td>{user.book}</td>
-                              <td>{user.author}</td>
-                              <td>{user.borrowed}</td>
-                              <td>{user.category}</td>
-                              <td>
-                                <img height="80" src={user.image} alt="" />
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </Table>
-                  </div>
-                </div>
 
-                {/* MODAL */}
+                  {/* MODAL ACC DONATION & UPDATE */}
+                  <div className="modal fade" tabindex="-1" id="fineModal">
+                    <div className="modal-dialog modal-dialog-centered">
+                      <div className="modal-content">
+                        <div className="modal-header">
+                          <h4 className="modal-title">Donation Update Data Form</h4>
+                          <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close"
+                          >
+                            <span aria-hidden="true" onClick={this.clearModal} className="modal-clear">
+                              &times;
+                  </span>
+                          </button>
+                        </div>
+                        <div className="modal-body">
+                          <div class="container">
+                            <form className="mb-4">
+                              <div className="form-group row">
+                                <label for="fineType" className="col-sm-3">
+                                  Title
+                      </label>
+                                <input
+                                  name="bookTitle"
+                                  className="col-sm-6"
+                                  id="bookTitle"
+                                  placeholder="Kisah Tanah Jawa"
+                                  autoFocus
+                                  autoComplete="off"
+                                  value={this.state.bookTitle}
+                                  onChange={(e) => this.handleChange(e, e.target.value)}
+                                ></input>
+                              </div>
 
-                <div
-                  class="modal fade"
-                  id="edit"
-                  tabindex="-1"
-                  aria-labelledby="editModalLabel"
-                  aria-hidden="true"
-                >
-                  <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title" id="editModalLabel">
-                          Detail Donation #2017100251
-                        </h5>
-                        <button
-                          type="button"
-                          class="close"
-                          data-dismiss="modal"
-                          aria-label="Close"
-                        >
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                      </div>
-                      <div class="modal-body">
-                        <div class="container" id="demo">
-                          <div class="row justify-content-md-center">
-                            <img
-                              src="https://www.gramedia.com/blog/content/images/2020/05/misteri-terakhir_gramedia.jpg"
-                              height="350"
-                              alt="Donation Book"
-                            />
-                          </div>
-                          <br />
-                          <div class="row justify-content-md-center">
-                            <label
-                              for="editTitle"
-                              class="col-sm-1 col-form-label"
-                            >
-                              Title
-                            </label>
-                            <h5 class="col-lg-8 text-center">
-                              Misteri Terakhir#1{" "}
-                            </h5>
-                          </div>
-                          <hr />
-                          <div class="row justify-content-md-center">
-                            <label
-                              for="editTitle"
-                              class="col-sm-1 col-form-label"
-                            >
-                              Author
-                            </label>
-                            <h5 class="col-lg-8 text-center">S. Mara Gd </h5>
-                          </div>
-                          <hr />
-                          <div class="row justify-content-md-center">
-                            <label
-                              for="editTitle"
-                              class="col-sm-1 col-form-label"
-                            >
-                              Category
-                            </label>
-                            <h5 class="col-lg-8 text-center">
-                              Young Adult Fiction
-                            </h5>
-                          </div>
-                          <hr />
-                          <div class="row justify-content-md-center">
-                            <label
-                              for="editTitle"
-                              class="col-sm-1 col-form-label"
-                            >
-                              Year
-                            </label>
-                            <h5 class="col-lg-8 text-center">2020</h5>
-                          </div>
-                          <hr />
-                          <div class="row justify-content-md-center">
-                            <label
-                              for="editTitle"
-                              class="col-sm-1 col-form-label"
-                            >
-                              Condition
-                            </label>
-                            <p class="col-lg-8 text-center">
-                              Kondisi bagus, tidak ada halaman hilang.
-                            </p>
-                          </div>
-                          <hr />
-                          <div class="row justify-content-md-center">
-                            <label
-                              for="editTitle"
-                              class="col-sm-1 col-form-label"
-                            >
-                              Donatur
-                            </label>
-                            <h5 class="col-lg-8 text-center">Garen Dow</h5>
-                          </div>
-                          <hr />
-                          <div class="row justify-content-md-center">
-                            <label
-                              for="editTitle"
-                              class="col-sm-1 col-form-label"
-                            >
-                              Donation Date
-                            </label>
-                            <h5 class="col-lg-8 text-center">2020-03-16</h5>
+                              <div className="form-group row">
+                                <label for="nominal" className="col-sm-3">
+                                  Year
+                      </label>
+                                <input
+                                  name="year"
+                                  className="col-sm-6"
+                                  id="year"
+                                  placeholder="2021"
+                                  autoComplete="off"
+                                  value={this.state.year}
+                                  onChange={(e) => this.handleChange(e, e.target.value)}
+                                ></input>
+                              </div>
+
+                              <div className="form-group row">
+                                <label for="validTo" className="col-sm-3">
+                                  Author
+                      </label>
+                                <input
+                                  name="author"
+                                  className="col-sm-6"
+                                  placeholder="Pramoedya A. TOer"
+                                  id="author"
+                                  autoComplete="off"
+                                  value={this.state.author}
+                                  onChange={(e) => this.handleChange(e, e.target.value)}
+                                // onInput={this.maxLengthCheck}
+                                ></input>
+                              </div>
+
+                              <div className="form-group row">
+                                <label for="validTo" className="col-sm-3">
+                                  Category
+                      </label>
+                                <input
+                                  name="category"
+                                  className="col-sm-6"
+                                  placeholder="History"
+                                  id="category"
+                                  autoComplete="off"
+                                  value={this.state.categoryName}
+                                  onChange={(e) => this.handleChange(e, e.target.value)}
+                                // onInput={this.maxLengthCheck}
+                                ></input>
+                              </div>
+
+                              <div className="form-group row">
+                                <label for="validTo" className="col-sm-3">
+                                  Description/Condition
+                      </label>
+                                <input
+                                  name="description"
+                                  className="col-sm-6"
+                                  placeholder="Description of book"
+                                  id="description"
+                                  autoComplete="off"
+                                  value={this.state.description}
+                                  onChange={(e) => this.handleChange(e, e.target.value)}
+                                // onInput={this.maxLengthCheck}
+                                ></input>
+                              </div>
+
+
+                            </form>
                           </div>
                         </div>
-                      </div>
-                      <div class="modal-footer">
-                        <button
-                          type="button"
-                          class="btn btn-danger"
-                          onClick={() => this.submitReject()}
-                        >
-                          Reject
-                        </button>
-                        <button
-                          type="button"
-                          class="btn btn-success"
-                          onClick={() => this.submitAccept()}
-                        >
-                          Accept
-                        </button>
+                        <div className="modal-footer">
+                          <button
+                            className="btn btn-secondary modal-clear"
+                            data-dismiss="modal"
+                            onClick=""
+                          >
+                            <i class="fa fa-times-circle"></i> Close
+                </button>
+                          <Link
+                            className="btn btn-success add-btn"
+                            onClick={this.addUpdate}
+                          >
+                            <i class="fa fa-plus mr-1"></i>
+                            {this.state.button}
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                {/* MODAL VERIFY */}
-                <div
-                  class=" modal fade"
-                  id="delete"
-                  tabindex="-1"
-                  aria-labelledby="editLabel"
-                  aria-hidden="true"
-                >
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title" id="deleteLabel">
-                          Veriy The Donation to Faraday E-library
+
+
+                  {/* MODAL DETAIL DATA */}
+
+                  <div
+                    class="modal fade"
+                    id="edit"
+                    tabindex="1"
+                    aria-labelledby="editModalLabel"
+                    aria-hidden="true"
+                    key={this.state.id}
+                  >
+                    <div class="modal-dialog modal-lg">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="editModalLabel">
+                            Donation
+                          </h5>
+                          <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close"
+                          >
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <div class="container" id="demo">
+                            <div class="row justify-content-md-center">
+                              <img
+                                src="https://www.gramedia.com/blog/content/images/2020/05/misteri-terakhir_gramedia.jpg"
+                                height="350"
+                                alt="Donation Book"
+                              />
+                            </div>
+                            <br />
+                            <div class="row justify-content-md-center">
+                              <label
+                                for="editTitle"
+                                class="col-sm-1 col-form-label"
+                              >
+                                Title
+                            </label>
+                              <h5 class="col-lg-8 text-center">
+                                {this.state.bookTitle}
+                              </h5>
+                            </div>
+                            <hr />
+                            <div class="row justify-content-md-center">
+                              <label
+                                for="editTitle"
+                                class="col-sm-1 col-form-label"
+                              >
+                                Author
+                            </label>
+                              <h5 class="col-lg-8 text-center">{this.state.author} </h5>
+                            </div>
+                            <hr />
+                            <div class="row justify-content-md-center">
+                              <label
+                                for="editTitle"
+                                class="col-sm-1 col-form-label"
+                              >
+                                Category
+                            </label>
+                              <h5 class="col-lg-8 text-center">
+                                {this.state.categoryCode}
+                              </h5>
+                            </div>
+                            <hr />
+                            <div class="row justify-content-md-center">
+                              <label
+                                for="editTitle"
+                                class="col-sm-1 col-form-label"
+                              >
+                                Year
+                            </label>
+                              <h5 class="col-lg-8 text-center">{this.state.year}</h5>
+                            </div>
+                            <hr />
+                            <div class="row justify-content-md-center">
+                              <label
+                                for="editTitle"
+                                class="col-sm-1 col-form-label"
+                              >
+                                Condition
+                            </label>
+                              <p class="col-lg-8 text-center">
+                                {this.state.description}
+                              </p>
+                            </div>
+                            <hr />
+                            <div class="row justify-content-md-center">
+                              <label
+                                for="editTitle"
+                                class="col-sm-1 col-form-label"
+                              >
+                                Donatur
+                            </label>
+                              <h5 class="col-lg-8 text-center">{this.state.author}</h5>
+                            </div>
+                            <hr />
+                            <div class="row justify-content-md-center">
+                              <label
+                                for="editTitle"
+                                class="col-sm-1 col-form-label"
+                              >
+                                Status
+                            </label>
+                              {this.state.status === 3 && <h5 class="col-lg-8 text-center">Rejected</h5>}
+                              {this.state.status === 2 && <h5 class="col-lg-8 text-center">Accepted</h5>}
+                              {this.state.status === 1 && <h5 class="col-lg-8 text-center">Pending</h5>}
+
+                            </div>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+
+                          <button
+                            type="button"
+                            class="btn btn-warning"
+                            onClick={() => this.update(this.state.id)}
+                            data-target="#fineModal"
+                            data-toggle="modal"
+                          >
+                            Update
+                        </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+
+                  {/* MODAL VERIFY */}
+                  <div
+                    class=" modal fade"
+                    id="delete"
+                    tabindex="-1"
+                    aria-labelledby="editLabel"
+                    aria-hidden="true"
+                  >
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="deleteLabel">
+                            Veriy The Donation to Faraday E-library
                         </h5>
-                        <button
-                          type="button"
-                          class="close"
-                          data-dismiss="modal"
-                          aria-label="Close"
-                        >
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                      </div>
-                      <div class="modal-body">
-                        <p>
-                          Are you sure you want to accept the donation to
-                          Faraday E-Library?
+                          <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close"
+                          >
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <p>
+                            Are you sure you want to accept the donation to
+                            Faraday E-Library?
                         </p>
-                      </div>
-                      <div class="modal-footer">
-                        <button
-                          type="button"
-                          class="btn btn-secondary"
-                          data-dismiss="modal"
-                        >
-                          Cancel
+                        </div>
+                        <div class="modal-footer">
+                          <button
+                            type="button"
+                            class="btn btn-secondary"
+                            data-dismiss="modal"
+                          >
+                            Cancel
                         </button>
-                        <button
-                          type="button"
-                          class="btn btn-primary"
-                          onClick={() => this.submitAccept()}
-                        >
-                          Accept
+                          <button
+                            type="button"
+                            class="btn btn-primary"
+                            onClick={() => this.submitAccept()}
+                          >
+                            Accept
                         </button>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </section>
-      </div>
+          </section>
+        </div>
+      </>
     );
   }
 }

@@ -14,7 +14,7 @@ export default class FineManagement extends Component {
     super(props);
 
     this.state = {
-      lastCode:"",
+      lastCode: "",
       fineList: [],
       allList: [],
       id: "",
@@ -23,67 +23,193 @@ export default class FineManagement extends Component {
       nominal: "",
       validTo: "",
       button: "Add Fine",
+      a: false,
+      b: false,
+      c: false,
     };
   }
 
   componentDidMount() {
+    // Click Outside
+    document.addEventListener("click", this.clearModal);
+
+    // Get Data On List
     axios.get("http://localhost:8500/api/fine/active").then((e) => {
       this.setState({ fineList: e.data });
-    });
-
-    axios.get("http://localhost:8500/api/fine").then((e) => {
-      this.setState({
-        allList : e.data
-      });
-      if(this.state.allList.length !== 0){
-        let lastDigit = this.state.allList[this.state.allList.length-1].fineCode.substr(3);
-        let secondDigit = this.state.allList[this.state.allList.length-1].fineCode.substr(2,1);
-        let firstDigit = this.state.allList[this.state.allList.length-1].fineCode.substr(1,1);
-        if(lastDigit === 9){
-          if(secondDigit === 9){
-            let firstPlus = parseInt(firstDigit)+1;
-            let code = `F${firstPlus}00`;
-            this.setState({lastCode : code});
-          }else{
-            let secondPlus = parseInt(secondDigit)+1;
-            let code = `F${firstDigit}${secondPlus}0`;
-            this.setState({lastCode : code});
-          }
-        }else{
-          let lastPlus = parseInt(lastDigit)+1;
-          let code = `F${firstDigit}${secondDigit}${lastPlus}`;
-          this.setState({lastCode : code});
-        }
-      }else{
-        this.setState({lastCode : "F001"});
-      }
-      this.setState({fineCode: this.state.lastCode});
-
       $(function () {
         $("#fine-list").DataTable({
           responsive: true,
         });
       });
     });
+    // Get All Fine
+    this.getCode();
   }
 
-  handleChange = (event) => {
-    this.setState({
-      [event.target.name]: event.target.value,
+  getCode = () => {
+    axios.get("http://localhost:8500/api/fine").then((e) => {
+      this.setState({
+        allList: e.data,
+      });
+      // Get Fine Code
+      if (this.state.allList.length !== 0) {
+        let lastDigit = this.state.allList[
+          this.state.allList.length - 1
+        ].fineCode.substr(3);
+        let secondDigit = this.state.allList[
+          this.state.allList.length - 1
+        ].fineCode.substr(2, 1);
+        let firstDigit = this.state.allList[
+          this.state.allList.length - 1
+        ].fineCode.substr(1, 1);
+        if (lastDigit === "9") {
+          if (secondDigit === "9") {
+            let firstPlus = parseInt(firstDigit) + 1;
+            let code = `F${firstPlus}00`;
+            this.setState({ lastCode: code });
+          } else {
+            let secondPlus = parseInt(secondDigit) + 1;
+            let code = `F${firstDigit}${secondPlus}0`;
+            this.setState({ lastCode: code });
+          }
+        } else {
+          let lastPlus = parseInt(lastDigit) + 1;
+          let code = `F${firstDigit}${secondDigit}${lastPlus}`;
+          this.setState({ lastCode: code });
+        }
+      } else {
+        this.setState({ lastCode: "F001" });
+      }
+      this.setState({ fineCode: this.state.lastCode });
     });
+  };
 
+  clearModal = (e) => {
+    // Check click event listener
     if (
-      this.state.fineCode !== "" &&
-      this.state.fineList !== "" &&
-      this.state.nominal !== "" &&
-      this.state.validFrom !== "" &&
-      this.state.validTo !== ""
+      e.target.className === "modal fade" ||
+      e.target.className === "btn btn-secondary modal-clear" ||
+      e.target.className === "modal-clear" ||
+      e.target.className === "fa fa-times-circle"
     ) {
-      document.querySelector(".add-btn").classList.remove("disabled");
+      // Get Fine Code
+      this.getCode();
+      // Clear Modal Form
+      this.setState({
+        fineType: "",
+        nominal: "",
+        validTo: "",
+      });
+      document.querySelector(".add-btn").classList.add("disabled");
+      if (this.state.button === "Update Fine") {
+        this.setState({ button: "Add Fine" })
+      }
+    }
+  };
+
+  maxLengthCheck = (object) => {
+    if (object.target.value.length > object.target.maxLength) {
+      object.target.value = object.target.value.slice(
+        0,
+        object.target.maxLength
+      );
+    }
+  };
+
+  handleChange = (event, value) => {
+    let { a, b, c, button } = this.state;
+    const re = /^[0-9\b]+$/;
+    const date = /^[0-9/]+$/;
+
+    if (button !== "Add Fine") {
+      this.setState({ a: true, b: true, c: true })
+    }
+
+    // Validate user input
+    if (event.target.name === "validTo") {
+      if (value === "" || date.test(value)) {
+        // Day
+        if (value.substring(0, 1).includes("/") || value.substring(0, 1) > 3) {
+          event.target.value = event.target.value.slice(0, 0);
+        }
+        if (
+          value.substring(1, 2).includes("/") ||
+          (value.substring(0, 1) === "3" && value.substring(1, 2) > 1)
+        ) {
+          event.target.value = event.target.value.slice(0, 1);
+        }
+        if (!value.substring(2, 3).includes("/")) {
+          event.target.value = event.target.value.slice(0, 2);
+        }
+        // Month
+        if (value.substring(3, 4).includes("/") || value.substring(3, 4) > 1) {
+          event.target.value = event.target.value.slice(0, 3);
+        }
+        if (
+          value.substring(4, 5).includes("/") ||
+          (value.substring(3, 4) === "1" && value.substring(4, 5) > 2)
+        ) {
+          event.target.value = event.target.value.slice(0, 4);
+        }
+        if (!value.substring(5, 6).includes("/")) {
+          event.target.value = event.target.value.slice(0, 5);
+        }
+        // Year
+        if (value.substring(6, 10).includes("/")) {
+          event.target.value = event.target.value.slice(0, 6);
+        }
+        this.setState({
+          [event.target.name]: event.target.value,
+        });
+        if (value !== "" && value.length === 10) {
+          this.setState({ a: true });
+          if (b && c) {
+            document.querySelector(".add-btn").classList.remove("disabled");
+          }
+        } else {
+          this.setState({ a: false });
+          document.querySelector(".add-btn").classList.add("disabled");
+        }
+      }
+    }
+
+    if (event.target.name === "nominal") {
+      if (event.target.value === "" || re.test(event.target.value)) {
+        this.setState({
+          [event.target.name]: event.target.value,
+        });
+        if (value !== "" && value.length >= 3) {
+          this.setState({ b: true });
+          if (a && c) {
+            document.querySelector(".add-btn").classList.remove("disabled");
+          }
+        } else {
+          this.setState({ b: false });
+          document.querySelector(".add-btn").classList.add("disabled");
+        }
+      }
+    }
+
+    if (event.target.name === "fineType") {
+      if (value !== "") {
+        this.setState({
+          [event.target.name]: event.target.value,
+          c: true
+        });
+        if (value !== " ") {
+          if (b && a) {
+            document.querySelector(".add-btn").classList.remove("disabled");
+          }
+        } else {
+          this.setState({ c: false });
+          document.querySelector(".add-btn").classList.add("disabled");
+        }
+      }
     }
   };
 
   addFine = () => {
+    // Check button name
     if (this.state.button === "Add Fine") {
       let fineList = {
         fineCode: this.state.fineCode,
@@ -95,6 +221,7 @@ export default class FineManagement extends Component {
         .post("http://localhost:8500/api/fine", fineList)
         .then(() => window.location.reload());
     } else {
+      // Button name : Update Fine
       let fineList = {
         fineCode: this.state.fineCode,
         fineType: this.state.fineType,
@@ -108,11 +235,13 @@ export default class FineManagement extends Component {
   };
 
   update = (getId) => {
+    document.querySelector(".add-btn").classList.remove("disabled");
     this.setState({
       id: getId,
       button: "Update Fine",
     });
 
+    // Get data by id and fill form
     axios.get(`http://localhost:8500/api/fine/id/${getId}`).then((e) => {
       let res = e.data;
       this.setState({
@@ -134,6 +263,7 @@ export default class FineManagement extends Component {
   render() {
     return (
       <>
+        {/* Header & Data Table*/}
         <div className="right_col" role="main">
           <section className="mt-5 pt-5">
             <div className="container-fluid">
@@ -147,7 +277,6 @@ export default class FineManagement extends Component {
                     <div className="card-body">
                       <button
                         className="btn btn-success mb-5"
-                        onClick={this.handleShowAdd}
                         data-toggle="modal"
                         data-target="#fineModal"
                       >
@@ -212,11 +341,8 @@ export default class FineManagement extends Component {
           </section>
         </div>
 
-        <div
-          className="modal fade"
-          tabindex="-1"
-          id="fineModal"
-        >
+        {/* Modal*/}
+        <div className="modal fade" tabindex="-1" id="fineModal">
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content">
               <div className="modal-header">
@@ -227,7 +353,13 @@ export default class FineManagement extends Component {
                   data-dismiss="modal"
                   aria-label="Close"
                 >
-                  <span aria-hidden="true">&times;</span>
+                  <span
+                    aria-hidden="true"
+                    onClick={this.clearModal}
+                    className="modal-clear"
+                  >
+                    &times;
+                  </span>
                 </button>
               </div>
               <div className="modal-body">
@@ -243,8 +375,7 @@ export default class FineManagement extends Component {
                         id="fineCode"
                         placeholder="Fine Code"
                         value={this.state.fineCode}
-                        onChange={(e) => this.handleChange(e)}
-                        style={{backgroundColor : "lightgray"}}
+                        style={{ backgroundColor: "lightgray" }}
                         readOnly
                       ></input>
                     </div>
@@ -253,17 +384,13 @@ export default class FineManagement extends Component {
                       <label for="fineType" className="col-sm-3">
                         Fine Type
                       </label>
-                      <input
-                        name="fineType"
-                        className="col-sm-6"
-                        id="fineType"
-                        placeholder="Fine Type"
-                        autoComplete="off"
-                        required
-                        autoFocus
-                        value={this.state.fineType}
-                        onChange={(e) => this.handleChange(e)}
-                      ></input>
+                      <select value={this.state.fineType} name="fineType" onChange={(e) => this.handleChange(e, e.target.value)}>
+                        <option value=" ">- Select -</option>
+                        <option value="Late">Late</option>
+                        <option value="Fold">Fold</option>
+                        <option value="Torn">Torn</option>
+                        <option value="Lost">Lost</option>
+                      </select>
                     </div>
 
                     <div className="form-group row">
@@ -274,12 +401,10 @@ export default class FineManagement extends Component {
                         name="nominal"
                         className="col-sm-6"
                         id="nominal"
-                        placeholder="Nominal"
+                        placeholder="5000"
                         autoComplete="off"
-                        required
-                        autoFocus
                         value={this.state.nominal}
-                        onChange={(e) => this.handleChange(e)}
+                        onChange={(e) => this.handleChange(e, e.target.value)}
                       ></input>
                     </div>
 
@@ -288,22 +413,26 @@ export default class FineManagement extends Component {
                         Valid To
                       </label>
                       <input
+                        maxLength="10"
                         name="validTo"
                         className="col-sm-6"
+                        placeholder="dd/mm/yyyy"
                         id="validTo"
-                        placeholder="31/12/9999"
                         autoComplete="off"
-                        required
-                        autoFocus
                         value={this.state.validTo}
-                        onChange={(e) => this.handleChange(e)}
+                        onChange={(e) => this.handleChange(e, e.target.value)}
+                      // onInput={this.maxLengthCheck}
                       ></input>
                     </div>
                   </form>
                 </div>
               </div>
               <div className="modal-footer">
-               <button className="btn btn-secondary" data-dismiss="modal">
+                <button
+                  className="btn btn-secondary modal-clear"
+                  data-dismiss="modal"
+                  onClick={this.clearModal}
+                >
                   <i class="fa fa-times-circle"></i> Close
                 </button>
                 <Link

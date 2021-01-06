@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
+import swal from 'sweetalert'
 
 import 'datatables.net-dt/js/dataTables.dataTables'
 import 'datatables.net-dt/css/jquery.dataTables.min.css'
@@ -22,13 +23,13 @@ class History extends Component {
             dueDate: '',
             dateReturn: '',
             status: '',
-            fineType: '',
-            nominal: ''
+            totalFine: ''
         }
     }
 
     componentDidMount() {
         this.getAll()
+        document.addEventListener('click', this.clearModal);
     }
 
     getAll() {
@@ -52,8 +53,15 @@ class History extends Component {
                 dateBorrow: res.data.dateBorrow,
                 dueDate: res.data.dueDate,
                 dateReturn: res.data.dateReturn,
-                status: res.data.status,
-                fine: this.getByRentCode(res.data.rentCode)
+                status: res.data.status
+            })
+
+            axios.get(`http://localhost:8500/api/transaction-detail/get-by-rent-code/${this.state.rentCode}`).then((res) => {
+                res.data.map((d) => {
+                    this.setState({
+                        fine: [ ...this.state.fine, d ]
+                    })
+                })
             })
         })
     }
@@ -65,6 +73,29 @@ class History extends Component {
                 nominal: res.data.nominal
             })
         })
+    }
+
+    alertTakeBook = () => {
+        swal("Success!", "the book has been taken by the borrower", "success")
+        window.location.reload()
+    }
+
+    setStatusTakeBook = (id) => {
+        axios.put(`http://localhost:8500/api/rent/status/${id}`).then(() => {
+            this.alertTakeBook()
+        })
+    }
+
+    setTakeBook(status, id) {
+        if(status === 1) {
+            return <button className="btn btn-primary btn-sm rounded-sm" data-toggle="modal" data-target="#takeBook" onClick={() => this.setStatusTakeBook(id)}><i className="fa fa-book"></i></button>
+        }
+    }
+
+    setReturn(status) {
+        if(status === 2 || status === 3) {
+            return <button className="btn btn-primary btn-sm rounded-sm"><i className="fa fa-exchange"></i></button>
+        }
     }
 
     setStatus(status) {
@@ -80,6 +111,12 @@ class History extends Component {
             return <span className="badge badge-success">Returned</span>
         } else if(status === 6) {
             return <span className="badge badge-dark">Cancel</span>
+        }
+    }
+
+    clearModal = (e) => {
+        if (e.target.className === "modal fade" || e.target.className === "modal-clear" || e.target.className === "btn btn-secondary modal-clear") {
+            this.setState({ dateReturn: '', fine: [] })
         }
     }
 
@@ -110,33 +147,30 @@ class History extends Component {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {
-                                                    rent.map((rent, index) => {
-                                                        return (
-                                                            <tr key={index}>
-                                                                <td>{rent.rentCode}</td>
-                                                                <td>
-                                                                    <div className="btn-group" role="group">
-                                                                        <button className="btn btn-primary btn-sm rounded-sm mr-1" data-toggle="modal" data-target="#info" onClick={() => this.getById(rent.id)}>
-                                                                            <i className="fa fa-info-circle"></i>
-                                                                        </button>
-                                                                        <Link to={`/page/return/${rent.id}`}>
-                                                                            <button className="btn btn-primary btn-sm rounded-sm">
-                                                                                <i className="fa fa-exchange"></i>
-                                                                            </button>
-                                                                        </Link>
-                                                                    </div>
-                                                                </td>
-                                                                <td>{rent.userEntity.fullName}</td>
-                                                                <td>{rent.bookEntity.bookDetailsEntity.bookTitle}</td>
-                                                                <td>{rent.dateBorrow}</td>
-                                                                <td>{rent.dueDate}</td>
-                                                                <td>{rent.dateReturn}</td>
-                                                                <td>{this.setStatus(rent.status)}</td>
-                                                            </tr>
-                                                        )
-                                                    })
-                                                }
+                                            {
+                                                rent.map((rent, index) => {
+                                                    return (
+                                                        <tr key={index}>
+                                                            <td>{rent.rentCode}</td>
+                                                            <td>
+                                                                <div className="btn-group" role="group">
+                                                                    <button className="btn btn-primary btn-sm rounded-sm mr-1" data-toggle="modal" data-target="#info" onClick={() => this.getById(rent.id)}>
+                                                                        <i className="fa fa-info-circle"></i>
+                                                                    </button>
+                                                                    <span>{this.setTakeBook(rent.status, rent.id)}</span>
+                                                                    <Link to={`/page/return/${rent.id}`}>{this.setReturn(rent.status)}</Link>
+                                                                </div>
+                                                            </td>
+                                                            <td>{rent.userEntity.fullName}</td>
+                                                            <td>{rent.bookEntity.bookDetailsEntity.bookTitle}</td>
+                                                            <td>{rent.dateBorrow}</td>
+                                                            <td>{rent.dueDate}</td>
+                                                            <td>{rent.dateReturn}</td>
+                                                            <td>{this.setStatus(rent.status)}</td>
+                                                        </tr>
+                                                    )
+                                                })
+                                            }
                                             </tbody>
                                         </table>
                                     </div>
@@ -153,7 +187,7 @@ class History extends Component {
                             <div className="modal-header">
                                 <h5 className="modal-title" id="infoLabel">Info</h5>
                                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
+                                    <span aria-hidden="true" className="modal-clear">&times;</span>
                                 </button>
                             </div>
                             <div className="modal-body">
@@ -202,36 +236,58 @@ class History extends Component {
                                         </div>
                                     </div>
                                     <hr></hr>
-                                    <div className="form-group row pb-1">
-                                        <label className="col-sm-4 col-form-label">Late</label>
-                                        <div className="col-sm-8">
-                                            <input type="text" readOnly className="form-control-plaintext pb-0" defaultValue="0" />
-                                            <small className="form-text text-muted">0 day(s) late</small>
-                                        </div>
-                                    </div>
-                                    <div className="form-group row pb-1">
-                                        <label className="col-sm-4 col-form-label">Damage</label>
-                                        <div className="col-sm-8">
-                                            <input type="text" readOnly className="form-control-plaintext pb-0" defaultValue="0" />
-                                            <small className="form-text text-muted">No Damage</small>
-                                        </div>
-                                    </div>
-                                    <div className="form-group row">
-                                        <label className="col-sm-4 col-form-label">Total Fine</label>
-                                        <div className="col-sm-8">
-                                            <input type="text" readOnly className="form-control-plaintext" defaultValue="0" />
-                                        </div>
-                                    </div>
                                     <div className="form-group row">
                                         <label className="col-sm-4 col-form-label">Status</label>
                                         <div className="col-sm-8">
                                             {this.setStatus(this.state.status)}
                                         </div>
                                     </div>
+                                    <div className="form-group row">
+                                        <label className="col-sm-4 col-form-label"><b>Fine</b></label>
+                                        <div className="col-sm-8 ml-0 pl-0">
+                                        {
+                                            this.state.fine.map((fine, index) => {
+                                                return(
+                                                    <div className="col-sm-8" key={index}>
+                                                        <input type="text" className="form-control-plaintext pb-0" value={fine.kredit} />
+                                                        <small className="form-text text-muted">{fine.fineEntity.fineType}</small>
+                                                    </div>
+                                                )
+                                            })
+                                        }
+                                        </div>
+                                    </div>
+                                    {/* <div className="form-group row">
+                                        <label className="col-sm-4 col-form-label"><b>Total Fine</b></label>
+                                        <div className="col-sm-8">
+                                            <input type="text" readOnly className="form-control-plaintext" defaultValue="0" />
+                                        </div>
+                                    </div> */}
                                 </form>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button className="btn btn-secondary modal-clear" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* MODAL TAKE BOOK */}
+                <div className="modal fade" id="takeBook" tabIndex="-1" aria-labelledby="takeBookLabel" aria-hidden="true">
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title" id="takeBookLabel">Take Book</h5>
+                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <p>Are you sure the borrower has taken the book?</p>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <button type="button" className="btn btn-success" data-dismiss="modal">Submit</button>
                             </div>
                         </div>
                     </div>

@@ -11,10 +11,10 @@ class HeaderUser extends Component {
             username: "",
             userCode: "",
             userData: [],
-            countCart: ""
+            countCart: "0"
         };
     }
-  
+
     componentDidMount() {
         if (!sessionStorage.getItem('userCode')) {
             console.log("tidak ada userCode")
@@ -29,15 +29,17 @@ class HeaderUser extends Component {
                     userCode: sessionStorage.getItem('userCode')
                 })
             })
-            axios.get('http://localhost:8500/api/cart/usercode/' + sessionStorage.getItem('userCode'))
-                .then((res) => {
-                    console.log(res)
-                    console.log(res.data.length);
-                    this.setState({
-                        countCart: res.data.length
-                    })
-                })
         }
+        axios.get('http://localhost:8500/api/cart/usercode/' + sessionStorage.getItem('userCode'))
+            .then((res) => {
+                // console.log(res)
+                // console.log(res.data.length);
+                this.setState({
+                    countCart: res.data.data.length
+                })
+            }).catch(function (error) {
+                console.log(error);
+            })
     }
 
     render() {

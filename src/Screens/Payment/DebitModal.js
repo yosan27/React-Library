@@ -22,75 +22,106 @@ export default class DebitModal extends Component {
   }
 
   handleChange = (event, value) => {
+    const text = /^[a-zA-Z\s]*$/;
     const re = /^[0-9\b]+$/;
     let {a,b,c,d,e,f} = this.state;
-
-    if (
-      event.target.name === "cvc" ||
-      event.target.name === "cardNumber" ||
-      event.target.name === "expiredMonth" ||
-      event.target.name === "expiredYear"
-    ) {
+    
+    if (event.target.name === "cardNumber") {
       if (event.target.value === "" || re.test(event.target.value)) {
+        if (value.length === 16) {
+          this.setState({a : true});
+          if(d && b && c && e && f) {
+            document.querySelector(".debit-modal-pay-btn").classList.remove("disabled");
+          }
+        }else{
+          this.setState({a : false});
+          document.querySelector(".debit-modal-pay-btn").classList.add("disabled");
+        }
         this.setState({
           [event.target.name]: event.target.value,
         });
       }
-    } else {
-      this.setState({
-        [event.target.name]: event.target.value,
-      });
     }
 
-    console.log(value.length)
-    if (event.target.name === "cardNumber") {
-      if (value.length === 16) {
-        this.setState({a : true});
-      }else{
-        this.setState({a : false});
-      }
-    }
     if (event.target.name === "cvc") {
-      if (value.length === 3) {
-        this.setState({b : true});
-      }else{
-        this.setState({b : false});
+      if (event.target.value === "" || re.test(event.target.value)) {
+        if (value.length === 3) {
+          this.setState({b : true});
+          if(a && d && c && e && f) {
+            document.querySelector(".debit-modal-pay-btn").classList.remove("disabled");
+          }
+        }else{
+          this.setState({b : false});
+          document.querySelector(".debit-modal-pay-btn").classList.add("disabled");
+        }
+        this.setState({
+          [event.target.name]: event.target.value,
+        });
       }
     }
+
     if (event.target.name === "expiredMonth") {
-      if (value.length === 2) {
-        this.setState({c : true});
-      }else{
-        this.setState({c : false});
+      if (event.target.value === "" || re.test(event.target.value)) {
+        if(value.substring(0,1)>1){
+          event.target.value = event.target.value.slice(0,0);
+        }
+        if((value.substring(0,1) === "1" && value.substring(1,2)>2)){
+          event.target.value = event.target.value.slice(0,1);
+        }
+        if (value.length === 2) {
+          this.setState({c : true});
+          if(a && b && d && e && f) {
+            document.querySelector(".debit-modal-pay-btn").classList.remove("disabled");
+          }
+        }else{
+          this.setState({c : false});
+          document.querySelector(".debit-modal-pay-btn").classList.add("disabled");
+        }
+        this.setState({
+          [event.target.name]: event.target.value,
+        });
       }
     }
+
     if (event.target.name === "expiredYear") {
-      if (value.length >= 3) {
-        this.setState({d : true});
-      }else{
-        this.setState({d : false});
+      if (event.target.value === "" || re.test(event.target.value)) {
+        if (value.length === 4) {
+          this.setState({d : true});
+          if(a && b && c && e && f) {
+            document.querySelector(".debit-modal-pay-btn").classList.remove("disabled");
+          }
+        }else{
+          this.setState({d : false});
+          document.querySelector(".debit-modal-pay-btn").classList.add("disabled");
+        }
+        this.setState({
+          [event.target.name]: event.target.value,
+        });
       }
     }
-    if (this.state.nameCard !== "") {
-      this.setState({e : true});
-    }else{
-      this.setState({e : false});
+    
+    if (event.target.name === "nameCard") {
+      if (event.target.value === "" || text.test(event.target.value)) {
+        if (value.length !== 0) {
+          this.setState({e : true});
+          if(a && b && c && d && f) {
+            document.querySelector(".debit-modal-pay-btn").classList.remove("disabled");
+          }
+        }else{
+          this.setState({e : false});
+          document.querySelector(".debit-modal-pay-btn").classList.add("disabled");
+        }
+        this.setState({
+          [event.target.name]: event.target.value,
+        });
+      }
     }
+
     if (this.props.nominalTopUp !== 0) {
       this.setState({f : true});
     }else{
       this.setState({f : false});
     }
-    if(a && b && c && d && e && f) {
-      document
-        .querySelector(".debit-modal-pay-btn")
-        .classList.remove("disabled");
-    }else{
-      document
-      .querySelector(".debit-modal-pay-btn")
-      .classList.add("disabled");
-    }
-    console.log(a, b, c, d, e, f);
   };
 
   maxLengthCheck = (object) => {
@@ -137,11 +168,13 @@ export default class DebitModal extends Component {
                     <br />
                     <input
                       className="long-input"
+                      maxLength="32"
                       type="text"
                       name="nameCard"
                       autocomplete="off"
                       value={this.state.nameCard}
                       onChange={(e) => this.handleChange(e, e.target.value)}
+                      onInput={this.maxLengthCheck}
                     />
                   </div>
                 </div>

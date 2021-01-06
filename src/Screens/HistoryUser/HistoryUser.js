@@ -7,6 +7,7 @@ import 'datatables.net-responsive-dt/js/responsive.dataTables.js'
 import 'datatables.net-responsive-dt/css/responsive.dataTables.css'
 import 'jquery/dist/jquery.min.js'
 import $ from 'jquery'
+import { Link } from 'react-router-dom'
 
 class HistoryUser extends Component {
     constructor(props) {
@@ -21,8 +22,7 @@ class HistoryUser extends Component {
             dueDate: '',
             dateReturn: '',
             status: '',
-            fineType: '',
-            nominal: ''
+            totalFine: ''
         }
     }
 
@@ -33,11 +33,12 @@ class HistoryUser extends Component {
           })
 
           this.getAll()
+          document.addEventListener('click', this.clearModal);
         })
     }
 
     getAll() {
-        axios.get('http://localhost:8500/api/rent/usercode/' + this.state.userCode).then((res) => {
+        axios.get('http://localhost:8500/api/rent/user-code/' + this.state.userCode).then((res) => {
             this.setState({ rent: res.data })
 
             $(function () {
@@ -58,6 +59,20 @@ class HistoryUser extends Component {
                 dateReturn: res.data.dateReturn,
                 status: res.data.status
             })
+            
+            axios.get(`http://localhost:8500/api/transaction-detail/get-by-rent-code/${this.state.rentCode}`).then((res) => {
+                res.data.map((d) => {
+                    this.setState({
+                        fine: [ ...this.state.fine, d ]
+                    })
+                })
+            })
+        })
+    }
+
+    getFine(getRentCode) {
+        axios.get(`http://localhost:8500/api/transaction-detail/get-by-rent-code/${getRentCode}`).then((res) => {
+            this.setState({ fine: res.data })
         })
     }
 
@@ -74,6 +89,19 @@ class HistoryUser extends Component {
             return <span className="badge badge-success">Returned</span>
         } else if(status === 6) {
             return <span className="badge badge-dark">Cancel</span>
+        }
+    }
+
+    setPay(status) {
+        if(status === 4) {
+            return <button className="btn btn-info">Pay</button>
+        }
+        
+    }
+
+    clearModal = (e) => {
+        if (e.target.className === "modal fade" || e.target.className === "modal-clear" || e.target.className === "btn btn-secondary modal-clear") {
+            this.setState({ dateReturn: '', fine: [] })
         }
     }
 
@@ -103,25 +131,25 @@ class HistoryUser extends Component {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {
-                                                    rent.map((rent, index) => {
-                                                        return (
-                                                            <tr key={index}>
-                                                                <td>{rent.rentCode}</td>
-                                                                <td>
-                                                                    <button className="btn btn-primary btn-sm rounded-sm mr-1" data-toggle="modal" data-target="#info" onClick={() => this.getById(rent.id)}>
-                                                                        <i className="fa fa-info-circle"></i>
-                                                                    </button>
-                                                                </td>
-                                                                <td>{rent.bookEntity.bookDetailsEntity.bookTitle}</td>
-                                                                <td>{rent.dateBorrow}</td>
-                                                                <td>{rent.dueDate}</td>
-                                                                <td>{rent.dateReturn}</td>
-                                                                <td>{this.setStatus(rent.status)}</td>
-                                                            </tr>
-                                                        )
-                                                    })
-                                                }
+                                            {
+                                                rent.map((rent, index) => {
+                                                    return (
+                                                        <tr key={index}>
+                                                            <td>{rent.rentCode}</td>
+                                                            <td>
+                                                                <button className="btn btn-primary btn-sm rounded-sm mr-1" data-toggle="modal" data-target="#info" onClick={() => this.getById(rent.id)}>
+                                                                    <i className="fa fa-info-circle"></i>
+                                                                </button>
+                                                            </td>
+                                                            <td>{rent.bookEntity.bookDetailsEntity.bookTitle}</td>
+                                                            <td>{rent.dateBorrow}</td>
+                                                            <td>{rent.dueDate}</td>
+                                                            <td>{rent.dateReturn}</td>
+                                                            <td>{this.setStatus(rent.status)}</td>
+                                                        </tr>
+                                                    )
+                                                })
+                                            }
                                             </tbody>
                                         </table>
                                     </div>
@@ -138,7 +166,7 @@ class HistoryUser extends Component {
                             <div className="modal-header">
                                 <h5 className="modal-title" id="infoLabel">Info</h5>
                                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
+                                    <span aria-hidden="true" className="modal-clear">&times;</span>
                                 </button>
                             </div>
                             <div className="modal-body">
@@ -181,36 +209,38 @@ class HistoryUser extends Component {
                                         </div>
                                     </div>
                                     <hr></hr>
-                                    <div className="form-group row pb-1">
-                                        <label className="col-sm-4 col-form-label">Late</label>
-                                        <div className="col-sm-8">
-                                            <input type="text" readOnly className="form-control-plaintext pb-0" defaultValue="0" />
-                                            <small className="form-text text-muted">0 day(s) late</small>
-                                        </div>
-                                    </div>
-                                    <div className="form-group row pb-1">
-                                        <label className="col-sm-4 col-form-label">Damage</label>
-                                        <div className="col-sm-8">
-                                            <input type="text" readOnly className="form-control-plaintext pb-0" defaultValue="0" />
-                                            <small className="form-text text-muted">No Damage</small>
-                                        </div>
-                                    </div>
-                                    <div className="form-group row">
-                                        <label className="col-sm-4 col-form-label">Total Fine</label>
-                                        <div className="col-sm-8">
-                                            <input type="text" readOnly className="form-control-plaintext" defaultValue="0" />
-                                        </div>
-                                    </div>
                                     <div className="form-group row">
                                         <label className="col-sm-4 col-form-label">Status</label>
                                         <div className="col-sm-8">
                                             {this.setStatus(this.state.status)}
                                         </div>
                                     </div>
+                                    <div className="form-group row">
+                                        <label className="col-sm-4 col-form-label"><b>Fine</b></label>
+                                        <div className="col-sm-8 ml-0 pl-0">
+                                        {
+                                            this.state.fine.map((fine, index) => {
+                                                return(
+                                                    <div className="col-sm-8" key={index}>
+                                                        <input type="text" className="form-control-plaintext pb-0" value={fine.kredit} />
+                                                        <small className="form-text text-muted">{fine.fineEntity.fineType}</small>
+                                                    </div>
+                                                )
+                                            })
+                                        }
+                                        </div>
+                                    </div>
+                                    <div className="form-group row">
+                                        <label className="col-sm-4 col-form-label"><b>Total Fine</b></label>
+                                        <div className="col-sm-8">
+                                            <input type="text" readOnly className="form-control-plaintext" defaultValue="0" />
+                                        </div>
+                                    </div>
                                 </form>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button className="btn btn-secondary modal-clear" data-dismiss="modal">Close</button>
+                                <Link to={`/page/payment`}>{this.setPay(this.state.status)}</Link>
                             </div>
                         </div>
                     </div>
