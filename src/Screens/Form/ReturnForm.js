@@ -41,8 +41,12 @@ class ReturnForm extends Component {
     }
 
     getFine() {
-        axios.get('http://localhost:8500/api/fine').then((res) => {
-            this.setState({ fine: res.data })
+        axios.get('http://localhost:8500/api/fine/active').then((res) => {
+            res.data.map((e)=>{
+                if(e.fineType !== "Late"){
+                    this.setState({ fine: [...this.state.fine, e] })
+                }
+            })
         })
     }
 

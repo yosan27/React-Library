@@ -120,8 +120,7 @@ export default class FineManagement extends Component {
     let { a, b, c, button } = this.state;
     const re = /^[0-9\b]+$/;
     const date = /^[0-9/]+$/;
-    const text = /^[a-zA-Z\s]*$/;
-    
+
     if(button !== "Add Fine"){
       this.setState({a:true, b:true, c:true})
     }
