@@ -100,6 +100,10 @@ export default class FineManagement extends Component {
         nominal: "",
         validTo: "",
       });
+      document.querySelector(".add-btn").classList.add("disabled");
+      if(this.state.button === "Update Fine"){
+        this.setState({button : "Add Fine"})
+      }
     }
   };
 
@@ -113,10 +117,14 @@ export default class FineManagement extends Component {
   };
 
   handleChange = (event, value) => {
-    let { a, b, c } = this.state;
+    let { a, b, c, button } = this.state;
     const re = /^[0-9\b]+$/;
     const date = /^[0-9/]+$/;
     const text = /^[a-zA-Z\s]*$/;
+    
+    if(button !== "Add Fine"){
+      this.setState({a:true, b:true, c:true})
+    }
 
     // Validate user input
     if (event.target.name === "validTo") {
@@ -199,10 +207,6 @@ export default class FineManagement extends Component {
         }
       }
     }
-
-    if (value === "") {
-      document.querySelector(".add-btn").classList.add("disabled");
-    }
   };
 
   addFine = () => {
@@ -232,6 +236,7 @@ export default class FineManagement extends Component {
   };
 
   update = (getId) => {
+    document.querySelector(".add-btn").classList.remove("disabled");
     this.setState({
       id: getId,
       button: "Update Fine",
