@@ -18,10 +18,6 @@ class AuthorManagement extends Component {
             authorCode: '',
             authorName: ''
         }
-        // this.changeAuthorNameHandler = this.changeAuthorNameHandler.bind(this)
-        // this.insertAuthor = this.insertAuthor.bind(this)
-        // this.updateAuthor = this.updateAuthor.bind(this)
-        // this.deleteAuthor = this.deleteAuthor.bind(this)
     }
 
     componentDidMount() {
@@ -96,9 +92,8 @@ class AuthorManagement extends Component {
     }
 
     clearModal = (e) => {
-        // console.log(e.target.className)
         if (e.target.className === "modal fade" || e.target.className === "modal-clear" || e.target.className === "btn btn-secondary modal-clear") {
-            document.getElementById('authorName').value = ''
+            this.setState({ authorName: '' })
         }
     }
 
@@ -178,7 +173,7 @@ class AuthorManagement extends Component {
                                         <label className="col-sm-3 col-form-label">Author Name</label>
                                         <div className="col-sm-9">
                                             <input className="form-control input" name="authorName" id="authorName" placeholder="Enter Author Name"
-                                                onChange={this.changeAuthorNameHandler} />
+                                                value={this.state.authorName} onChange={this.changeAuthorNameHandler} />
                                         </div>
                                     </div>
                                 </form>
