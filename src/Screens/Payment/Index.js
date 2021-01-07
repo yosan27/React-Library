@@ -27,6 +27,7 @@ export default class Payment extends Component {
       paymentRecord: [],
       listRecord: [],
       rentCodeList: [],
+      tDetailCode: [],
       saldo: "",
       denda: 2000,
       sum: 0,
@@ -44,6 +45,7 @@ export default class Payment extends Component {
   }
 
   componentDidMount() {
+    // Get User Data
       axios.get("http://localhost:8500/api/user/code/"+ sessionStorage.getItem('userCode')).then((e) => {
           this.setState({
               saldo: e.data.balance,
@@ -51,83 +53,88 @@ export default class Payment extends Component {
               userCode : sessionStorage.getItem('userCode')
           })
 
-      axios.get(`http://localhost:8500/api/transaction/user/${this.state.userCode}`)
-        .then((record) => {
-          this.setState({paymentRecord: record.data});
-          let idCode = this.state.userCode.substring(2,this.state.userCode.length);
-          if (this.state.paymentRecord.length !== 0) {
-            let lastDigit = this.state.paymentRecord[this.state.paymentRecord.length - 1].transactionCode.substr(6);
-            let secondDigit = this.state.paymentRecord[this.state.paymentRecord.length - 1].transactionCode.substr(5,1);
-            let firstDigit = this.state.paymentRecord[this.state.paymentRecord.length - 1].transactionCode.substr(4,1);
-            if (lastDigit === 9) {
-              if (secondDigit === 9) {
-                let firstPlus = parseInt(firstDigit) + 1;
-                let code = `T${idCode}${firstPlus}00`;
-                this.setState({ lastCode: code });
+          // Get Transaction Code
+          axios.get(`http://localhost:8500/api/transaction/user/${this.state.userCode}`)
+            .then((record) => {
+              this.setState({paymentRecord: record.data});
+              let idCode = this.state.userCode.substring(2,this.state.userCode.length);
+              if (this.state.paymentRecord.length !== 0) {
+                let lastDigit = this.state.paymentRecord[this.state.paymentRecord.length - 1].transactionCode.substr(6);
+                let secondDigit = this.state.paymentRecord[this.state.paymentRecord.length - 1].transactionCode.substr(5,1);
+                let firstDigit = this.state.paymentRecord[this.state.paymentRecord.length - 1].transactionCode.substr(4,1);
+                if (lastDigit === "9") {
+                  if (secondDigit === "9") {
+                    let firstPlus = parseInt(firstDigit) + 1;
+                    let code = `T${idCode}${firstPlus}00`;
+                    this.setState({ lastCode: code });
+                  } else {
+                    let secondPlus = parseInt(secondDigit) + 1;
+                    let code = `T${idCode}${firstDigit}${secondPlus}0`;
+                    this.setState({ lastCode: code });
+                  }
+                } else {
+                  let lastPlus = parseInt(lastDigit) + 1;
+                  let code = `T${idCode}${firstDigit}${secondDigit}${lastPlus}`;
+                  this.setState({ lastCode: code });
+                }
               } else {
-                let secondPlus = parseInt(secondDigit) + 1;
-                let code = `T${idCode}${firstDigit}${secondPlus}0`;
-                this.setState({ lastCode: code });
+                this.setState({ lastCode: `T${idCode}001` });
               }
-            } else {
-              let lastPlus = parseInt(lastDigit) + 1;
-              let code = `T${idCode}${firstDigit}${secondDigit}${lastPlus}`;
-              this.setState({ lastCode: code });
-            }
-          } else {
-            this.setState({ lastCode: `T${idCode}001` });
-          }
-        });
-
-        axios.get(`http://localhost:8500/api/transaction-detail/user/${this.state.userCode}`).then((record) => {
-          let idCode = this.state.userCode.substring(2,this.state.userCode.length);
-          if (record.data.length !== 0) {
-            let lastDigit = record.data[record.data.length - 1].detailCode.substr(7);
-            let secondDigit = record.data[record.data.length - 1].detailCode.substr(6, 1);
-            let firstDigit = record.data[record.data.length - 1].detailCode.substr(5, 1);
-            if (lastDigit === 9) {
-              if (secondDigit === 9) {
-                let firstPlus = parseInt(firstDigit) + 1;
-                let code = `TD${idCode}${firstPlus}00`;
-                this.setState({ detailCode: code });
+            });
+          // Get Transaction Detail Code
+          axios.get(`http://localhost:8500/api/transaction-detail/user/${this.state.userCode}`).then((record) => {
+              let idCode = this.state.userCode.substring(2,this.state.userCode.length);
+              if (record.data.length !== 0) {
+                let lastDigit = record.data[record.data.length - 1].detailCode.substr(7);
+                let secondDigit = record.data[record.data.length - 1].detailCode.substr(6, 1);
+                let firstDigit = record.data[record.data.length - 1].detailCode.substr(5, 1);
+                if (lastDigit === "9") {
+                  if (secondDigit === "9") {
+                    let firstPlus = parseInt(firstDigit) + 1;
+                    let code = `TD${idCode}${firstPlus}00`;
+                    this.setState({ detailCode: code });
+                  } else {
+                    let secondPlus = parseInt(secondDigit) + 1;
+                    let code = `TD${idCode}${firstDigit}${secondPlus}0`;
+                    this.setState({ detailCode: code });
+                  }
+                } else {
+                  let lastPlus = parseInt(lastDigit) + 1;
+                  let code = `TD${idCode}${firstDigit}${secondDigit}${lastPlus}`;
+                  this.setState({ detailCode: code });
+                }
               } else {
-                let secondPlus = parseInt(secondDigit) + 1;
-                let code = `TD${idCode}${firstDigit}${secondPlus}0`;
-                this.setState({ detailCode: code });
+                this.setState({ detailCode: `TD${idCode}001` });
               }
-            } else {
-              let lastPlus = parseInt(lastDigit) + 1;
-              let code = `TD${idCode}${firstDigit}${secondDigit}${lastPlus}`;
-              this.setState({ detailCode: code });
-            }
-          } else {
-            this.setState({ detailCode: `TD${idCode}001` });
-          }
-      });
-
-      axios.get(`http://localhost:8500/api/transaction-detail/bill/${this.state.userCode}`).then((record)=>{
-        record.data.map((d)=>{
-          let bill = (parseInt(this.state.sum) + parseInt(d.kredit))
-          if(d.rentEntity.status === 4){
-            this.setState({
-              listRecord : [
-              ...this.state.listRecord, d
-              ],
-              rentCodeList : [
-                ...this.state.rentCodeList, d.rentEntity.rentCode
-                ],
-              sum : bill
+          });
+          // Get Bill
+          axios.get(`http://localhost:8500/api/transaction-detail/bill/${this.state.userCode}`).then((record)=>{
+            record.data.map((d)=>{
+              let bill = (parseInt(this.state.sum) + parseInt(d.kredit))
+              if(d.rentEntity.status === 4){
+                this.setState({
+                  listRecord : [
+                    ...this.state.listRecord, d
+                    ],
+                  rentCodeList : [
+                    ...this.state.rentCodeList, d.rentEntity.rentCode
+                    ],
+                  tDetailCode : [
+                    ...this.state.tDetailCode, d.detailCode
+                    ],
+                  sum : bill
+                })
+              }
             })
-          }
-        })
-        if(this.state.listRecord.length === 0){
-          this.noBills();
-        }else{
-          this.state.listBox.classList.remove("hide");
-        }
-      })
+            if(this.state.listRecord.length === 0){
+              this.noBills();
+            }else{
+              this.state.listBox.classList.remove("hide");
+            }
+          })
     });
 
+    // DOM
     this.setState({
       listBox: document.querySelector("body .list-box"),
       noBill: document.getElementById("no-bill"),
@@ -183,41 +190,6 @@ export default class Payment extends Component {
     this.state.noBill.classList.remove("hide");
   }
 
-  pay = () => {
-    if (this.state.saldo >= this.state.sum) {
-      const kurang = this.state.saldo - this.state.sum;
-      let updateBalance = {
-        balance: kurang,
-      };
-      let paymentRecord = {
-        transactionCode: this.state.lastCode,
-        nominal: this.state.sum,
-        paymentMethod: "LibraryPay",
-        paymentStatus: 2,
-        userCode: this.state.userCode,
-      };
-      let updateStatus = {
-        status: 5
-      }
-      axios.post("http://localhost:8500/api/transaction", paymentRecord).then(()=>{
-        this.state.rentCodeList.map((e)=>{
-          axios.put(`http://localhost:8500/api/rent/code/${e}`, updateStatus)
-        });
-        axios.put(`http://localhost:8500/api/user/balance/${this.state.userId}`, updateBalance)
-          .then(() => {
-            this.setState({ saldo: kurang });
-            swal(
-              "Thank You",
-              "Your Payment Was Successful!",
-              "success"
-            ).then(() => window.open("http://localhost:3000/page/payment", "_self"));
-        });
-      });
-    } else {
-      swal("We're Sorry", "Your Payment Failed!", "error");
-    }
-  };
-
   minimumTopUp = (e) => {
     this.setState({ inputNominal: e });
     if (parseInt(e) < 10000) {
@@ -246,6 +218,47 @@ export default class Payment extends Component {
   debitModal = () => {
     this.state.atmBox.classList.add("hide");
     this.state.mbankBox.classList.add("hide");
+  };
+
+  pay = () => {
+    if (this.state.saldo >= this.state.sum) {
+      const kurang = this.state.saldo - this.state.sum;
+      let updateBalance = {
+        balance: kurang,
+      };
+      let paymentRecord = {
+        transactionCode: this.state.lastCode,
+        nominal: this.state.sum,
+        paymentMethod: "LibraryPay",
+        paymentStatus: 2,
+        userCode: this.state.userCode,
+      };
+      let updateStatus = {
+        status: 5
+      }
+      let updateTransaction = {
+        transactionCode: this.state.lastCode,
+      }
+      axios.post("http://localhost:8500/api/transaction", paymentRecord).then(()=>{
+        this.state.rentCodeList.map((e)=>{
+          axios.put(`http://localhost:8500/api/rent/code/${e}`, updateStatus)
+        });
+        this.state.tDetailCode.map((e)=>{
+          axios.put(`http://localhost:8500/api/transaction-detail/code/${e}`, updateTransaction)
+        });
+        axios.put(`http://localhost:8500/api/user/balance/${this.state.userId}`, updateBalance)
+          .then(() => {
+            this.setState({ saldo: kurang });
+            swal(
+              "Thank You",
+              "Your Payment Was Successful!",
+              "success"
+            ).then(() => window.open("http://localhost:3000/page/payment", "_self"));
+        });
+      });
+    } else {
+      swal("We're Sorry", "Your Payment Failed!", "error");
+    }
   };
 
   debitPay = () => {
