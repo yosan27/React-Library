@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Table, Modal, Button } from 'react-bootstrap';
 import swal from "sweetalert";
-import ReactFormInputValidation from "react-form-input-validation";
 //Datatable Modules
 import 'datatables.net-dt/js/dataTables.dataTables'
 import 'datatables.net-dt/css/jquery.dataTables.min.css'
@@ -9,13 +8,18 @@ import 'datatables.net-responsive-dt/js/responsive.dataTables.js'
 import 'datatables.net-responsive-dt/css/responsive.dataTables.css'
 import API from "../../api";
 import $ from 'jquery'; 
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import 'react-calendar/dist/Calendar.css';
 import Moment from 'react-moment';
+import Select from 'react-select';
  
 class BookManagement extends Component {
   constructor(props) {
     super(props);
     this.state = {
       data:[],
+      editClicked: false,
       bookCode: "",
       showAddExist: false,
       showAdd1: false,
@@ -34,7 +38,7 @@ class BookManagement extends Component {
       publisherAddress: "",
       description: "",
       pages: "",
-      publishedDate: "",
+      startDate: new Date(),
       language: "",
       length: "",
       isbn: "",
@@ -42,7 +46,11 @@ class BookManagement extends Component {
       width: "",
       numberOfPages: "",
       category: "",
-      baseImage: ""
+      baseImage: "",
+      authorList: "",
+      bookDetailList: "",
+      categoryList: "",
+      publisherList: ""
     };
   }
 
@@ -53,37 +61,18 @@ class BookManagement extends Component {
       const tabledata = res.data.data;
       
       this.setState({ data: tabledata });
+
+      $(function () {
+        $('#bookmanagement').DataTable({
+            responsive: true
+        });
+      });
+
     } catch (error) {
       console.log(error);
     }
-
-    $(function () {
-      $('#bookmanagement').DataTable({
-          responsive: true
-      });
-    });
+    this.getCategory();
   }
-
-  // componentDidMount(){
-  //   this.form.onformsubmit = (fields) => {
-  //     // Do you ajax calls here.
-  //     console.log(fields);
-  //   }
-
-  //   this.form.handleChangeEvent = (event) => {
-  //     if (event.target.value === "") {
-  //       this.setState({ submitting: false });
-  //     } else {
-  //       this.setState({ submitting: true });;
-  //     }
-  //   }
-
-  //   $(function () {
-  //     $('#bookmanagement').DataTable({
-  //         responsive: true
-  //     });
-  //   });
-  // }
   
   // pickImage = (e) => {
   //   const file = e.target.files[0];
@@ -123,7 +112,7 @@ class BookManagement extends Component {
         description: this.state.description,
         categoryName: this.state.category,
         numberOfPages: this.state.numberOfPages,
-        publishedDate: this.state.publishedDate,
+        publishedDate: this.state.startDate,
         isbn: this.state.isbn,
         language: this.state.language
       },
@@ -135,7 +124,10 @@ class BookManagement extends Component {
         }
       )
       .then(() => {
-        window.location.reload();
+        this.setState({ 
+          showAdd1: false,
+          editClicked: true
+         })
         swal("Success!", "Book Has Been Added", "success");
       })
       .catch((error) => {
@@ -157,7 +149,7 @@ class BookManagement extends Component {
         bookDetailCode: this.state.bookDetailCode,
         categoryCode: this.state.categoryCode,
         publisherCode: this.state.publisherCode,
-        publishedDate: this.state.publishedDate,
+        publishedDate: this.state.startDate,
         isbn: this.state.isbn
       },
         {
@@ -168,7 +160,10 @@ class BookManagement extends Component {
         }
       )
       .then(() => {
-        window.location.reload();
+        this.setState({ 
+          showAdd2: false,
+          editClicked: true
+         })
         swal("Success!", "Book Has Been Added", "success");
       })
       .catch((error) => {
@@ -189,7 +184,7 @@ class BookManagement extends Component {
         bookDetailCode: response.bookDetailsEntity.bookDetailCode,
         categoryCode: response.categoryEntity.categoryCode,
         publisherCode: response.publisherEntity.publisherCode,
-        publishedDate: response.publishedDate,
+        publishedDate: response.startDate,
         isbn: response.isbn,
         bookCode: response.bookCode
       });
@@ -197,7 +192,7 @@ class BookManagement extends Component {
   };
 
   handleSaveEdit = () => {
-    this.setState({ showEdit: false })
+    this.setState({ showEdit: false, })
     API.put(
       `api/book/${this.state.bookCode}`,
       {
@@ -205,7 +200,7 @@ class BookManagement extends Component {
         bookDetailCode: this.state.bookDetailCode,
         categoryCode: this.state.categoryCode,
         publisherCode: this.state.publisherCode,
-        publishedDate: this.state.publishedDate,
+        publishedDate: this.state.startDate,
         isbn: this.state.isbn,
         bookCode: this.state.bookCode
       },
@@ -217,8 +212,7 @@ class BookManagement extends Component {
         }
       )
       .then(() => {
-        this.setState({ bookCode: "", authorCode: "", bookDetailCode: "", categoryCode: "", publisherCode: "", publishedDate: "", isbn: "" })
-        window.location.reload();
+        this.setState({ editClicked: true, bookCode: "", authorCode: "", bookDetailCode: "", categoryCode: "", publisherCode: "", publishedDate: "", isbn: "" })
         swal("Great!", "Book Has Been edited", "success");
       })
       .catch((error) => {
@@ -233,21 +227,111 @@ class BookManagement extends Component {
   }
 
   handleDelete = () => {
-    this.setState({ showDelete: false });
     API.delete(`/api/book/${this.state.bookCode}`)
       .then(()=>window.location.reload())
-    swal("Deleted!", "Book Is Successfully Deleted", "success");
+    // swal("Deleted!", "Book Is Successfully Deleted", "success");
+    this.setState({showDelete: false})
   }
 
+  // utils
   handleCloseModal = () => {
     this.setState({ showAddExist: false, showAdd1: false, showEdit: false, showDelete: false, showAdd2: false,
-      bookCode: "", authorCode: "", bookDetailCode: "", categoryCode: "", publisherCode: "", publishedDate: "", isbn: "" })
+      bookCode: "", authorCode: "", bookDetailCode: "", categoryCode: "", startDate: "", date: "", isbn: "" })
+  }
+
+  async getCategory() {
+    const res = await API.get('/api/books')
+    const data = res.data.data
+
+    const options1 = data.map(d => ({
+      "value": d.authorEntity.authorCode,
+      "label": d.authorEntity.authorName
+    }))
+
+    const options2 = data.map(d => ({
+      "value": d.bookDetailsEntity.bookDetailCode,
+      "label": d.bookDetailsEntity.bookTitle
+    }))
+
+    const options3 = data.map(d => ({
+      "value": d.categoryEntity.categoryCode,
+      "label": d.categoryEntity.categoryName
+    }))
+
+    const options4 = data.map(d => ({
+      "value": d.publisherEntity.publisherCode,
+      "label": d.publisherEntity.publisherName
+    }))
+    this.setState({ authorList: options1, bookDetailList:options2, categoryList: options3, publisherList: options4 })
+  }
+
+  handleChangeSelect1 = (e) => {
+    this.setState({ authorCode: e.value });
+  }
+
+  handleChangeSelect2 = (e) => {
+    this.setState({ bookDetailCode: e.value });
+  }
+
+  handleChangeSelect3 = (e) => {
+    this.setState({ categoryCode: e.value });
+  }
+
+  handleChangeSelect4 = (e) => {
+    this.setState({ publisherCode: e.value });
+  }
+
+  handleChange = date => {
+    this.setState({
+        startDate: date
+    });
+    console.log(this.state.startDate)
+};
+
+  async componentDidUpdate(prevState) {
+    console.log(prevState);
+    if (this.state.editClicked) {
+      try {
+        const res = await API.get(`/api/books`,
+        {
+            headers: {
+            Accept: "*/*",
+            "Content-Type": "application/json",
+        }});
+        const tabledata = res.data.data;
+        this.setState({ 
+          data: tabledata, 
+          editClicked: false,
+          // publisherName: "",
+          // address: "",
+          // bookTitle: "",
+          // bookSubtitle: "",
+          // authorName: "",
+          // cover: "",
+          // description: "",
+          // categoryName: "",
+          // numberOfPages: "",
+          // publishedDate: "",
+          // isbn: "",
+          // language: "",
+          // authorCode: "",
+          // bookDetailCode: "",
+          // categoryCode: "",
+          // publisherCode: "",
+          // publishedDate: "",
+          // isbn: ""
+
+         });
+      } catch (error) {
+        console.log(error);
+      }; 
+    }
   }
   
 
   render() {
     const { data, showAdd1, showAdd2, showAddExist, showEdit, showDelete, baseImage } = this.state;
-   
+
     return (
       // page content
       <div className="right_col" role="main" style={{ minHeight: '100vh' }}>
@@ -260,6 +344,8 @@ class BookManagement extends Component {
                     <h3 className="card-title">Book Management</h3>
                   </div>
                   <div className="card-body">
+
+
                     {/* title */}
                     <div class="">
                       <Button className="mb-5" variant="success" onClick={this.handleExistOrNot}>
@@ -267,6 +353,7 @@ class BookManagement extends Component {
                       </Button>
                     </div>
                     {/* title */}
+
 
                     {/* book management table */}
                     <Table responsive striped id="bookmanagement" style={{ width: '100%' }}>
@@ -344,8 +431,7 @@ class BookManagement extends Component {
                       }
                       </tbody>
                     </Table>
-
-
+                    {/* book management table */}
 
 
                     {/* modal if*/}
@@ -366,9 +452,6 @@ class BookManagement extends Component {
                       </Modal.Footer>
                     </Modal>
                     {/* modal add if*/}
-
-
-
 
 
                     {/* modal add if data not exist*/}
@@ -544,17 +627,11 @@ class BookManagement extends Component {
                               <div class="form-group row">
                                 <label for="addPublishedDate" class="col-sm-2 col-form-label">Published Date</label>
                                 <div class="col-sm-4">
-                                <input 
-                                  type="text" 
-                                  name="publishedDate"
-                                  class="form-control" 
-                                  id="publishedDate" 
-                                  placeholder="Published Date..." 
-                                  onChange={(e) => this.setState({publishedDate : e.target.value})}
-                                  value={this.state.publishedDate} 
-                                  data-attribute-name="publishedDate"
-                                  data-async
-                                  />
+                                <DatePicker
+                                  selected={this.state.startDate}
+                                  onChange={this.handleChange}
+                                  dateFormat='yyyy-mm-dd'
+                                />
                                 </div>
                                 <label for="addWeight" class="col-sm-2 col-form-label">Language</label>
                                 <div class="col-sm-4">
@@ -623,82 +700,51 @@ class BookManagement extends Component {
                       <div class='container'>
                           <div class="modal-body">
                           <form>
-
                             <div class="form-group row">
-                              <label for="addAuthorCode" class="col-sm-2 col-form-label">Author Code</label>
+                              <label for="addAuthorCode" class="col-sm-2 col-form-label">Author Name</label>
                               <div class="col-sm-4">
-                              <input 
-                                type="text" 
-                                name="authorCode"
-                                class="form-control" 
-                                id="authorCode" 
-                                placeholder="Author Code..." 
-                                onChange={(e) => this.setState({authorCode : e.target.value})}
-                                value={this.state.authorCode} 
-                                data-attribute-name="authorCode"
-                                data-async
-                                />
+                              <Select 
+                                className="mb-2"
+                                options={this.state.authorList}
+                                onChange={this.handleChangeSelect1}
+                              />
                               </div>
-                              <label for="addBookDetailCode" class="col-sm-2 col-form-label">Book Detail Code</label>
+                              <label for="addBookDetailCode" class="col-sm-2 col-form-label">Book Details Info</label>
                               <div class="col-sm-4">
-                              <input 
-                                type="text" 
-                                name="bookDetailCode"
-                                class="form-control" 
-                                id="bookDetailCode" 
-                                placeholder="Book Detail Code..." 
-                                onChange={(e) => this.setState({bookDetailCode : e.target.value})}
-                                value={this.state.bookDetailCode} 
-                                data-attribute-name="bookDetailCode"
-                                data-async
-                                />
+                              <Select 
+                                className="mb-2"
+                                options={this.state.bookDetailList}
+                                onChange={this.handleChangeSelect2}
+                              />
                               </div>
                             </div>
 
                             <div class="form-group row">
-                              <label for="addCategoryCode" class="col-sm-2 col-form-label">Category Code</label>
+                              <label for="addCategoryCode" class="col-sm-2 col-form-label">Category</label>
                               <div class="col-sm-4">
-                              <input 
-                                type="text" 
-                                name="categoryCode"
-                                class="form-control" 
-                                id="categoryCode" 
-                                placeholder="Category Code..." 
-                                onChange={(e) => this.setState({categoryCode : e.target.value})}
-                                value={this.state.categoryCode} 
-                                data-attribute-name="categoryCode"
-                                data-async
-                                />
+                              <Select
+                                className="mb-2"
+                                options={this.state.categoryList}
+                                onChange={this.handleChangeSelect3}
+                              />
                               </div>
-                              <label for="addPublisherCode" class="col-sm-2 col-form-label">Publisher Code</label>
+                              <label for="addPublisherCode" class="col-sm-2 col-form-label">Publisher</label>
                               <div class="col-sm-4">
-                              <input 
-                                type="text" 
-                                name="publisherCode"
-                                class="form-control" 
-                                id="publisherCode" 
-                                placeholder="Publisher Code..." 
-                                onChange={(e) => this.setState({publisherCode : e.target.value})}
-                                value={this.state.publisherCode} 
-                                data-attribute-name="publisherCode"
-                                data-async
-                                />
+                              <Select
+                                className="mb-2"
+                                options={this.state.publisherList}
+                                onChange={this.handleChangeSelect4}
+                              />
                               </div>
                             </div>
 
                             <div class="form-group row">
                               <label for="addPublishedDate" class="col-sm-2 col-form-label">Published Date</label>
                               <div class="col-sm-4">
-                              <input 
-                                type="text" 
-                                name="publishedDate"
-                                class="form-control" 
-                                id="publishedDate" 
-                                placeholder="Published Date..." 
-                                onChange={(e) => this.setState({publishedDate : e.target.value})}
-                                value={this.state.publishedDate} 
-                                data-attribute-name="publishedDate"
-                                data-async
+                                <DatePicker
+                                  selected={this.state.startDate}
+                                  onChange={this.handleChange}
+                                  dateFormat='yyyy-mm-dd'
                                 />
                               </div>
                               <label for="addIsbn" class="col-sm-2 col-form-label">ISBN</label>
@@ -731,8 +777,6 @@ class BookManagement extends Component {
                       </Modal.Footer>
                     </Modal>
                     {/* modal add data exist*/}
-
-
 
 
                     {/* modal edit */}
@@ -852,6 +896,7 @@ class BookManagement extends Component {
                       </Modal.Footer>
                     </Modal>
                     {/* modal edit */}
+
 
                     {/* modal delete */}
                     <Modal show={showDelete} onHide={this.handleCloseModal}>

@@ -16,12 +16,18 @@ class ReturnForm extends Component {
             status: '',
             late: '',
             fine: [],
-            lateNominal: "",
+            lateNominal: "", //+
+            fineChecked: [], //+
+            detailCode: "", //+
+            userCode: "", //+
+            total: "",
         }
     }
 
     componentDidMount() {
-        this.getData(this.state.id)
+        this.getData(this.state.id).then(()=>{
+            this.getTransactionDetailCode() //+
+        })
         this.getFine()
     }
 
@@ -31,6 +37,7 @@ class ReturnForm extends Component {
             this.setState({
                 rentCode: rent.rentCode,
                 fullName: rent.userEntity.fullName,
+                userCode: rent.userEntity.userCode,
                 bookTitle: rent.bookEntity.bookDetailsEntity.bookTitle,
                 dateBorrow: rent.dateBorrow,
                 dueDate: rent.dueDate,
@@ -41,9 +48,23 @@ class ReturnForm extends Component {
         })
     }
 
+    getTransactionDetailCode(){
+        // Get Transaction Detail Code
+        axios.get(`http://localhost:8500/api/transaction-detail/user/${this.state.userCode}`).then((record) => {
+            let idCode = this.state.userCode.substring(2,this.state.userCode.length);
+            if (record.data.length !== 0) {
+                let code = record.data[record.data.length - 1].detailCode;
+                this.setState({ detailCode: code.substring(2,code.length) });
+                console.log(code.substring(2,code.length));
+            } else {
+                this.setState({ detailCode: `${idCode}000` });
+            }
+        });
+    }
+
     getFine() {
         axios.get('http://localhost:8500/api/fine/active').then((res) => {
-            res.data.map((e)=>{
+            res.data.map((e)=>{ //+
                 if(e.fineType !== "Late"){
                     this.setState({ fine: [...this.state.fine, e] })
                 }
@@ -76,7 +97,7 @@ class ReturnForm extends Component {
         if (limit < current) {
             var diffTime = Math.abs(current - limit)
             var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-            var latefine = diffDays * parseFloat(this.state.lateNominal)
+            var latefine = diffDays * parseFloat(this.state.lateNominal) //+
         } else {
             diffDays = 0
             latefine = 0
@@ -87,24 +108,46 @@ class ReturnForm extends Component {
         document.getElementById("lateDays").innerText = diffDays + " day(s) late"
 
         this.setState({ late: latefine })
-        this.setTotal()
+        this.setTotal(1) //+ note: isinya sebenernya bebas cuma buat parameter aja
     }
 
-    setTotal = () => {
-        var input = document.getElementsByClassName("damage")
-        var total = this.state.late
-        
-        for (var i = 0; i < input.length; i++) {
-            if (input[i].checked) {
-                total += parseFloat(input[i].value)
+    setTotal = (e) => {
+        let {fineChecked, late, total} = this.state; //+
+        this.setState({total : late})
+
+        // +
+        if(e!==1){
+            if(fineChecked.includes(e)){
+                const filter = fineChecked.filter(f => f !== e)
+                this.setState({fineChecked : filter, total : (parseInt(total)-e.nominal)})
+            }
+            if(!fineChecked.includes(e)){
+                this.setState({fineChecked : [...this.state.fineChecked, e], total : (parseInt(total)+e.nominal)})
             }
         }
-        
-        document.getElementsByClassName("totalfine")[0].value = "Rp " + total.toFixed(0)
-      }
+    }
 
     alertSubmit = () => {
-        swal("Success!", "Book has been returned", "success")
+        this.state.fineChecked.map((e, i)=>{ //+
+            let detail = {
+                detailCode: "TD"+(parseInt(this.state.detailCode)+(i+1)),
+                description: e.fineType,
+                debet: 0,
+                kredit: e.nominal,
+                fineCode: e.fineCode,
+                rentCode: this.state.rentCode,
+                userCode: this.state.userCode,
+              };
+              axios.post("http://localhost:8500/api/transaction-detail", detail);
+        })
+        
+        let updateStatus = { //+
+            status: 4
+        };
+        axios.put(`http://localhost:8500/api/rent/code/${this.state.rentCode}`, updateStatus) //+
+          .then(() => {
+            swal("Success!", "Book has been returned", "success")
+          });
     }
 
     render() {
@@ -180,7 +223,7 @@ class ReturnForm extends Component {
                                                         return(
                                                             <div className="form-group" key={index}>
                                                                 <div className="form-check">
-                                                                    <input type="checkbox" className="form-check-input damage" value={fine.nominal} onClick={this.setTotal} />
+                                                                    <input type="checkbox" className="form-check-input damage" value={fine.nominal} onClick={()=>this.setTotal(fine)} /> {/* + */}
                                                                     <label className="form-check-label">{fine.fineType + " - " + fine.nominal}</label>
                                                                 </div>
                                                                 <div className="mt-2">
@@ -195,7 +238,7 @@ class ReturnForm extends Component {
                                             <div className="form-group row">
                                                 <label className="col-sm-3 col-form-label">Total Fine</label>
                                                 <div className="col-sm-3">
-                                                    <input type="text" readOnly className="form-control totalfine" value="Rp 0" disabled />
+                                                    <input type="text" readOnly className="form-control totalfine" value={"Rp " + this.state.total} disabled /> {/* + */}
                                                 </div>
                                             </div>
                                             <hr></hr>

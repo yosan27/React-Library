@@ -26,9 +26,21 @@ class PublisherManagement extends Component {
 
   async componentDidMount() {
     // DATA TABEL
+
+    // const res = await API.get(`/api/publisher/active`);
+    // console.log(res) 
+
     try {
-      const res = await API.get(`/api/publisher/active`);
+      const res = await API.get(`/api/publisher/active`,
+      // {
+      //     headers: {
+      //     Accept: "*/*",
+      //     "Content-Type": "application/json",
+      // }}
+      );
       const tabledata = res.data;
+      console.log("get tabel : ")
+      console.log(res)
       this.setState({ tabledata: tabledata });
     } catch (error) {
       console.log(error);
@@ -76,14 +88,12 @@ class PublisherManagement extends Component {
     this.setState({showEdit: true, publisherId : pbid})
     API.get(`/api/publisher/id/${pbid}`).then((res) => {
       let response = res.data;
-      console.log(response)
       this.setState({
         publisherName: response.publisherName,
         address: response.address,
         publisherCode : response.publisherCode
       });
     });
-    console.log("tes pbid : "+this.state.publisherId)
   };
 
   handleSaveEdit = () => {
