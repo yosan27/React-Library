@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./Slidertop.style.css";
 import Slider from "react-slick";
 import { Link, withRouter } from "react-router-dom";
+import axios from 'axios';
 
 // img book
 import after from "./img/after.jpg";
@@ -53,6 +54,20 @@ function SamplePrevArrow(props) {
 }
 
 class Content extends Component {
+  constructor(props) {
+    super(props)
+  
+    this.state = {
+       data: [],
+    }
+  }
+
+  componentDidMount(){
+    axios.get("http://localhost:8500/api/bookdetails").then((e)=>{
+      this.setState({data: e.data.data});
+    })
+  }
+  
   render() {
     const settings = {
       centerMode: true,
@@ -210,54 +225,20 @@ class Content extends Component {
           <div className="container-fluid">
             <h3>Best Seller</h3>
             <p>New Releases</p>
-
+            
             <div className="card-group">
-              <div className="card mr-2">
-                <Link to="/page/detailpage">
-                  <img src={nebula} alt="avatar" className="card-img-top" />
-                  <div className="card-body garis-top">
-                    <h5 className="card-title-books">Nebula</h5>
-                  </div>
-                </Link>
-              </div>
-
-              <div className="card mr-2">
-                <Link to="/page/detailpage">
-                  <img src={selena} alt="avatar" className="card-img-top" />
-                  <div className="card-body garis-top">
-                    <h5 className="card-title-books">Selena</h5>
-                  </div>
-                </Link>
-              </div>
-
-              <div className="card mr-2">
-                <Link to="/page/detailpage">
-                  <img src={laut} alt="avatar" className="card-img-top" />
-                  <div className="card-body garis-top">
-                    <h5 className="card-title-books">Laut Bercerita</h5>
-                  </div>
-                </Link>
-              </div>
-
-              <div className="card mr-2">
-                <Link to="/page/detailpage">
-                  <img src={ibuk} alt="avatar" className="card-img-top" />
-                  <div className="card-body garis-top">
-                    <h5 className="card-title-books">Ibuk</h5>
-                  </div>
-                </Link>
-              </div>
-
-              <div className="card mr-2">
-                <Link to="/page/detailpage">
-                  <img src={tokyo} alt="avatar" className="card-img-top" />
-                  <div className="card-body garis-top">
-                    <h5 className="card-title-books smaller-font">
-                      Tokyo dan Perayaan Kesedihan
-                    </h5>
-                  </div>
-                </Link>
-              </div>
+              {this.state.data.map((d)=>{
+                return(
+                <div className="card mr-2">
+                  <Link to="/page/detailpage">
+                    <img src={d.cover} alt="avatar" className="card-img-top" />
+                    <div className="card-body garis-top">
+                      <h5 className="card-title-books">{d.bookTitle}</h5>
+                    </div>
+                  </Link>
+                </div>
+              );
+              })}
             </div>
           </div>
         </section>
