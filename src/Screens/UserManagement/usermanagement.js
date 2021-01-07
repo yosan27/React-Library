@@ -74,8 +74,6 @@ class UserManagement extends Component {
     };
 
     componentDidMount() {
-       
-
         $('.img-card').hover(makeBigger, returnToOriginalSize);
         function makeBigger() {
             $(this).css({width: '+=30%'});
@@ -93,8 +91,9 @@ class UserManagement extends Component {
                 });
               });
         })
+    }
 
-    getById(id) {
+        getById(id) {
         axios.get(`http://localhost:8500/api/user-by-id/${id}`).then((res) =>{
             this.setState({
                 userName: res.data.userName,
