@@ -74,8 +74,6 @@ class UserManagement extends Component {
     };
 
     componentDidMount() {
-
-
         $('.img-card').hover(makeBigger, returnToOriginalSize);
         function makeBigger() {
             $(this).css({ width: '+=30%' });

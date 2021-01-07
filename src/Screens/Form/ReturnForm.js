@@ -20,15 +20,16 @@ class ReturnForm extends Component {
             fineChecked: [], //+
             detailCode: "", //+
             userCode: "", //+
-            total: "",
+            total: "", //+
+            fineLateCode: "", //+
         }
     }
 
     componentDidMount() {
         this.getData(this.state.id).then(()=>{
             this.getTransactionDetailCode() //+
+            this.getFine();
         })
-        this.getFine()
     }
 
     async getData(id) {
@@ -43,8 +44,6 @@ class ReturnForm extends Component {
                 dueDate: rent.dueDate,
                 status: rent.status
             })
-
-            this.setLate(rent.dueDate)
         })
     }
 
@@ -54,8 +53,7 @@ class ReturnForm extends Component {
             let idCode = this.state.userCode.substring(2,this.state.userCode.length);
             if (record.data.length !== 0) {
                 let code = record.data[record.data.length - 1].detailCode;
-                this.setState({ detailCode: code.substring(2,code.length) });
-                console.log(code.substring(2,code.length));
+                this.setState({ detailCode: code.substring(4,code.length) });
             } else {
                 this.setState({ detailCode: `${idCode}000` });
             }
@@ -69,9 +67,10 @@ class ReturnForm extends Component {
                     this.setState({ fine: [...this.state.fine, e] })
                 }
                 if(e.fineType === "Late"){
-                    this.setState({ lateNominal: e.nominal })
+                    this.setState({ lateNominal: e.nominal, fineLateCode: e.fineCode })
                 }
             })
+            this.setLate(this.state.dueDate)
         })
     }
 
@@ -119,7 +118,10 @@ class ReturnForm extends Component {
         if(e!==1){
             if(fineChecked.includes(e)){
                 const filter = fineChecked.filter(f => f !== e)
-                this.setState({fineChecked : filter, total : (parseInt(total)-e.nominal)})
+                this.setState({
+                    fineChecked : filter, 
+                    total : (parseInt(total)-e.nominal)
+                })
             }
             if(!fineChecked.includes(e)){
                 this.setState({fineChecked : [...this.state.fineChecked, e], total : (parseInt(total)+e.nominal)})
@@ -128,25 +130,37 @@ class ReturnForm extends Component {
     }
 
     alertSubmit = () => {
-        this.state.fineChecked.map((e, i)=>{ //+
-            let detail = {
-                detailCode: "TD"+(parseInt(this.state.detailCode)+(i+1)),
-                description: e.fineType,
-                debet: 0,
-                kredit: e.nominal,
-                fineCode: e.fineCode,
-                rentCode: this.state.rentCode,
-                userCode: this.state.userCode,
-              };
-              axios.post("http://localhost:8500/api/transaction-detail", detail);
-        })
-        
+        let date = this.formatDate(Date.now());
         let updateStatus = { //+
-            status: 4
+            status: 4,
+            dateReturn: date,
         };
         axios.put(`http://localhost:8500/api/rent/code/${this.state.rentCode}`, updateStatus) //+
           .then(() => {
-            swal("Success!", "Book has been returned", "success")
+            let totalLate = {
+                fineType: "Late",
+                nominal: this.state.late,
+                fineCode: this.state.fineLateCode,
+            }
+            this.setState({fineChecked : [...this.state.fineChecked, totalLate]})
+            this.state.fineChecked.map((e, i)=>{ //+
+                let tempoCode = (`${parseInt(this.state.detailCode)+(i+1)}`);
+                let idCode = this.state.userCode.substring(2,this.state.userCode.length);
+                let fixCode = `TD${idCode}${tempoCode.substring(1)}`;
+                let detail = {
+                    detailCode: fixCode,
+                    description: e.fineType,
+                    debet: 0,
+                    kredit: e.nominal,
+                    fineCode: e.fineCode,
+                    rentCode: this.state.rentCode,
+                    userCode: this.state.userCode,
+                  };
+                  axios.post("http://localhost:8500/api/transaction-detail", detail);
+            })
+            swal("Success!", "Book has been returned", "success").then(()=>{
+                window.open("http://localhost:3000/page/history", "_self")
+            })
           });
     }
 
@@ -243,9 +257,7 @@ class ReturnForm extends Component {
                                             </div>
                                             <hr></hr>
                                             <div className="d-flex justify-content-end">
-                                                <Link to='/page/history'>
-                                                    <button className="btn btn-success" onClick={this.alertSubmit}>Submit</button>
-                                                </Link>
+                                                <Link className="btn btn-success" onClick={this.alertSubmit}>Submit</Link>{/* + */}
                                                 <Link to='/page/history'>
                                                     <button className="btn btn-secondary">Cancel</button>
                                                 </Link>
