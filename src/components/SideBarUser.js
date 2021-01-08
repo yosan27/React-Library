@@ -20,12 +20,12 @@ class SideBarUser extends Component {
     if (!sessionStorage.getItem('userCode')) {
       console.log("tidak ada userCode")
     } else {
-      axios.get("http://localhost:8500/api/user/code/"+ sessionStorage.getItem('userCode')).then((e) => {
-          this.setState({
-              saldo: e.data.balance,
-              username: e.data.userName,
-              userCode : sessionStorage.getItem('userCode')
-          })
+      axios.get("http://localhost:8500/api/user/code/" + sessionStorage.getItem('userCode')).then((e) => {
+        this.setState({
+          saldo: e.data.balance,
+          username: e.data.userName,
+          userCode: sessionStorage.getItem('userCode')
+        })
       })
     }
   }
@@ -35,7 +35,7 @@ class SideBarUser extends Component {
   };
 
   render() {
-    const { condition} = this.state;
+    const { condition } = this.state;
     const pathCurrent = window.location.pathname.split("/");
 
     if (this.state.userCode.substring(0, 2) === "UU") {
@@ -63,7 +63,7 @@ class SideBarUser extends Component {
               <h2>{this.state.username}</h2>
               <div>
                 <Link to="/page/payment">
-                  <h2 className="profile_saldo pt-2">Rp <NumberFormat value={this.state.saldo} displayType={'text'} thousandSeparator="&#8228;" className="profile_saldo"/></h2>
+                  <h2 className="profile_saldo pt-2">Rp <NumberFormat value={this.state.saldo} displayType={'text'} thousandSeparator="&#8228;" className="profile_saldo" /></h2>
                 </Link>
               </div>
             </div>
@@ -79,7 +79,7 @@ class SideBarUser extends Component {
               <h5>{this.state.username}</h5>
               <div>
                 <Link to="/page/payment">
-                  <h5 className="profile_saldo pt-2">Rp <NumberFormat value={this.state.saldo} displayType={'text'} thousandSeparator="&#8228;" className="profile_saldo"/></h5>
+                  <h5 className="profile_saldo pt-2">Rp <NumberFormat value={this.state.saldo} displayType={'text'} thousandSeparator="&#8228;" className="profile_saldo" /></h5>
                 </Link>
               </div>
             </div>
@@ -297,6 +297,11 @@ class SideBarUser extends Component {
                         Book
                       </Link>
                     </li>
+                    <li className={pathCurrent[1] === "manageBookDetail" ? "current-page" : ""}>
+                      <Link to="/page/manageBookDetail">
+                        Book Detail
+                      </Link>
+                    </li>
                     <li
                       className={
                         pathCurrent[1] === "manageDonation"
@@ -320,6 +325,14 @@ class SideBarUser extends Component {
                     >
                       <Link to="/page/manageAuthor">Author</Link>
                     </li>
+                    <li
+                      className={
+                        pathCurrent[1] === "manageCategory" ? "current-page" : ""
+                      }
+                    >
+                      <Link to="/page/manageCategory">Category</Link>
+                    </li>
+
                   </ul>
                 </li>
               </ul>

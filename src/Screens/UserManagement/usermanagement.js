@@ -5,26 +5,26 @@ import { Modal, Button, Card, Table, Form, Row, Col, Badge } from 'react-bootstr
 //Datatable Modules
 import "datatables.net-dt/js/dataTables.dataTables"
 import "datatables.net-dt/css/jquery.dataTables.min.css"
-import $ from 'jquery'; 
+import $ from 'jquery';
 import swal from 'sweetalert';
 
 
 class UserManagement extends Component {
-    constructor(){
+    constructor() {
         super()
         this.state = {
             userList: [],
-            id:"",
-            userName:"",
-            fullName:"",
-            email:"",
-            status:"",
-            address:"",
+            id: "",
+            userName: "",
+            fullName: "",
+            email: "",
+            status: "",
+            address: "",
 
             data: [
-                {"id":"1", "username":"Yosan27", "fullname":"Yosan Fandi", "email":"yosan27@gmail.com", "status":"Active", "card":"https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg"},
-                {"id":"2", "username":"Cleo", "fullname":"Cleoputra", "email":"cleo@gmail.com", "status":"Active", "card":"https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg"},
-                {"id":"3", "username":"Todi", "fullname":"Todi Dewaranto", "email":"todi@gmail.com", "status":"Active", "card":"https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg"},
+                { "id": "1", "username": "Yosan27", "fullname": "Yosan Fandi", "email": "yosan27@gmail.com", "status": "Active", "card": "https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg" },
+                { "id": "2", "username": "Cleo", "fullname": "Cleoputra", "email": "cleo@gmail.com", "status": "Active", "card": "https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg" },
+                { "id": "3", "username": "Todi", "fullname": "Todi Dewaranto", "email": "todi@gmail.com", "status": "Active", "card": "https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg" },
             ]
         }
     }
@@ -34,15 +34,15 @@ class UserManagement extends Component {
     }
 
     handleCloseSuspend = () => {
-        this.setState({ showSuspend: false})
+        this.setState({ showSuspend: false })
     }
 
     handleShowCard = () => {
-        this.setState({ showCard: true})
+        this.setState({ showCard: true })
     }
 
     handleCloseCard = () => {
-        this.setState({ showCard: false})
+        this.setState({ showCard: false })
     }
 
     suspend = () => {
@@ -53,24 +53,24 @@ class UserManagement extends Component {
             buttons: true,
             dangerMode: true,
         })
-        .then((Delete) => {
-            if (Delete) {
-                swal('User will be suspended!', {
-                    icon: "success",
-                })
-                this.setState({
-                    data: [
-                        {"id":"1", "username":"Yosan27", "fullname":"Yosan Fandi", "email":"yosan27@gmail.com", "status":"Suspended", "card":"https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg"},
-                        {"id":"2", "username":"Cleo", "fullname":"Cleoputra", "email":"cleo@gmail.com", "status":"Active", "card":"https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg"},
-                        {"id":"3", "username":"Todi", "fullname":"Todi Dewaranto", "email":"todi@gmail.com", "status":"Active", "card":"https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg"},
-                    ],
-                 showSuspend: false   
-                 })
-            } else {
-                swal('User will not be suspended!');
-            }
-        })
-        
+            .then((Delete) => {
+                if (Delete) {
+                    swal('User will be suspended!', {
+                        icon: "success",
+                    })
+                    this.setState({
+                        data: [
+                            { "id": "1", "username": "Yosan27", "fullname": "Yosan Fandi", "email": "yosan27@gmail.com", "status": "Suspended", "card": "https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg" },
+                            { "id": "2", "username": "Cleo", "fullname": "Cleoputra", "email": "cleo@gmail.com", "status": "Active", "card": "https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg" },
+                            { "id": "3", "username": "Todi", "fullname": "Todi Dewaranto", "email": "todi@gmail.com", "status": "Active", "card": "https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg" },
+                        ],
+                        showSuspend: false
+                    })
+                } else {
+                    swal('User will not be suspended!');
+                }
+            })
+
     };
 
     alertEdit = () => {
@@ -84,14 +84,12 @@ class UserManagement extends Component {
     }
 
     componentDidMount() {
-       
-
         $('.img-card').hover(makeBigger, returnToOriginalSize);
         function makeBigger() {
-            $(this).css({width: '+=30%'});
+            $(this).css({ width: '+=30%' });
         }
         function returnToOriginalSize() {
-            $(this).css({width: "-=30%"});
+            $(this).css({ width: "-=30%" });
         }
 
         axios.get("http://localhost:8500/api/user").then((e) => {
@@ -101,13 +99,11 @@ class UserManagement extends Component {
                 $('#historyUser').DataTable({
                     responsive: true
                 });
-              });
+            });
         })
-    }    
-
 
     getById(id) {
-        axios.get(`http://localhost:8500/api/user/id-all/${id}`).then((res) =>{
+        axios.get(`http://localhost:8500/api/user-by-id/${id}`).then((res) => {
             this.setState({
                 id: res.data.id,
                 userName: res.data.userName,
@@ -128,20 +124,21 @@ class UserManagement extends Component {
         })
     }
 
+
     setStatus(status) {
-        if(status === 1) {
+        if (status === 1) {
             return <span>Active</span>
-        } else if(status === 2) {
+        } else if (status === 2) {
             return <span>Suspend</span>
-        } else if(status === 0) {
+        } else if (status === 0) {
             return <span>Delete</span>
-        } 
+        }
     }
 
-    render(){
-        const { data, showSuspend, showCard} = this.state;
+    render() {
+        const { data, showSuspend, showCard } = this.state;
 
-        return(
+        return (
             <div className="right_col" role="main" style={{ minHeight: '100vh' }}>
                 <section className="mt-5 pt-5">
                     <div className="container-fluid">
@@ -155,13 +152,13 @@ class UserManagement extends Component {
                                         <Table responsive striped id="historyUser" style={{ width: '100%' }}>
                                             <thead>
                                                 <tr>
-                                                        <th>ID</th>
-                                                        <th>Action</th>
-                                                        <th>Username</th>
-                                                        <th>Name</th>
-                                                        <th>Email Addres</th>
-                                                        <th>Status</th>
-                                                        <th>Identification Card</th>
+                                                    <th>ID</th>
+                                                    <th>Action</th>
+                                                    <th>Username</th>
+                                                    <th>Name</th>
+                                                    <th>Email Addres</th>
+                                                    <th>Status</th>
+                                                    <th>Identification Card</th>
 
                                                 </tr>
                                             </thead>
@@ -187,13 +184,13 @@ class UserManagement extends Component {
                                                                         <Button variant="primary" size="sm" data-toggle="modal" data-target="#card" onClick={() => this.getById(user.id)}>
                                                                             <i className="fa fa-credit-card"></i>
                                                                         </Button>
-                                                                        </span>
-                                                                    </td>
-                                                                </tr>
-                                                            )
-                                                        })
-                                                    }
-                                                </tbody>
+                                                                    </span>
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    })
+                                                }
+                                            </tbody>
                                         </Table>
                                     </Card.Body>
                                 </Card>
@@ -247,37 +244,37 @@ class UserManagement extends Component {
                                 </button>
                             </div>
                             <div className="modal-body">
-                            <div class="card mb-3">
-                            <div class="row no-gutters">
-                                <div class="col-md-4">
-                                <Image className='photoOfOrder text-center img-card card-img-top' src='https://widgetwhats.com/app/uploads/2019/11/free-profile-photo-whatsapp-4.png' wrapped ui={false} style={{width:'100%',height:'auto'}} />                                    
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="card-body">
-                                        <h5 class="card-title"><input type="text" readOnly className="form-control-plaintext" value={this.state.userName} />           
-                            </h5>
-                                        <div class="form-group">
-                                            <div>
-                                            <input type="text" readOnly className="form-control-plaintext" value={this.state.fullName} />
-                                            <input type="text" readOnly className="form-control-plaintext" value={this.state.address} />           
-                                            <input type="text" readOnly className="form-control-plaintext" value={this.state.phone} />           
-                                            <input type="text" readOnly className="form-control-plaintext" value={this.state.description} />           
-                            
-                                            
-                                            <p class="card-text"><small class="text-muted">{this.setStatus(this.state.status)}</small></p>
+                                <div class="card mb-3">
+                                    <div class="row no-gutters">
+                                        <div class="col-md-4">
+                                            <Image className='photoOfOrder text-center img-card card-img-top' src='https://widgetwhats.com/app/uploads/2019/11/free-profile-photo-whatsapp-4.png' wrapped ui={false} style={{ width: '100%', height: 'auto' }} />
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="card-body">
+                                                <h5 class="card-title"><input type="text" readOnly className="form-control-plaintext" value={this.state.userName} />
+                                                </h5>
+                                                <div class="form-group">
+                                                    <div>
+                                                        <input type="text" readOnly className="form-control-plaintext" value={this.state.fullName} />
+                                                        <input type="text" readOnly className="form-control-plaintext" value={this.state.address} />
+                                                        <input type="text" readOnly className="form-control-plaintext" value={this.state.phone} />
+                                                        <input type="text" readOnly className="form-control-plaintext" value={this.state.description} />
+
+
+                                                        <p class="card-text"><small class="text-muted">{this.setStatus(this.state.status)}</small></p>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>  
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
                             </div>
                         </div>
                     </div>
-                </div> 
+                </div>
             </div >
         )
 
