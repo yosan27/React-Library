@@ -27,6 +27,8 @@ import BookDetailManagement from "../Screens/BookDetailManagement/bookdetailmana
 import DetailPage from "../Screens/DetailPage/detailpage";
 import FineManagement from "../Screens/FineManagement/fineManagement";
 import AuthorManagement from "../Screens/AuthorManagement/AuthorManagement";
+import CategoryManagement from "../Screens/CategoryManagement/categoryManagement";
+import SeeMoreBooks from "../Screens/SeeMoreBooks/SeeMoreBooks";
 
 class MainNavigationsUser extends Component {
   render() {
@@ -116,6 +118,12 @@ class MainNavigationsUser extends Component {
             </Route>
             <Route path="/page/manageAuthor">
               <AuthorManagement />
+            </Route>
+            <Route path="/page/manageCategory">
+              <CategoryManagement />
+            </Route>
+            <Route path="/page/more">
+              <SeeMoreBooks />
             </Route>
 
             <Route path="/page/:id">
