@@ -34,6 +34,12 @@ export default class FineManagement extends Component {
     document.addEventListener("click", this.clearModal);
 
     // Get Data On List
+    this.getActiveFine();
+    // Get All Fine
+    this.getCode();
+  }
+
+  getActiveFine = () =>{
     axios.get("http://localhost:8500/api/fine/active").then((e) => {
       this.setState({ fineList: e.data });
       $(function () {
@@ -42,8 +48,6 @@ export default class FineManagement extends Component {
         });
       });
     });
-    // Get All Fine
-    this.getCode();
   }
 
   getCode = () => {
