@@ -2,15 +2,20 @@ import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
 import "./Login-style.css";
 import { FormErrors } from './FormErrors';
-import axios from "axios";
+// import axios from "axios";
+import axios from "../../Services/axios-instance";
+import swal from "sweetalert";
+import AuthService from "../../Services/auth.service";
+// const API_URL = AuthService.api_Url();
 
 class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
       email: '',
+      username: '',
       password: '',
-      formErrors: { email: '', password: '' },
+      formErrors: { email: '', username: '', password: '' },
       emailValid: false,
       passwordValid: false,
       formValid: false,
@@ -21,13 +26,13 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    axios.get("http://localhost:8500/api/user/code/UA001").then((e) => {
-      // console.log(e);
-      sessionStorage.setItem('userCode', e.data.userCode)
-      this.setState({
-        userCode: e.data.userCode
-      })
-    })
+    // axios.get(API_URL + "user/code/UA001").then((e) => {
+    //   // console.log(e);
+    //   sessionStorage.setItem('userCode', e.data.userCode)
+    //   this.setState({
+    //     userCode: e.data.userCode
+    //   })
+    // })
   }
 
   handleUserInput = (e) => {
@@ -76,19 +81,40 @@ class Login extends Component {
   }
 
   loginClick = () => {
-    this.props.history.push(`/${this.state.user}`)
-  }
+    const user = {
+      userName: this.state.username,
+      password: this.state.password
+    }
+    if (!this.state.username || !this.state.password) {
+      swal("Failed", "Register User", "failed");
+    } else {
+      axios.post('users/signin', user)
+        .then((response) => {
+          console.log(response)
+          if (response.data.token) {
+            localStorage.setItem("userFaraday", JSON.stringify(response.data));
+          }
+          this.props.history.push("/index")
+          window.location.reload();
+        }).catch(function (error) {
+          if (error.response) {
+            console.log(error.response.data);
+            console.log(error.response.status);
+            console.log(error.response.headers);
+            swal("Failed", error.response.data.message, "error");
+          } else if (error.request) {
+            console.log(error.request);
+          } else {
+            console.log('Error', error.message);
+          }
+        })
+      this.setState({
+        username: "",
+        password: ""
+      });
+    }
 
-  userHandling = (event) => {
-    this.setState({
-      [event.target.name]: event.target.value
-    })
   }
-
-  loginClick = () => {
-    this.props.history.push(`/${this.state.user}`)
-  }
-
 
   render() {
     return (
@@ -107,11 +133,11 @@ class Login extends Component {
 
               <form className="demoForm">
                 <div class="col-lg-7">
-                  <div className={`form-group ${this.errorClass(this.state.formErrors.email)}`}>
-                    <label htmlFor="email">Email address</label>
-                    <input type="email" required class="form-control my-2 p-4 box email" name="email"
-                      placeholder="Email"
-                      value={this.state.email}
+                  <div className={`form-group ${this.errorClass(this.state.formErrors.username)}`}>
+                    <label htmlFor="username">Username</label>
+                    <input type="username" required class="form-control my-2 p-4 box username" name="username"
+                      placeholder="username"
+                      value={this.state.username}
                       onChange={this.handleUserInput} />
                   </div>
                   <div className={`form-group ${this.errorClass(this.state.formErrors.password)}`}>
@@ -122,14 +148,14 @@ class Login extends Component {
                       onChange={this.handleUserInput} />
                   </div>
                   <i className="wrong-user"><FormErrors formErrors={this.state.formErrors} /></i>
-                  <div class="form-check">
+                  {/* <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="gridCheck1" />
                     <label class="form-check-label grey" for="gridCheck1">
                       Remember Me
                                     </label>
-                  </div>
+                  </div> */}
                   <div class="col-lg-5">
-                    <button type="button" class="btn-login mt-3 loginBtn" disabled={!this.state.formValid} onClick={this.loginClick}>
+                    <button type="button" class="btn-login mt-3 loginBtn" disabled={!this.state.username || !this.state.password} onClick={this.loginClick}>
                       Login
                     </button>
                   </div>

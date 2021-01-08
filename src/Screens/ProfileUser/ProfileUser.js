@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import swal from "sweetalert";
 import axios from "axios";
+import Axios from "../../Services/axios-instance";
+import AuthService from "../../Services/auth.service";
 
 export default class ProfileUser extends Component {
 
@@ -25,24 +27,27 @@ export default class ProfileUser extends Component {
     }
 
     componentDidMount() {
-        if (!sessionStorage.getItem('userCode')) {
-            console.log("tidak ada userData")
-        } else {
-            console.log("ada local storage")
-            axios.get("http://localhost:8500/api/user/code/" + sessionStorage.getItem('userCode')).then((e) => {
-                // console.log(e);
-                this.setState({
-                    // saldo: e.data.balance,
-                    username: e.data.userName,
-                    userCode: sessionStorage.getItem('userCode'),
-                    fullName: e.data.fullName,
-                    email: e.data.email,
-                    phone: e.data.phone,
-                    address: e.data.address,
-                    id: e.data.id
-                })
+        Axios.get("user/code/" + AuthService.getUserCode()).then((resp) => {
+            this.setState({
+                username: resp.data.userName,
+                userCode: resp.data.userCode,
+                fullName: resp.data.fullName,
+                email: resp.data.email,
+                phone: resp.data.phone,
+                address: resp.data.address,
+                id: resp.data.id
             })
-        }
+        }).catch(function (error) {
+            if (error.response) {
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                console.log(error.request);
+            } else {
+                console.log('Error', error.message);
+            }
+        })
     }
 
     updateBtn = (id) => {
@@ -56,7 +61,7 @@ export default class ProfileUser extends Component {
         if (!this.state.phone || !this.state.address) {
             swal("Failed", "Changed profile", "failed");
         } else {
-            axios.put('http://localhost:8500/api/user/profile/' + id, userDto)
+            Axios.put('user/profile/' + id, userDto)
                 .then((response) => {
                     console.log(response);
                 })
@@ -68,7 +73,7 @@ export default class ProfileUser extends Component {
         const userDto = {
             password: this.state.password
         }
-        axios.put('http://localhost:8500/api/user/password/' + id, userDto)
+        Axios.put('user/password/' + id, userDto)
             .then((response) => {
                 console.log(response);
             })

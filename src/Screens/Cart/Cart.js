@@ -7,6 +7,8 @@ import 'jquery/dist/jquery.min.js'
 import $ from 'jquery'
 import swal from "sweetalert";
 import axios from "axios";
+import Axios from "../../Services/axios-instance";
+import AuthService from "../../Services/auth.service";
 
 export default class Cart extends Component {
     constructor(props) {
@@ -26,21 +28,21 @@ export default class Cart extends Component {
     componentDidMount() {
         this.getTglNow()
 
-        axios.get("http://localhost:8500/api/user/code/" + sessionStorage.getItem('userCode')).then((e) => {
+        Axios.get("user/code/" + AuthService.getUserCode()).then((e) => {
             this.setState({
-                userCode: sessionStorage.getItem('userCode'),
+                userCode: AuthService.getUserCode(),
                 fullName: e.data.fullName,
                 id: e.data.id
             })
         })
-        axios.get("http://localhost:8500/api/cart/usercode/" + sessionStorage.getItem('userCode')).then((e) => {
+        Axios.get("cart/usercode/" + AuthService.getUserCode()).then((e) => {
             // console.log(e.data.data)
             this.setState({
                 dataCart: e.data.data
             })
             // console.log(this.state.dataCart)
             this.state.dataCart.map((cart, i) => {
-                axios.get("http://localhost:8500/api/book/detailcode/" + cart.bookDetailsEntity.bookDetailCode).then((resp) => {
+                Axios.get("book/detailcode/" + cart.bookDetailsEntity.bookDetailCode).then((resp) => {
                     // console.log(resp)
                     this.setState({
                         dataStatus: [...this.state.dataStatus, {
@@ -117,7 +119,7 @@ export default class Cart extends Component {
     };
 
     deleteBtn = (id) => {
-        axios.delete('http://localhost:8500/api/cart/' + id).then
+        Axios.delete("cart/" + id).then
             (() => {
                 window.location.reload()
             })
