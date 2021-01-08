@@ -43,6 +43,7 @@ class DonationForm extends Component {
         const data = res.data
 
         const options = data.map(d => ({
+            "value": d.categoryCode,
             "label": d.categoryName
 
         }))
@@ -82,14 +83,11 @@ class DonationForm extends Component {
             });
         }
 
-        if (event.target.name === "category") {
-            this.setState({
-                [event.target.name]: event.target.value,
-            });
-        }
-
-
     };
+
+    handleChangeCategory = (e) => {
+        this.setState({ categoryCode: e.value });
+    }
 
 
     addDonation = () => {
@@ -192,39 +190,37 @@ class DonationForm extends Component {
                             </div>
                             <div className >
                                 <label for="exampleFormControlInput1">Category</label>
-                                <Select name="category" options={this.state.categoryList} onChange={(e) => this.handleChange(e, e.target.value)} value={this.state.categoryCode} />
-                                {/* <option>{this.state.categoryName}</option> */}
+                                <Select name="category" options={this.state.categoryList} onChange={this.handleChangeCategory} />
 
                             </div>
-                            <div className>
+                            <div>
                                 <label for="exampleFormControlInput1">Year</label>
                                 <input type="text" name="year" class="form-control" id="exampleFormControlInput1"
                                     placeholder="2020" value={this.state.year} onChange={(e) => this.handleChange(e, e.target.value)} />
                             </div>
 
-                            <div className>
+                            <div>
                                 <label for="exampleFormControlInput1">Author</label>
                                 <input type="text" name="author" class="form-control" id="exampleFormControlInput1"
                                     placeholder="Pramodya A. Toer" value={this.state.author} onChange={(e) => this.handleChange(e, e.target.value)} />
                             </div>
 
-                            <div className>
+                            <div className="form-group">
                                 <label for="exampleFormControlTextarea1">Description</label>
                                 <textarea name="description" class="form-control" id="exampleFormControlTextarea1" rows="3" value={this.state.description} onChange={(e) => this.handleChange(e, e.target.value)}></textarea>
                             </div>
 
-                            <div className>
+                            <div>
                                 <label for="exampleFormControlInput1">Photo Book</label>
                                 <input class="form-control" type="text" id="avatar" name="photo"
                                     value={this.state.photo} onChange={(e) => this.handleChange(e, e.target.value)} />
                             </div>
                             <i className="wrong-user"><FormErrors formErrors={this.state.formErrors} /></i>
-
+                            <br /><br />
                             <Link
                                 className="btn btn-success add-btn"
                                 onClick={this.addDonation}
                             >
-                                <i class="fa fa-plus mr-1"></i>
                                 {this.state.button}
                             </Link>
                         </form>
