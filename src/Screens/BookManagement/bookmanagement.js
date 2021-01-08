@@ -143,7 +143,8 @@ class BookManagement extends Component {
   }
 
   handleAddBook2 = () => {
-    this.setState({ showAdd2: false })
+    if (this.state.startDate && this.state.isbn) {
+      this.setState({ showAdd2: false })
     API.post(
       `api/book`,
       {
@@ -172,6 +173,9 @@ class BookManagement extends Component {
         swal("Oops!", "Please try again", "error");
         console.log(error);
       });
+    } else {
+        swal("Oops!", "Data is not valid", "error");
+    }
     }
 
   //button edit
@@ -179,12 +183,7 @@ class BookManagement extends Component {
     this.setState({showEdit: true, bookCode : bkcd})
     API.get(`/api/book/${bkcd}`).then((res) => {
       let response = res.data.data;
-      console.log("response : ")
       let date = moment(response.publishedDate).toDate();
-      // var dateFormat = moment(date, 'yyyy-MM-dd hh:mm:ss')
-      console.log(date)
-      // console.log(date.format('DD-MM-YYYY'))
-      // const dt = ('2020-01-07')
       this.setState({
         authorCode: response.authorEntity.authorCode,
         bookDetailCode: response.bookDetailsEntity.bookDetailCode,
@@ -281,7 +280,6 @@ class BookManagement extends Component {
       "label": d.publisherName
     }))
     this.setState({ publisherList: options4 })
-    console.log(this.state.publisherList)
   }
 
   handleChangeSelect1 = (e) => {
@@ -304,11 +302,9 @@ class BookManagement extends Component {
     this.setState({
         startDate: date
     });
-    console.log(this.state.startDate)
 };
 
   async componentDidUpdate(prevState) {
-    console.log(prevState);
     if (this.state.editClicked) {
       try {
         const res = await API.get(`/api/books`,
@@ -330,8 +326,8 @@ class BookManagement extends Component {
           // description: "",
           // categoryName: "",
           // numberOfPages: "",
-          // publishedDate: "",
-          // isbn: "",
+          startDate: "",
+          isbn: "",
           // language: "",
           // authorCode: "",
           // bookDetailCode: "",
@@ -664,6 +660,8 @@ class BookManagement extends Component {
                                   onChange={this.handleChange}
                                   dateFormat='yyyy-MM-dd'
                                 />
+                                  <br/>
+                                <small className="text-muted">(yyyy-MM-dd)</small>
                                 </div>
                                 <label for="addWeight" class="col-sm-2 col-form-label">Language</label>
                                 <div class="col-sm-4">
@@ -790,6 +788,8 @@ class BookManagement extends Component {
                                   onChange={this.handleChange}
                                   dateFormat='yyyy-MM-dd'
                                 />
+                                <br/>
+                              <small className="text-muted">(yyyy-MM-dd)</small>
                               </div>
                               <label for="addIsbn" class="col-sm-2 col-form-label">ISBN</label>
                                 <div class="col-sm-4">
@@ -824,126 +824,6 @@ class BookManagement extends Component {
 
 
                     {/* modal edit */}
-                    {/* <Modal show={showEdit} onHide={this.handleCloseModal}>
-                      <Modal.Header closeButton>
-                        <Modal.Title>Edit Data</Modal.Title>
-                      </Modal.Header>
-                      <Modal.Body>
-                      <div class='container'>
-                          <div class="modal-body">
-                          <form>
-
-                            <div class="form-group row">
-                              <label for="addAuthorCode" class="col-sm-2 col-form-label">Author Code</label>
-                              <div class="col-sm-4">
-                              <input 
-                                type="text" 
-                                name="authorCode"
-                                class="form-control" 
-                                id="authorCode" 
-                                placeholder="Author Code..." 
-                                onChange={(e) => this.setState({authorCode : e.target.value})}
-                                value={this.state.authorCode} 
-                                data-attribute-name="authorCode"
-                                data-async
-                                />
-                              </div>
-                              <label for="addBookDetailCode" class="col-sm-2 col-form-label">Book Detail Code</label>
-                              <div class="col-sm-4">
-                              <input 
-                                type="text" 
-                                name="bookDetailCode"
-                                class="form-control" 
-                                id="bookDetailCode" 
-                                placeholder="Book Detail Code..." 
-                                onChange={(e) => this.setState({bookDetailCode : e.target.value})}
-                                value={this.state.bookDetailCode} 
-                                data-attribute-name="bookDetailCode"
-                                data-async
-                                />
-                              </div>
-                            </div>
-
-                            <div class="form-group row">
-                              <label for="addCategoryCode" class="col-sm-2 col-form-label">Category Code</label>
-                              <div class="col-sm-4">
-                              <input 
-                                type="text" 
-                                name="categoryCode"
-                                class="form-control" 
-                                id="categoryCode" 
-                                placeholder="Category Code..." 
-                                onChange={(e) => this.setState({categoryCode : e.target.value})}
-                                value={this.state.categoryCode} 
-                                data-attribute-name="categoryCode"
-                                data-async
-                                />
-                              </div>
-                              <label for="addPublisherCode" class="col-sm-2 col-form-label">Publisher Code</label>
-                              <div class="col-sm-4">
-                              <input 
-                                type="text" 
-                                name="publisherCode"
-                                class="form-control" 
-                                id="publisherCode" 
-                                placeholder="Publisher Code..." 
-                                onChange={(e) => this.setState({publisherCode : e.target.value})}
-                                value={this.state.publisherCode} 
-                                data-attribute-name="publisherCode"
-                                data-async
-                                />
-                              </div>
-                            </div>
-
-                            <div class="form-group row">
-                              <label for="addPublishedDate" class="col-sm-2 col-form-label">Published Date</label>
-                              <div class="col-sm-4">
-                              <input 
-                                type="text" 
-                                name="publishedDate"
-                                class="form-control" 
-                                id="publishedDate" 
-                                placeholder="Published Date..." 
-                                onChange={(e) => this.setState({publishedDate : e.target.value})}
-                                value={this.state.publishedDate} 
-                                data-attribute-name="publishedDate"
-                                data-async
-                                />
-                              </div>
-                              <label for="addIsbn" class="col-sm-2 col-form-label">ISBN</label>
-                              <div class="col-sm-4">
-                              <input 
-                                type="text" 
-                                name="isbn"
-                                class="form-control" 
-                                id="isbn" 
-                                placeholder="ISBN..." 
-                                onChange={(e) => this.setState({isbn : e.target.value})}
-                                value={this.state.isbn} 
-                                data-attribute-name="isbn"
-                                data-async
-                                />
-                              </div>
-                            </div>
-
-                          </form>
-                          </div>
-                        </div>
-                      </Modal.Body>
-                      <Modal.Footer>
-                        <Button className="btn btn-secondary" variant="secondary" onClick={this.handleCloseModal}>
-                          Cancel
-                        </Button>
-                        <Button className="btn btn-success" variant="primary" onClick={this.handleSaveEdit}>
-                          Save
-                        </Button>
-                      </Modal.Footer>
-                    </Modal> */}
-
-
-
-
-
                     <Modal size="lg" show={showEdit} onHide={this.handleCloseModal}>
                       <Modal.Header closeButton>
                         <Modal.Title>Edit Book Data</Modal.Title>
@@ -1010,6 +890,8 @@ class BookManagement extends Component {
                                   onChange={this.handleChange}
                                   dateFormat='yyyy-MM-dd'
                                 />
+                                <br/>
+                              <small className="text-muted">(yyyy-MM-dd)</small>
                               </div>
                               <label for="addIsbn" class="col-sm-2 col-form-label">ISBN</label>
                               <div class="col-sm-4">
@@ -1040,10 +922,6 @@ class BookManagement extends Component {
                         </Button>
                       </Modal.Footer>
                     </Modal>
-
-
-
-
                     {/* modal edit */}
 
 
