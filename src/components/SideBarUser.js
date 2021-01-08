@@ -297,6 +297,11 @@ class SideBarUser extends Component {
                         Book
                       </Link>
                     </li>
+                    <li className={pathCurrent[1] === "manageBookDetail" ? "current-page" : ""}>
+                      <Link to="/page/manageBookDetail">
+                        Book Detail
+                      </Link>
+                    </li>
                     <li
                       className={
                         pathCurrent[1] === "manageDonation"
