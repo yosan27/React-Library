@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./Slidertop.style.css";
 import Slider from "react-slick";
 import { Link, withRouter } from "react-router-dom";
-import axios from 'axios';
+import axios from "axios";
 
 // img book
 import after from "./img/after.jpg";
@@ -20,6 +20,7 @@ import ibu from "./img/ibu.jpg";
 
 // css
 import "./Content.css";
+import "../Screens/SeeMoreBooks/booksList.css";
 
 function SampleNextArrow(props) {
   const { className, style, onClick } = props;
@@ -55,19 +56,19 @@ function SamplePrevArrow(props) {
 
 class Content extends Component {
   constructor(props) {
-    super(props)
-  
+    super(props);
+
     this.state = {
-       data: [],
-    }
+      data: [],
+    };
   }
 
-  componentDidMount(){
-    axios.get("http://localhost:8500/api/bookdetails").then((e)=>{
-      this.setState({data: e.data.data});
-    })
+  componentDidMount() {
+    axios.get("http://localhost:8500/api/books").then((e) => {
+      this.setState({ data: e.data.data });
+    });
   }
-  
+
   render() {
     const settings = {
       centerMode: true,
@@ -128,120 +129,153 @@ class Content extends Component {
         <section>
           <Slider {...settings}>
             <div className="item item1">
-            <Link to="/page/detailpage">
-              <div className="item-inner">
-                <div className="text-slide">
-                  <span className="title-slide">Title Book</span>
-                  <br />
-                  <span className="author-slide">Raditya</span>
-                  <br />
-                  <br />
-                  <span className="detail-slide">
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                    Maiores obcaecati nemo a architecto, reprehenderit delectus
-                    nihil omnis recusandae.
-                  </span>
+              <Link to="/page/detailpage">
+                <div className="item-inner">
+                  <div className="text-slide">
+                    <span className="title-slide">Title Book</span>
+                    <br />
+                    <span className="author-slide">Raditya</span>
+                    <br />
+                    <br />
+                    <span className="detail-slide">
+                      Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                      Maiores obcaecati nemo a architecto, reprehenderit
+                      delectus nihil omnis recusandae.
+                    </span>
+                  </div>
                 </div>
-              </div>
               </Link>
             </div>
             <div className="item item2">
-            <Link to="/page/detailpage">
-              <div className="item-inner">
-                <div className="text-slide">
-                  <span className="title-slide">Title Book</span>
-                  <br />
-                  <span className="author-slide">Raditya</span>
-                  <br />
-                  <br />
-                  <span className="detail-slide">
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                    Maiores obcaecati nemo a architecto, reprehenderit delectus
-                    nihil omnis recusandae.
-                  </span>
+              <Link to="/page/detailpage">
+                <div className="item-inner">
+                  <div className="text-slide">
+                    <span className="title-slide">Title Book</span>
+                    <br />
+                    <span className="author-slide">Raditya</span>
+                    <br />
+                    <br />
+                    <span className="detail-slide">
+                      Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                      Maiores obcaecati nemo a architecto, reprehenderit
+                      delectus nihil omnis recusandae.
+                    </span>
+                  </div>
                 </div>
-              </div>
               </Link>
             </div>
             <div className="item item3">
-            <Link to="/page/detailpage">
-              <div className="item-inner">
-                <div className="text-slide">
-                  <span className="title-slide">Title Book</span>
-                  <br />
-                  <span className="author-slide">Raditya</span>
-                  <br />
-                  <br />
-                  <span className="detail-slide">
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                    Maiores obcaecati nemo a architecto, reprehenderit delectus
-                    nihil omnis recusandae.
-                  </span>
+              <Link to="/page/detailpage">
+                <div className="item-inner">
+                  <div className="text-slide">
+                    <span className="title-slide">Title Book</span>
+                    <br />
+                    <span className="author-slide">Raditya</span>
+                    <br />
+                    <br />
+                    <span className="detail-slide">
+                      Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                      Maiores obcaecati nemo a architecto, reprehenderit
+                      delectus nihil omnis recusandae.
+                    </span>
+                  </div>
                 </div>
-              </div>
               </Link>
             </div>
             <div className="item item4">
-            <Link to="/page/detailpage">
-              <div className="item-inner">
-                <div className="text-slide">
-                  <span className="title-slide">Title Book</span>
-                  <br />
-                  <span className="author-slide">Raditya</span>
-                  <br />
-                  <br />
-                  <span className="detail-slide">
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                    Maiores obcaecati nemo a architecto, reprehenderit delectus
-                    nihil omnis recusandae.
-                  </span>
+              <Link to="/page/detailpage">
+                <div className="item-inner">
+                  <div className="text-slide">
+                    <span className="title-slide">Title Book</span>
+                    <br />
+                    <span className="author-slide">Raditya</span>
+                    <br />
+                    <br />
+                    <span className="detail-slide">
+                      Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                      Maiores obcaecati nemo a architecto, reprehenderit
+                      delectus nihil omnis recusandae.
+                    </span>
+                  </div>
                 </div>
-              </div>
               </Link>
             </div>
             <div className="item item5">
-            <Link to="/page/detailpage">
-              <div className="item-inner">
-                <div className="text-slide">
-                  <span className="title-slide">Title Book</span>
-                  <br />
-                  <span className="author-slide">Raditya</span>
-                  <br />
-                  <br />
-                  <span className="detail-slide">
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                    Maiores obcaecati nemo a architecto, reprehenderit delectus
-                    nihil omnis recusandae.
-                  </span>
+              <Link to="/page/detailpage">
+                <div className="item-inner">
+                  <div className="text-slide">
+                    <span className="title-slide">Title Book</span>
+                    <br />
+                    <span className="author-slide">Raditya</span>
+                    <br />
+                    <br />
+                    <span className="detail-slide">
+                      Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                      Maiores obcaecati nemo a architecto, reprehenderit
+                      delectus nihil omnis recusandae.
+                    </span>
+                  </div>
                 </div>
-              </div>
               </Link>
             </div>
           </Slider>
         </section>
 
         {/* Best Seller */}
-        <section className="pt-5">
-          <div className="container-fluid">
-            <h3>Best Seller</h3>
-            <p>New Releases</p>
-            
-            <div className="card-group">
-              {this.state.data.map((d)=>{
-                return(
-                <div className="card mr-2">
-                  <Link to="/page/detailpage">
-                    <img src={d.cover} alt="avatar" className="card-img-top" />
-                    <div className="card-body garis-top">
-                      <h5 className="card-title-books">{d.bookTitle}</h5>
-                    </div>
-                  </Link>
-                </div>
-              );
-              })}
+        <main className="main pt-5">
+          <div className="content">
+            <div className="row">
+              <div className="col">
+                <h3>Best Seller</h3>
+              </div>
             </div>
+            <div className="row">
+              <div className="col">
+                <p>New Releases</p>
+              </div>
+              <div className="col d-flex justify-content-end">
+                <Link to="/page/more">
+                  <span>See More</span>
+                </Link>
+              </div>
+            </div>
+
+            <ul className="books">
+              {this.state.data.slice(0,5).map((datas) => {
+                let d = datas.bookDetailsEntity;
+                return (
+                  <Link to="/page/detailpage">
+                    <li>
+                      <div className="book">
+                        <div className="row">
+                          <img
+                            src={d.cover}
+                            alt={d.bookTitle}
+                            className="book-image"
+                          />
+                        </div>
+                        <div className="row">
+                          <div className="col">
+                            <div className="row">
+                              <div className="book-name">{d.bookTitle}</div>
+                            </div>
+                            <div className="row">
+                              <div className="book-author">Tere Liye</div>
+                            </div>
+                            <div className="row">
+                              <div className="book-rating">5</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  </Link>
+                );
+              })}
+            </ul>
           </div>
-        </section>
+        </main>
+
         {/* Best Seller */}
 
         {/* Asian */}
