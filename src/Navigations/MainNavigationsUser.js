@@ -23,11 +23,13 @@ import UserManagement from "../Screens/UserManagement/usermanagement";
 import ManageDonation from "../Screens/ManageDonation/index";
 import PublisherManagement from "../Screens/PublisherManagement/publishermanagement";
 import BookManagement from "../Screens/BookManagement/bookmanagement";
+import BookDetailManagement from "../Screens/BookDetailManagement/bookdetailmanagement";
 import DetailPage from "../Screens/DetailPage/detailpage";
 import FineManagement from "../Screens/FineManagement/fineManagement";
 import AuthorManagement from "../Screens/AuthorManagement/AuthorManagement";
 import CategoryManagement from "../Screens/CategoryManagement/categoryManagement";
 import AuthService from "../Services/auth.service";
+import SeeMoreBooks from "../Screens/SeeMoreBooks/SeeMoreBooks";
 
 const authGuard = (Component) => () => {
   return !localStorage.getItem('userFaraday') ? (
@@ -134,6 +136,9 @@ const MainNavigationsUser = (props) => (
         </Route>
         <Route render={authGuard(CategoryManagement)} path="/page/manageCategory">
           {/* <CategoryManagement /> */}
+        </Route>
+        <Route render={authGuard(SeeMoreBooks)} path="/page/more">
+          {/* <SeeMoreBooks /> */}
         </Route>
 
         <Route render={authGuard(Footer)} path="/page/:id">

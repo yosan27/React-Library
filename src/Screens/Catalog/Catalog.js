@@ -13,6 +13,8 @@ import Box from '@material-ui/core/Box';
 import "datatables.net-dt/js/dataTables.dataTables"
 import "datatables.net-dt/css/jquery.dataTables.min.css"
 import $ from 'jquery'; 
+import API from "../../api";
+import api from '../../api';
 
 class Catalog extends Component {
     constructor(props){
@@ -38,7 +40,8 @@ class Catalog extends Component {
             review: '',
             rate: "",
             userName: "",
-
+            userCode: "",
+            reviewData: [],
             
             data: [
                 {"id": "2017100251", "title":"Selena", "cover":"https://www.gramedia.com/blog/content/images/2020/05/selena_gramedia.jpg", "author":"Tere Liye", "categories":"Young Adult Fiction", "publisher":"Gramedia Pustaka "},
@@ -83,8 +86,8 @@ class Catalog extends Component {
         this.setState({ showReview: false})
     }
 
-    handleAddReview = () => {
-        this.setState({ addReview: true})
+    handleAddReview = (bkcd) => {
+        this.setState({ addReview: true, bookCode: bkcd})
     }
 
     handleCloseAddReview = () => {
@@ -106,6 +109,24 @@ class Catalog extends Component {
 
     rating = (value, newValue) => {
             this.setState({ value: this.state.value + 1})
+    }
+
+    handlePostReview = (bkcd) => {
+        let reviewData = {
+            bookCode: this.state.bookCode,
+            userCode: 1,
+            rate: this.state.rate,
+            review: this.state.review
+        }
+        axios.post('http://localhost:8500/api/review', reviewData).then(() => {
+            this.alertAdd();
+        })
+    }
+
+    alertAdd = () => {
+        swal("Success!", "Review Data Has Been Added", "success").then(() => {
+            window.location.reload()
+        })
     }
     
 
@@ -153,6 +174,14 @@ class Catalog extends Component {
             this.setState({ reviewData: e.data});
             console.log(e.data.data);
         });
+    }
+
+    changeReviewHandler = (e) => {
+        this.setState({review: e.target.value})
+    }
+
+    changeRateHandler = (e) => {
+        this.setState({rate: e.target.value})
     }
 
     setRate(rate) {
@@ -393,27 +422,35 @@ class Catalog extends Component {
                                 
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <Button className="btn btn-primary" variant="primary" onClick={this.handleAddReview}>
-                                        <i class=""></i> Add Review
-                                </Button> 
+                                <button className="btn btn-primary btn-sm rounded-sm w-30 mr-1" data-toggle="modal" data-target="#reviewAdd" onClick={() => this.handleAddReview(this.state.bookCode)}>
+                                    <i className="fa fa-edit"></i>Add Review
+                                </button>
                              </div>
                         </div>
                     </div>
                 </div>                                           
 
-             {/* modal create review */}
-            <Modal size="lg" show={addReview} onHide={this.handleCloseAddReview}>
-                <Modal.Header closeButton>
-                    <Modal.Title> Book Review </Modal.Title>                                     
-                </Modal.Header>
-                <Modal.Body>
-                    <div className='container'>
-                        <div className='modal-body'>
-                            <form>
-                            
+              {/* MODAL create review */}
+              <div className="modal fade" id="reviewAdd" tabIndex="-1" aria-labelledby="addLabel" aria-hidden="true">
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title" id="addLabel">Add Author</h5>
+                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true" className="modal-clear">&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <form>
                                 <div class="form-group row">
                                     <div class="col-sm-12 text-center">
                                     <Image className='' src={"https://www.gramedia.com/blog/content/images/2020/05/selena_gramedia.jpg"} wrapped ui={false} style={{width:'20%',height:'auto'}}/>
+                                    </div>
+                                </div>
+                                <div className="form-group row">
+                                    <div className="col-sm-9">
+                                        <input type="hidden" className="form-control input" name="bookCode" readOnly disabled
+                                         value={this.state.bookCode} />
                                     </div>
                                 </div>
                                <div class="form-group row">
@@ -422,12 +459,10 @@ class Catalog extends Component {
                                     <Box component="fieldset" mb={3} borderColor="transparent">
                                         <Rating
                                         name="simple-controlled"
-                                        rate={value}
-                                        name="rating"
-                                        onChange={(event, newValue) => {
-                                            this.setState({ value: newValue});
-                                        }}
-                                        
+                                        name="rate"
+                                        id="rate"
+                                        onChange={this.changeRateHandler}
+                                        value={this.state.rate}
                                         />
                                     </Box>           
                                     </div>
@@ -435,20 +470,19 @@ class Catalog extends Component {
                                 <div class="form-group row">
                                     <label for="editRev" class="col-sm-2 col-form-label">Review</label>
                                     <div class="col-sm-10">
-                                    <textarea class="form-control" id="editDesc" placeholder="Review..."></textarea>
+                                    <input className="form-control input" name="review" id="review" placeholder="Review..."
+                                        value={this.state.review} onChange={this.changeReviewHandler} />
                                     </div>
                               </div>
-                            </form>                   
+                                </form>
+                            </div>
+                            <div className="modal-footer">
+                                <button className="btn btn-secondary modal-clear" data-dismiss="modal">Cancel</button>
+                                <button className="btn btn-success" data-dismiss="modal" onClick={this.handlePostReview}>Add</button>
+                            </div>
                         </div>
-                    </div>                                                            
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button className="btn btn-secondary" variant="secondary" onClick={this.handleCloseAddReview}>
-                        <i class="fa fa-times-circle"></i> Close
-                    </Button> 
-                </Modal.Footer>
-            </Modal>                                         
-             {/* modal create review */}
+                    </div>
+                </div>
 
             </div >                
         )

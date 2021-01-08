@@ -109,7 +109,7 @@ export default class Payment extends Component {
           });
           // Get Bill
           axios.get(`http://localhost:8500/api/transaction-detail/bill/${this.state.userCode}`).then((record)=>{
-            record.data.map((d)=>{
+            record.data.forEach((d)=>{
               let bill = (parseInt(this.state.sum) + parseInt(d.kredit))
               if(d.rentEntity.status === 4){
                 this.setState({
@@ -240,10 +240,10 @@ export default class Payment extends Component {
         transactionCode: this.state.lastCode,
       }
       axios.post("http://localhost:8500/api/transaction", paymentRecord).then(()=>{
-        this.state.rentCodeList.map((e)=>{
+        this.state.rentCodeList.forEach((e)=>{
           axios.put(`http://localhost:8500/api/rent/code/${e}`, updateStatus)
         });
-        this.state.tDetailCode.map((e)=>{
+        this.state.tDetailCode.forEach((e)=>{
           axios.put(`http://localhost:8500/api/transaction-detail/code/${e}`, updateTransaction)
         });
         axios.put(`http://localhost:8500/api/user/balance/${this.state.userId}`, updateBalance)
