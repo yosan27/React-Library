@@ -246,29 +246,42 @@ class BookManagement extends Component {
   }
 
   async getCategory() {
-    const res = await API.get('/api/books')
-    const data = res.data.data
-
-    const options1 = data.map(d => ({
-      "value": d.authorEntity.authorCode,
-      "label": d.authorEntity.authorName
+    const res = await API.get('/api/author')
+    const dataAuthor = res.data
+    
+    const options1 = dataAuthor.map(d => ({
+      "value": d.authorCode,
+      "label": d.authorName
     }))
+    this.setState({ authorList: options1})
 
-    const options2 = data.map(d => ({
-      "value": d.bookDetailsEntity.bookDetailCode,
-      "label": d.bookDetailsEntity.bookTitle
-    }))
+    const res2 = await API.get('/api/bookdetails')
+    const dataBookDetail = res2.data.data
 
-    const options3 = data.map(d => ({
-      "value": d.categoryEntity.categoryCode,
-      "label": d.categoryEntity.categoryName
+    const options2 = dataBookDetail.map(d => ({
+      "value": d.bookDetailCode,
+      "label": d.bookTitle
     }))
+    this.setState({ bookDetailList:options2 })
 
-    const options4 = data.map(d => ({
-      "value": d.publisherEntity.publisherCode,
-      "label": d.publisherEntity.publisherName
+    const res3 = await API.get('/api/category')
+    const dataCategory = res3.data
+
+    const options3 = dataCategory.map(d => ({
+      "value": d.categoryCode,
+      "label": d.categoryName
     }))
-    this.setState({ authorList: options1, bookDetailList:options2, categoryList: options3, publisherList: options4 })
+    this.setState({ categoryList: options3 })
+
+    const res4 = await API.get('/api/publisher/active')
+    const dataPublisher = res4.data
+
+    const options4 = dataPublisher.map(d => ({
+      "value": d.publisherCode,
+      "label": d.publisherName
+    }))
+    this.setState({ publisherList: options4 })
+    console.log(this.state.publisherList)
   }
 
   handleChangeSelect1 = (e) => {
@@ -738,7 +751,7 @@ class BookManagement extends Component {
                                   options={this.state.bookDetailList}
                                   onChange={this.handleChangeSelect2}
                                 />
-                                <Link to="/page/manageBookDetails" className="btn btn-light">
+                                <Link to="/page/manageBookDetail" className="btn btn-light">
                                   <i class="fa fa-plus"></i><small className="text-muted"> Add more book details</small>
                                 </Link>
                               </div>
@@ -958,7 +971,7 @@ class BookManagement extends Component {
                                   options={this.state.bookDetailList}
                                   onChange={this.handleChangeSelect2}
                                 />
-                                <Link to="/page/manageBookDetails" className="btn btn-light">
+                                <Link to="/page/manageBookDetail" className="btn btn-light">
                                   <i class="fa fa-plus"></i><small className="text-muted"> Add more book details</small>
                                 </Link>
                               </div>
