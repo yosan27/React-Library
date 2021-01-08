@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Table, Modal, Button } from 'react-bootstrap';
 import swal from "sweetalert";
+import {Link} from 'react-router-dom';
 //Datatable Modules
 import 'datatables.net-dt/js/dataTables.dataTables'
 import 'datatables.net-dt/css/jquery.dataTables.min.css'
@@ -12,6 +13,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import 'react-calendar/dist/Calendar.css';
 import Moment from 'react-moment';
+import moment from 'moment';
 import Select from 'react-select';
  
 class BookManagement extends Component {
@@ -178,13 +180,17 @@ class BookManagement extends Component {
     API.get(`/api/book/${bkcd}`).then((res) => {
       let response = res.data.data;
       console.log("response : ")
-      console.log(response.authorEntity)
+      let date = moment(response.publishedDate).toDate();
+      // var dateFormat = moment(date, 'yyyy-MM-dd hh:mm:ss')
+      console.log(date)
+      // console.log(date.format('DD-MM-YYYY'))
+      // const dt = ('2020-01-07')
       this.setState({
         authorCode: response.authorEntity.authorCode,
         bookDetailCode: response.bookDetailsEntity.bookDetailCode,
         categoryCode: response.categoryEntity.categoryCode,
         publisherCode: response.publisherEntity.publisherCode,
-        publishedDate: response.startDate,
+        startDate : date,
         isbn: response.isbn,
         bookCode: response.bookCode
       });
@@ -359,12 +365,14 @@ class BookManagement extends Component {
                     <Table responsive striped id="bookmanagement" style={{ width: '100%' }}>
                       <thead>
                           <tr>
-                            <th>Book ID</th>
+                            <th>Book Code</th>
                             <th>Action</th>
                             <th>Book Title</th>
                             <th>Author</th>
-                            <th>Published Date</th>
                             <th>Categories</th>
+                            <th>Publisher</th>
+                            <th>Published Date</th>
+                            <th>ISBN</th>
                             <th>Book Cover</th>
                           </tr>
                       </thead>
@@ -401,17 +409,28 @@ class BookManagement extends Component {
                                   })}
                                 </td>
                                 <td>
-                                  <Moment format="DD/MM/YYYY">
-                                    {book.publishedDate}
-                                  </Moment>
-                                </td>
-                                <td>
                                 {Object.keys(book.categoryEntity?book.categoryEntity:"").map(key => {
                                     if(key === "categoryName"){
                                       const category = (book.categoryEntity[key])
                                       return category;
                                     }
                                   })}
+                                </td>
+                                <td>
+                                {Object.keys(book.publisherEntity?book.publisherEntity:"").map(key => {
+                                    if(key === "publisherName"){
+                                      const publisher = (book.publisherEntity[key])
+                                      return publisher;
+                                    }
+                                  })}
+                                </td>
+                                <td>
+                                  <Moment format="DD/MM/YYYY">
+                                    {book.publishedDate}
+                                  </Moment>
+                                </td>
+                                <td>
+                                  <p>{book.isbn}</p>
                                 </td>
                                 <td class="text-center">
                                   {
@@ -630,7 +649,7 @@ class BookManagement extends Component {
                                 <DatePicker
                                   selected={this.state.startDate}
                                   onChange={this.handleChange}
-                                  dateFormat='yyyy-mm-dd'
+                                  dateFormat='yyyy-MM-dd'
                                 />
                                 </div>
                                 <label for="addWeight" class="col-sm-2 col-form-label">Language</label>
@@ -702,39 +721,51 @@ class BookManagement extends Component {
                           <form>
                             <div class="form-group row">
                               <label for="addAuthorCode" class="col-sm-2 col-form-label">Author Name</label>
-                              <div class="col-sm-4">
-                              <Select 
-                                className="mb-2"
-                                options={this.state.authorList}
-                                onChange={this.handleChangeSelect1}
-                              />
+                              <div class="col-sm-4 mb-3">
+                                <Select 
+                                  className="mb-2"
+                                  options={this.state.authorList}
+                                  onChange={this.handleChangeSelect1}
+                                />
+                                <Link to="/page/manageAuthor" className="btn btn-light">
+                                  <i class="fa fa-plus"></i><small className="text-muted"> Add more author</small>
+                                </Link>
                               </div>
                               <label for="addBookDetailCode" class="col-sm-2 col-form-label">Book Details Info</label>
                               <div class="col-sm-4">
-                              <Select 
-                                className="mb-2"
-                                options={this.state.bookDetailList}
-                                onChange={this.handleChangeSelect2}
-                              />
+                                <Select 
+                                  className="mb-2"
+                                  options={this.state.bookDetailList}
+                                  onChange={this.handleChangeSelect2}
+                                />
+                                <Link to="/page/manageBookDetails" className="btn btn-light">
+                                  <i class="fa fa-plus"></i><small className="text-muted"> Add more book details</small>
+                                </Link>
                               </div>
                             </div>
 
                             <div class="form-group row">
                               <label for="addCategoryCode" class="col-sm-2 col-form-label">Category</label>
-                              <div class="col-sm-4">
-                              <Select
-                                className="mb-2"
-                                options={this.state.categoryList}
-                                onChange={this.handleChangeSelect3}
-                              />
+                              <div class="col-sm-4 mb-3">
+                                <Select
+                                  className="mb-2"
+                                  options={this.state.categoryList}
+                                  onChange={this.handleChangeSelect3}
+                                />
+                                <Link to="/page/manageCategory" className="btn btn-light">
+                                  <i class="fa fa-plus"></i><small className="text-muted"> Add more category</small>
+                                </Link>
                               </div>
                               <label for="addPublisherCode" class="col-sm-2 col-form-label">Publisher</label>
                               <div class="col-sm-4">
-                              <Select
-                                className="mb-2"
-                                options={this.state.publisherList}
-                                onChange={this.handleChangeSelect4}
-                              />
+                                <Select
+                                  className="mb-2"
+                                  options={this.state.publisherList}
+                                  onChange={this.handleChangeSelect4}
+                                />
+                                <Link to="/page/managePublisher" className="btn btn-light">
+                                  <i class="fa fa-plus"></i><small className="text-muted"> Add more publisher</small>
+                                </Link>
                               </div>
                             </div>
 
@@ -744,23 +775,23 @@ class BookManagement extends Component {
                                 <DatePicker
                                   selected={this.state.startDate}
                                   onChange={this.handleChange}
-                                  dateFormat='yyyy-mm-dd'
+                                  dateFormat='yyyy-MM-dd'
                                 />
                               </div>
                               <label for="addIsbn" class="col-sm-2 col-form-label">ISBN</label>
-                              <div class="col-sm-4">
-                              <input 
-                                type="text" 
-                                name="isbn"
-                                class="form-control" 
-                                id="isbn" 
-                                placeholder="ISBN..." 
-                                onChange={(e) => this.setState({isbn : e.target.value})}
-                                value={this.state.isbn} 
-                                data-attribute-name="isbn"
-                                data-async
-                                />
-                              </div>
+                                <div class="col-sm-4">
+                                  <input 
+                                    type="text" 
+                                    name="isbn"
+                                    class="form-control" 
+                                    id="isbn" 
+                                    placeholder="ISBN..." 
+                                    onChange={(e) => this.setState({isbn : e.target.value})}
+                                    value={this.state.isbn} 
+                                    data-attribute-name="isbn"
+                                    data-async
+                                    />
+                                </div>
                             </div>
 
                           </form>
@@ -780,7 +811,7 @@ class BookManagement extends Component {
 
 
                     {/* modal edit */}
-                    <Modal show={showEdit} onHide={this.handleCloseModal}>
+                    {/* <Modal show={showEdit} onHide={this.handleCloseModal}>
                       <Modal.Header closeButton>
                         <Modal.Title>Edit Data</Modal.Title>
                       </Modal.Header>
@@ -894,7 +925,112 @@ class BookManagement extends Component {
                           Save
                         </Button>
                       </Modal.Footer>
+                    </Modal> */}
+
+
+
+
+
+                    <Modal size="lg" show={showEdit} onHide={this.handleCloseModal}>
+                      <Modal.Header closeButton>
+                        <Modal.Title>Edit Book Data</Modal.Title>
+                      </Modal.Header>
+                      <Modal.Body>
+                      <div class='container'>
+                          <div class="modal-body">
+                          <form>
+                            <div class="form-group row">
+                              <label for="addAuthorCode" class="col-sm-2 col-form-label">Author Name</label>
+                              <div class="col-sm-4">
+                                <Select 
+                                  className="mb-2"
+                                  options={this.state.authorList}
+                                  onChange={this.handleChangeSelect1}
+                                />
+                                <Link to="/page/manageAuthor" className="btn btn-light">
+                                  <i class="fa fa-plus"></i><small className="text-muted"> Add more author</small>
+                                </Link>
+                              </div>
+                              <label for="addBookDetailCode" class="col-sm-2 col-form-label">Book Details Info</label>
+                              <div class="col-sm-4">
+                                <Select 
+                                  className="mb-2"
+                                  options={this.state.bookDetailList}
+                                  onChange={this.handleChangeSelect2}
+                                />
+                                <Link to="/page/manageBookDetails" className="btn btn-light">
+                                  <i class="fa fa-plus"></i><small className="text-muted"> Add more book details</small>
+                                </Link>
+                              </div>
+                            </div>
+
+                            <div class="form-group row">
+                              <label for="addCategoryCode" class="col-sm-2 col-form-label">Category</label>
+                              <div class="col-sm-4">
+                                <Select
+                                  className="mb-2"
+                                  options={this.state.categoryList}
+                                  onChange={this.handleChangeSelect3}
+                                />
+                                <Link to="/page/manageCategory" className="btn btn-light">
+                                  <i class="fa fa-plus"></i><small className="text-muted"> Add more category</small>
+                                </Link>
+                              </div>
+                              <label for="addPublisherCode" class="col-sm-2 col-form-label">Publisher</label>
+                              <div class="col-sm-4">
+                                <Select
+                                  className="mb-2"
+                                  options={this.state.publisherList}
+                                  onChange={this.handleChangeSelect4}
+                                />
+                                <Link to="/page/managePublisher" className="btn btn-light">
+                                  <i class="fa fa-plus"></i><small className="text-muted"> Add more publisher</small>
+                                </Link>
+                              </div>
+                            </div>
+
+                            <div class="form-group row">
+                              <label for="addPublishedDate" class="col-sm-2 col-form-label">Published Date</label>
+                              <div class="col-sm-4">
+                              <DatePicker
+                                  selected={this.state.startDate}
+                                  onChange={this.handleChange}
+                                  dateFormat='yyyy-MM-dd'
+                                />
+                              </div>
+                              <label for="addIsbn" class="col-sm-2 col-form-label">ISBN</label>
+                              <div class="col-sm-4">
+                              <input 
+                                type="text" 
+                                name="isbn"
+                                class="form-control" 
+                                id="isbn" 
+                                placeholder="ISBN..." 
+                                onChange={(e) => this.setState({isbn : e.target.value})}
+                                value={this.state.isbn} 
+                                data-attribute-name="isbn"
+                                data-async
+                                />
+                              </div>
+                            </div>
+
+                          </form>
+                          </div>
+                        </div>
+                      </Modal.Body>
+                      <Modal.Footer>
+                        <Button className="btn btn-secondary" variant="secondary" onClick={this.handleCloseModal}>
+                          Cancel
+                        </Button>
+                        <Button className="btn btn-success" variant="primary" onClick={this.handleSaveEdit}>
+                          Save
+                        </Button>
+                      </Modal.Footer>
                     </Modal>
+
+
+
+
                     {/* modal edit */}
 
 
