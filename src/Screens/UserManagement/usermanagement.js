@@ -101,6 +101,7 @@ class UserManagement extends Component {
                 });
             });
         })
+    }
 
     getById(id) {
         axios.get(`http://localhost:8500/api/user-by-id/${id}`).then((res) => {
