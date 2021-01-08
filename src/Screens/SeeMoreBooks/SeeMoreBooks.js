@@ -23,12 +23,12 @@ export default class FineManagement extends Component {
   render() {
     return (
       <>
-        <div className="right_col" role="main">
+        <div className="right_col" role="main" style={{ minheight: "120vh" }}>
           <section className="mt-5 pt-5 container-fluid mb-4 border-bottom border-secondary">
             <h3>See More</h3>
           </section>
 
-          <main className="main">
+          <main className="main pb-2">
             <div className="content">
               <ul className="books">
               {this.state.data.map((datas) => {
@@ -49,7 +49,7 @@ export default class FineManagement extends Component {
                               <div className="book-author">Tere Liye</div>
                             </div>
                             <div className="row">
-                              <div className="book-rating">5</div>
+                              <div className="book-rating text-muted"><i className="fa fa-star star-rate pr-1"></i>5</div>
                             </div>
                           </div>
                         </div>
