@@ -1,44 +1,59 @@
-import axios from "axios";
+// import axios from "axios";
+import Axios from "../Services/axios-instance";
 import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
 import NumberFormat from 'react-number-format';
+import AuthService from "../Services/auth.service";
 
 class SideBarUser extends Component {
   constructor() {
     super();
     this.state = {
+      statusUser: "",
       condition: false,
       username: "",
       userData: [],
-      saldo: "",
+      saldo: "0",
       userCode: "",
       profilePict: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBG685vI07-3MsuqJxjCfzIabfFJJG-8yM-ppvjjNpD5QNtWNE4A"
     };
   }
 
   componentDidMount() {
-    if (!sessionStorage.getItem('userCode')) {
-      console.log("tidak ada userCode")
-    } else {
-      axios.get("http://localhost:8500/api/user/code/" + sessionStorage.getItem('userCode')).then((e) => {
-        this.setState({
-          saldo: e.data.balance,
-          username: e.data.userName,
-          userCode: sessionStorage.getItem('userCode')
-        })
+    this.setState({
+      statusUser: AuthService.getStatusUser(),
+      username: AuthService.getUsername(),
+      userCode: AuthService.getUserCode(),
+    })
+
+    Axios.get("user/code/" + AuthService.getUserCode()).then((resp) => {
+      console.log(resp)
+      this.setState({
+        saldo: resp.data.balance,
       })
-    }
+    }).catch(function (error) {
+      if (error.response) {
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+      } else if (error.request) {
+        console.log(error.request);
+      } else {
+        console.log('Error', error.message);
+      }
+    })
   }
 
-  removesessionStorage = () => {
-    sessionStorage.clear();
-  };
+  logout = () => {
+    // sessionStorage.clear();
+    localStorage.removeItem("userFaraday");
+  }
 
   render() {
     const { condition } = this.state;
     const pathCurrent = window.location.pathname.split("/");
 
-    if (this.state.userCode.substring(0, 2) === "UU") {
+    if (this.state.statusUser === "2") {
       return (
         <div className="left_col scroll-view">
           <div className="navbar nav_title" style={{ border: 0 }}>
@@ -193,7 +208,7 @@ class SideBarUser extends Component {
           </div>
 
           <div className="sidebar-footer hidden-small d-flex flex-row">
-            <Link to="/" onClick={() => this.removesessionStorage()}>
+            <Link to="/" onClick={() => this.logout()}>
               <span
                 className="glyphicon glyphicon-off"
                 aria-hidden="true"
@@ -335,7 +350,7 @@ class SideBarUser extends Component {
           </div>
 
           <div className="sidebar-footer hidden-small d-flex flex-row">
-            <Link to="/" onClick={() => this.removesessionStorage()}>
+            <Link to="/" onClick={() => this.logout()}>
               <span
                 className="glyphicon glyphicon-off"
                 aria-hidden="true"

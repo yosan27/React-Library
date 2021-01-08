@@ -7,6 +7,8 @@ import 'datatables.net-responsive-dt/css/responsive.dataTables.css'
 import 'jquery/dist/jquery.min.js'
 import $ from 'jquery'
 import axios from "axios";
+import Axios from "../../Services/axios-instance";
+import AuthService from "../../Services/auth.service";
 
 export default class Wishlist extends Component {
 
@@ -22,13 +24,13 @@ export default class Wishlist extends Component {
     }
 
     componentDidMount() {
-        axios.get("http://localhost:8500/api/wishlist/usercode/" + sessionStorage.getItem('userCode')).then((e) => {
+        Axios.get("wishlist/usercode/" + AuthService.getUserCode()).then((e) => {
             this.setState({
                 dataWish: e.data.data
             })
             console.log(e)
             this.state.dataWish.map((wish, i) => {
-                axios.get("http://localhost:8500/api/book/detailcode/" + wish.bookDetailsEntity.bookDetailCode).then((resp) => {
+                Axios.get("book/detailcode/" + wish.bookDetailsEntity.bookDetailCode).then((resp) => {
                     // console.log(resp.data.data)
                     this.setState({
                         dataStatus: [...this.state.dataStatus, {
@@ -62,20 +64,20 @@ export default class Wishlist extends Component {
 
     }
     deleteBtn = (id) => {
-        axios.delete('http://localhost:8500/api/wishlist/' + id).then
+        Axios.delete('wishlist/' + id).then
             (() => {
                 window.location.reload()
             })
     }
 
     pinjamBtn = (id) => {
-        axios.get("http://localhost:8500/api/wishlist/id/" + id).then((e) => {
+        Axios.get("wishlist/id/" + id).then((e) => {
             // console.log(e)
             const cartdto = {
                 bookDetailsCode: e.data.bookDetailsEntity.bookDetailCode,
                 userCode: e.data.userEntity.userCode
             }
-            axios.post('http://localhost:8500/api/cart', cartdto)
+            Axios.post('cart', cartdto)
                 .then((response) => {
                     console.log(response);
                     this.deleteBtn(id)
