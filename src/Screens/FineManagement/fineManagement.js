@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import axios from "axios";
+import axios from "../../Services/axios-instance";
 
 import "datatables.net-dt/js/dataTables.dataTables";
 import "datatables.net-dt/css/jquery.dataTables.min.css";
@@ -39,8 +39,12 @@ export default class FineManagement extends Component {
     this.getCode();
   }
 
+  componentDidUpdate(){
+    
+  }
+
   getActiveFine = () =>{
-    axios.get("http://localhost:8500/api/fine/active").then((e) => {
+    axios.get("fine/active").then((e) => {
       this.setState({ fineList: e.data });
       $(function () {
         $("#fine-list").DataTable({
@@ -51,7 +55,7 @@ export default class FineManagement extends Component {
   }
 
   getCode = () => {
-    axios.get("http://localhost:8500/api/fine").then((e) => {
+    axios.get("fine").then((e) => {
       this.setState({
         allList: e.data,
       });
@@ -222,7 +226,7 @@ export default class FineManagement extends Component {
         validTo: this.state.validTo,
       };
       axios
-        .post("http://localhost:8500/api/fine", fineList)
+        .post("fine", fineList)
         .then(() => window.location.reload());
     } else {
       // Button name : Update Fine
@@ -233,7 +237,7 @@ export default class FineManagement extends Component {
         validTo: this.state.validTo,
       };
       axios
-        .put(`http://localhost:8500/api/fine/${this.state.id}`, fineList)
+        .put(`fine/${this.state.id}`, fineList)
         .then(() => window.location.reload());
     }
   };
@@ -246,7 +250,7 @@ export default class FineManagement extends Component {
     });
 
     // Get data by id and fill form
-    axios.get(`http://localhost:8500/api/fine/id/${getId}`).then((e) => {
+    axios.get(`fine/id/${getId}`).then((e) => {
       let res = e.data;
       this.setState({
         fineCode: res.fineCode,
@@ -260,7 +264,7 @@ export default class FineManagement extends Component {
 
   delete = (getId) => {
     axios
-      .delete(`http://localhost:8500/api/fine/${getId}`)
+      .delete(`fine/${getId}`)
       .then(() => window.location.reload());
   };
 
