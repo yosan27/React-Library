@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import { Container, Jumbotron, Modal, Button } from 'react-bootstrap'
-import API from "../../api";
+// import API from "../../api";
 import './detailpage.css'
 import swal from 'sweetalert';
 import Moment from 'react-moment';
+import { withRouter } from "react-router-dom";
+import axios from "../../Services/axios-instance";
 
 
 class DetailPage extends Component {
@@ -23,42 +25,46 @@ class DetailPage extends Component {
       show: false,
       register: '',
       pages: '',
-      descriptions: ''
+      descriptions: '',
+      bookCode: this.props.match.params.bookcode,
     }
   }
 
   async componentDidMount() {
+    axios.get(`book/${this.state.bookCode}`).then((e)=>{
+      console.log(e.data.data);
+    });
 
-    try {
-      const res = await API.get(`/api/book/B001`);
-      const bookData = res.data.data;
-      const bookDataImage = bookData.bookDetailsEntity.cover
+    // try {
+    //   const res = await API.get(`/api/book/B001`);
+    //   const bookData = res.data.data;
+    //   const bookDataImage = bookData.bookDetailsEntity.cover
 
-      if (bookData.id) {
-        this.setState({ bookAvailable: 'Available' });
-      } else {
-        this.setState({ bookAvailable: 'Not Available' });
-      }
+    //   if (bookData.id) {
+    //     this.setState({ bookAvailable: 'Available' });
+    //   } else {
+    //     this.setState({ bookAvailable: 'Not Available' });
+    //   }
 
-      if (bookData.bookDetailsEntity.subtitle !== undefined) {
-        this.setState({ subtitle: bookData.bookDetailsEntity.subtitle });
-      } else {
-        this.setState({ subtitle: 'Subtitle not available' });
-      }
+    //   if (bookData.bookDetailsEntity.subtitle !== undefined) {
+    //     this.setState({ subtitle: bookData.bookDetailsEntity.subtitle });
+    //   } else {
+    //     this.setState({ subtitle: 'Subtitle not available' });
+    //   }
 
-      this.setState({ bookData: bookData });
-      this.setState({ register: bookData.bookCode });
-      this.setState({ title: bookData.bookDetailsEntity.bookTitle });
-      this.setState({ category: bookData.categoryEntity.categoryName });
-      this.setState({ publishedDate: bookData.publishedDate });
-      this.setState({ author: bookData.authorEntity.authorName });
-      this.setState({ pages: bookData.bookDetailsEntity.numberOfPages });
-      this.setState({ bookDataImage: bookDataImage })
-      this.setState({ descriptions: bookData.bookDetailsEntity.description })
-      console.log(this.state.descriptions)
-    } catch (error) {
-      console.log(error);
-    }
+    //   this.setState({ bookData: bookData });
+    //   this.setState({ register: bookData.bookCode });
+    //   this.setState({ title: bookData.bookDetailsEntity.bookTitle });
+    //   this.setState({ category: bookData.categoryEntity.categoryName });
+    //   this.setState({ publishedDate: bookData.publishedDate });
+    //   this.setState({ author: bookData.authorEntity.authorName });
+    //   this.setState({ pages: bookData.bookDetailsEntity.numberOfPages });
+    //   this.setState({ bookDataImage: bookDataImage })
+    //   this.setState({ descriptions: bookData.bookDetailsEntity.description })
+    //   console.log(this.state.descriptions)
+    // } catch (error) {
+    //   console.log(error);
+    // }
   }
 
   handleWishlist = () => {
@@ -264,4 +270,4 @@ class DetailPage extends Component {
   }
 }
 
-export default DetailPage;
+export default withRouter(DetailPage);

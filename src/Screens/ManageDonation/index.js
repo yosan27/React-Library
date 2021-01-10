@@ -2,13 +2,14 @@ import React, { Component } from "react";
 import { Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-import axios from "axios";
+import axios from "../../Services/axios-instance";
 import swal from "sweetalert";
 
 import "datatables.net-dt/js/dataTables.dataTables";
 import "datatables.net-dt/css/jquery.dataTables.min.css";
 import "datatables.net-responsive-dt/js/responsive.dataTables.js";
 import "datatables.net-responsive-dt/css/responsive.dataTables.css";
+import "jquery/dist/jquery.min.js";
 import $ from "jquery";
 
 class ManageDonation extends Component {

@@ -2,6 +2,10 @@ import React, { Component } from 'react'
 import { Link, withRouter } from 'react-router-dom'
 import './Register-style.css'
 import { FormErrors } from '../Login/FormErrors';
+import swal from "sweetalert";
+import axios from "../../Services/axios-instance";
+// import axios from "axios";
+import AuthService from "../../Services/auth.service";
 
 class Register extends Component {
 
@@ -10,8 +14,12 @@ class Register extends Component {
         this.state = {
             fullname: '',
             email: '',
+            username: '',
             password: '',
-            formErrors: { fullname: '', email: '', password: '' },
+            phone: '',
+            address: '',
+            profilePict: 'profile.jpg',
+            formErrors: { fullname: '', email: '', username: '', password: '', phone: '', address: '' },
             nameValid: false,
             emailValid: false,
             passwordValid: false,
@@ -34,15 +42,15 @@ class Register extends Component {
 
         switch (fieldName) {
             case 'fullname':
-                passwordValid = value.length >= 6;
-                fieldValidationErrors.fullname = nameValid ? '' : ' is too short';
+                // passwordValid = value.length >= 6;
+                // fieldValidationErrors.fullname = nameValid ? '' : ' is too short';
                 break;
             case 'email':
                 emailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
                 fieldValidationErrors.email = emailValid ? '' : ' is invalid';
                 break;
             case 'password':
-                passwordValid = value.length >= 6;
+                passwordValid = value.length >= 8;
                 fieldValidationErrors.password = passwordValid ? '' : ' is too short';
                 break;
             default:
@@ -62,6 +70,50 @@ class Register extends Component {
 
     errorClass(error) {
         return (error.length === 0 ? '' : 'has-error');
+    }
+
+    registerUser = () => {
+        const user = {
+            fullName: this.state.fullname,
+            email: this.state.email,
+            userName: this.state.username,
+            password: this.state.password,
+            phone: this.state.phone,
+            address: this.state.address,
+            profilePict: this.state.profilePict,
+        }
+
+        if (!this.state.fullname || !this.state.email || !this.state.username || !this.state.password || !this.state.phone || !this.state.address || (this.state.phone.length - 1) < 12) {
+            swal("Register User Failed", "data cannot be empty", "failed");
+        } else {
+            axios.post('users/signup', user)
+                .then((response) => {
+                    console.log(response);
+                    console.log(response.status)
+                    swal("Successfully", "Registered User", "success");
+                }).catch(function (error) {
+                    if (error.response) {
+                        console.log(error.response.data);
+                        console.log(error.response.status);
+                        console.log(error.response.headers);
+                        swal("Failed", error.response.data.message, "error");
+                    } else if (error.request) {
+                        console.log(error.request);
+                    } else {
+                        console.log('Error', error.message);
+                    }
+                })
+
+            this.setState({
+                fullname: "",
+                email: "",
+                username: "",
+                password: "",
+                phone: "",
+                address: "",
+            });
+        }
+
     }
     render() {
         return (
@@ -90,6 +142,13 @@ class Register extends Component {
                                             value={this.state.email}
                                             onChange={this.handleUserInput} />
                                     </div>
+                                    <div className={`form-group ${this.errorClass(this.state.formErrors.username)}`}>
+                                        <label htmlFor="username">Username</label>
+                                        <input type="text" required class="form-control my-2 p-4 box username" name="username"
+                                            placeholder="username"
+                                            value={this.state.username}
+                                            onChange={this.handleUserInput} />
+                                    </div>
                                     <div className={`form-group ${this.errorClass(this.state.formErrors.password)}`}>
                                         <label htmlFor="password">Password</label>
                                         <input type="password" class="form-control my-2 p-4 box password" name="password"
@@ -97,10 +156,24 @@ class Register extends Component {
                                             value={this.state.password}
                                             onChange={this.handleUserInput} />
                                     </div>
+                                    <div className={`form-group ${this.errorClass(this.state.formErrors.phone)}`}>
+                                        <label htmlFor="phone">Phone</label>
+                                        <input type="number" required class="form-control my-2 p-4 box phone" name="phone"
+                                            placeholder="phone"
+                                            value={this.state.phone}
+                                            onChange={this.handleUserInput} />
+                                        <small className="text-danger">
+                                            {(this.state.phone.length - 1) < 12 ? '- Minimal 12 digit -' : ""}
+                                        </small>
+                                    </div>
+                                    <div className={`form-group ${this.errorClass(this.state.formErrors.address)}`}>
+                                        <label htmlFor="address">Address</label>
+                                        <textarea required className="form-control my-2 p-4 box" placeholder="Address" name="address" rows="3" value={this.state.address} onChange={this.handleUserInput}></textarea>
+                                    </div>
                                     <i className="wrong-user"><FormErrors formErrors={this.state.formErrors} /></i>
 
                                     <div class="col-lg-5">
-                                        <button type="button" class="btn-login mt-3">Sign Up</button>
+                                        <button disabled={!this.state.fullname || !this.state.email || !this.state.username || !this.state.password || !this.state.phone || !this.state.address || (this.state.phone.length - 1) < 12 || !this.state.email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)} type="button" onClick={this.registerUser} class="btn-login mt-3">Sign Up</button>
                                     </div>
                                     <div class="col-lg-5">
                                         <Link to="/">

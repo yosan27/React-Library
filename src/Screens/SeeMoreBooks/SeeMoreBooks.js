@@ -1,23 +1,23 @@
 import React, { Component } from "react";
-import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 
 // css
 import "./booksList.css";
 
-export default class FineManagement extends Component {
+class SeeMoreBooks extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       data: [],
+      title: this.props.match.params.title
     };
   }
 
   componentDidMount() {
-    axios.get("http://localhost:8500/api/books").then((e) => {
-      this.setState({ data: e.data.data });
-    });
+    let books = sessionStorage.getItem('books');
+    this.setState({ data: JSON.parse(books)});
+    sessionStorage.clear()
   }
 
   render() {
@@ -25,28 +25,27 @@ export default class FineManagement extends Component {
       <>
         <div className="right_col" role="main" style={{ minheight: "120vh" }}>
           <section className="mt-5 pt-5 container-fluid mb-4 border-bottom border-secondary">
-            <h3>See More</h3>
+            <h3>{this.state.title.replace("-", " ")}</h3>
           </section>
 
           <main className="main pb-2">
             <div className="content">
               <ul className="books">
-              {this.state.data.map((datas) => {
-                let d = datas.bookDetailsEntity;
+              {this.state.data.map((d) => {
                 return(
                   <Link to="/page/detailpage">
                     <li>
                       <div className="book">
                         <div className="row">
-                          <img src={d.cover} alt={d.bookTitle} className="book-image"/>
+                          <img src={d.bookDetailsEntity.cover} alt={d.bookDetailsEntity.bookTitle} className="book-image"/>
                         </div>
                         <div className="row">
                           <div className="col">
                             <div className="row">
-                              <div className="book-name">{d.bookTitle}</div>
+                              <div className="book-name">{d.bookDetailsEntity.bookTitle}</div>
                             </div>
                             <div className="row">
-                              <div className="book-author">Tere Liye</div>
+                              <div className="book-author">{d.authorEntity.authorName}</div>
                             </div>
                             <div className="row">
                               <div className="book-rating text-muted"><i className="fa fa-star star-rate pr-1"></i>5</div>
@@ -66,3 +65,5 @@ export default class FineManagement extends Component {
     );
   }
 }
+
+export default withRouter(SeeMoreBooks);
