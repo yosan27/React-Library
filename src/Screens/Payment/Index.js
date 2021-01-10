@@ -82,7 +82,7 @@ export default class Payment extends Component {
                 this.setState({ lastCode: `T${idCode}001` });
               }
             }).catch(function(error){
-              swal("Failed", error.message, "error");
+              swal("Failed", error.response.data.message, "error");
             });
           // Get Transaction Detail Code
           axios.get(`transaction-detail/user/${this.state.userCode}`).then((record) => {
@@ -110,7 +110,7 @@ export default class Payment extends Component {
                 this.setState({ detailCode: `TD${idCode}001` });
               }
           }).catch(function(error){
-            swal("Failed", error.message, "error");
+            swal("Failed", error.response.data.message, "error");
           });
           // Get Bill
           axios.get(`transaction-detail/bill/${this.state.userCode}`).then((record)=>{
@@ -137,10 +137,10 @@ export default class Payment extends Component {
               this.state.listBox.classList.remove("hide");
             }
           }).catch(function(error){
-            swal("Failed", error.message, "error");
+            swal("Failed", error.response.data.message, "error");
           });
     }).catch(function(error){
-      swal("Failed", error.message, "error");
+      swal("Failed", error.response.data.message, "error");
     });
 
     // DOM
@@ -251,12 +251,12 @@ export default class Payment extends Component {
       axios.post("transaction", paymentRecord).then(()=>{
         this.state.rentCodeList.forEach((e)=>{
           axios.put(`rent/code/${e}`, updateStatus).catch(function(error){
-            swal("Failed", error.message, "error");
+            swal("Failed", error.response.data.message, "error");
           });
         });
         this.state.tDetailCode.forEach((e)=>{
           axios.put(`transaction-detail/code/${e}`, updateTransaction).catch(function(error){
-            swal("Failed", error.message, "error");
+            swal("Failed", error.response.data.message, "error");
           });
         });
         axios.put(`user/balance/${this.state.userId}`, updateBalance)
@@ -268,10 +268,10 @@ export default class Payment extends Component {
               "success"
             ).then(() => window.open("http://localhost:3000/page/payment", "_self"));
         }).catch(function(error){
-          swal("Failed", error.message, "error");
+          swal("Failed", error.response.data.message, "error");
         });
       }).catch(function(error){
-        swal("Failed", error.message, "error");
+        swal("Failed", error.response.data.message, "error");
       });
     } else {
       swal("We're Sorry", "Your Payment Failed!", "error");
@@ -317,16 +317,16 @@ export default class Payment extends Component {
                 ).then(() =>
                   window.open("http://localhost:3000/page/payment", "_self")
                 ).catch(function(error){
-                  swal("Failed", error.message, "error");
+                  swal("Failed", error.response.data.message, "error");
                 });
               }).catch(function(error){
-                swal("Failed", error.message, "error");
+                swal("Failed", error.response.data.message, "error");
               });
           }).catch(function(error){
-            swal("Failed", error.message, "error");
+            swal("Failed", error.response.data.message, "error");
           });
       }).catch(function(error){
-        swal("Failed", error.message, "error");
+        swal("Failed", error.response.data.message, "error");
       });
   };
 

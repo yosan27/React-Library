@@ -58,7 +58,7 @@ export default class FineManagement extends Component {
         });
       });
     }).catch(function(error){
-      swal("Failed", error.message, "error");
+      swal("Failed", error.response.data.message, "error");
     });
   }
 
@@ -98,7 +98,7 @@ export default class FineManagement extends Component {
       }
       this.setState({ fineCode: this.state.lastCode });
     }).catch(function(error){
-      swal("Failed", error.message, "error");
+      swal("Failed", error.response.data.message, "error");
     });
   };
 
@@ -238,7 +238,7 @@ export default class FineManagement extends Component {
       axios
         .post("fine", fineList)
         .then(() => window.location.reload()).catch(function(error){
-          swal("Failed", error.message, "error");
+          swal("Failed", error.response.data.message, "error");
         });
     } else {
       // Button name : Update Fine
@@ -251,7 +251,7 @@ export default class FineManagement extends Component {
       axios
         .put(`fine/${this.state.id}`, fineList)
           .then(() => window.location.reload()).catch(function(error){
-            swal("Failed", error.message, "error");
+            swal("Failed", error.response.data.message, "error");
           });
     }
   };
@@ -274,7 +274,7 @@ export default class FineManagement extends Component {
         validTo: res.validTo,
       });
     }).catch(function(error){
-      swal("Failed", error.message, "error");
+      swal("Failed", error.response.data.message, "error");
     });
   };
 
@@ -282,7 +282,7 @@ export default class FineManagement extends Component {
     axios
       .delete(`fine/${getId}`)
       .then(() => window.location.reload()).catch(function(error){
-        swal("Failed", error.message, "error");
+        swal("Failed", error.response.data.message, "error");
       });
   };
 

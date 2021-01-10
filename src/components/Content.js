@@ -59,7 +59,7 @@ class Content extends Component {
         }
       });
     }).catch(function(error){
-      swal("Failed", error.message, "error");
+      swal("Failed", error.response.data.message, "error");
     });
   }
 
