@@ -84,7 +84,7 @@ class Register extends Component {
         }
 
         if (!this.state.fullname || !this.state.email || !this.state.username || !this.state.password || !this.state.phone || !this.state.address || (this.state.phone.length - 1) < 12) {
-            swal("Register User Failed", "data cannot be empty", "failed");
+            swal("Register User Failed", "datfa cannot be empty", "failed");
         } else {
             axios.post('users/signup', user)
                 .then((response) => {

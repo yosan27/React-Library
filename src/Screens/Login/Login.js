@@ -26,15 +26,6 @@ class Login extends Component {
   }
 
   componentDidMount() {
-<<<<<<< HEAD
-    axios.get("http://localhost:8500/api/user/code/UA001").then((e) => {
-      // console.log(e);
-      sessionStorage.setItem('userCode', e.data.userCode)
-      this.setState({
-        userCode: e.data.userCode
-      })
-    })
-=======
     // axios.get(API_URL + "user/code/UA001").then((e) => {
     //   // console.log(e);
     //   sessionStorage.setItem('userCode', e.data.userCode)
@@ -42,7 +33,6 @@ class Login extends Component {
     //     userCode: e.data.userCode
     //   })
     // })
->>>>>>> d36cd1ed6085be6707b7478d48d46acef0a461c5
   }
 
   handleUserInput = (e) => {
