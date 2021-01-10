@@ -31,22 +31,21 @@ export default class FineManagement extends Component {
           <main className="main pb-2">
             <div className="content">
               <ul className="books">
-              {this.state.data.map((datas) => {
-                let d = datas.bookDetailsEntity;
+              {this.state.data.map((d) => {
                 return(
                   <Link to="/page/detailpage">
                     <li>
                       <div className="book">
                         <div className="row">
-                          <img src={d.cover} alt={d.bookTitle} className="book-image"/>
+                          <img src={d.bookDetailsEntity.cover} alt={d.bookDetailsEntity.bookTitle} className="book-image"/>
                         </div>
                         <div className="row">
                           <div className="col">
                             <div className="row">
-                              <div className="book-name">{d.bookTitle}</div>
+                              <div className="book-name">{d.bookDetailsEntity.bookTitle}</div>
                             </div>
                             <div className="row">
-                              <div className="book-author">Tere Liye</div>
+                              <div className="book-author">{d.authorEntity.authorName}</div>
                             </div>
                             <div className="row">
                               <div className="book-rating text-muted"><i className="fa fa-star star-rate pr-1"></i>5</div>

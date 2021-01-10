@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom'
+import { Redirect, Link, withRouter } from 'react-router-dom'
 import './HeaderUser.style.css';
-import axios from "axios";
+// import axios from "axios";
+import Axios from "../Services/axios-instance";
+import AuthService from "../Services/auth.service";
 
 class HeaderUser extends Component {
     constructor() {
@@ -11,35 +13,32 @@ class HeaderUser extends Component {
             username: "",
             userCode: "",
             userData: [],
-            countCart: "0"
+            countCart: "0",
+            statusUser: ""
         };
     }
 
     componentDidMount() {
-        if (!sessionStorage.getItem('userCode')) {
-            console.log("tidak ada userCode")
-        } else {
-            console.log("ada local storage")
-            console.log(sessionStorage.getItem('userCode'));
-            axios.get("http://localhost:8500/api/user/code/" + sessionStorage.getItem('userCode')).then((e) => {
-                // console.log(e);
-                this.setState({
-                    // saldo: e.data.balance,
-                    username: e.data.userName,
-                    userCode: sessionStorage.getItem('userCode')
-                })
+        this.setState({
+            statusUser: AuthService.getStatusUser(),
+            username: AuthService.getUsername(),
+            userCode: AuthService.getUserCode()
+        })
+        Axios.get("cart/usercode/" + AuthService.getUserCode()).then((resp) => {
+            this.setState({
+                countCart: resp.data.data.length
             })
-        }
-        axios.get('http://localhost:8500/api/cart/usercode/' + sessionStorage.getItem('userCode'))
-            .then((res) => {
-                // console.log(res)
-                // console.log(res.data.length);
-                this.setState({
-                    countCart: res.data.data.length
-                })
-            }).catch(function (error) {
-                console.log(error);
-            })
+        }).catch(function (error) {
+            if (error.response) {
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                console.log(error.request);
+            } else {
+                console.log('Error', error.message);
+            }
+        })
     }
 
     render() {
@@ -64,7 +63,7 @@ class HeaderUser extends Component {
             this.setState({ condition: !condition })
         };
 
-        if (this.state.userCode.substring(0, 2) == "UU") {
+        if (this.state.statusUser === "2") {
             return (
                 <nav className="navbar navbar-expand navbar-dark nav_menu shadow">
                     <ul className="navbar-nav">

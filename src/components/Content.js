@@ -53,14 +53,11 @@ class Content extends Component {
   componentDidMount() {
     axios.get("http://localhost:8500/api/books").then((e) => {
       this.setState({ data: e.data.data });
-    });
-
-    axios.get("http://localhost:8500/api/books").then((e) => {
-      e.data.data.map((book)=>{
-        if(book.categoryEntity.categoryCode === "BC003"){
+      e.data.data.forEach((book) => {
+        if (book.categoryEntity.categoryCode === "BC003") {
           this.setState({ asianBooks: [...this.state.asianBooks, book] });
         }
-      })
+      });
     });
   }
 
@@ -236,29 +233,34 @@ class Content extends Component {
             </div>
 
             <ul className="books">
-              {this.state.data.slice(0,5).map((datas) => {
-                let d = datas.bookDetailsEntity;
+              {this.state.data.slice(0, 6).map((d) => {
                 return (
                   <Link to="/page/detailpage">
                     <li>
                       <div className="book">
                         <div className="row">
                           <img
-                            src={d.cover}
-                            alt={d.bookTitle}
+                            src={d.bookDetailsEntity.cover}
+                            alt={d.bookDetailsEntity.bookTitle}
                             className="book-image"
                           />
                         </div>
                         <div className="row">
                           <div className="col">
                             <div className="row">
-                              <div className="book-name">{d.bookTitle}</div>
+                              <div className="book-name">
+                                {d.bookDetailsEntity.bookTitle}
+                              </div>
                             </div>
                             <div className="row">
-                              <div className="book-author">Tere Liye</div>
+                              <div className="book-author">
+                                {d.authorEntity.authorName}
+                              </div>
                             </div>
                             <div className="row">
-                              <div className="book-rating text-muted"><i class="fa fa-star star-rate pr-1"></i>5</div>
+                              <div className="book-rating text-muted">
+                                <i class="fa fa-star star-rate pr-1"></i>5
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -274,25 +276,29 @@ class Content extends Component {
 
         {/* Asian */}
         <section className="pt-3">
-          <div className="container-fluid">
           <div className="row">
-              <div className="col">
-                <h3>The Best Asian Books</h3>
-              </div>
+            <div className="col">
+              <h3>The Best Asian Books</h3>
             </div>
-            <div className="row">
-              <div className="col">
-                <p>Top Seller</p>
-              </div>
-              <div className="col d-flex justify-content-end">
-                <Link to="/page/more">
-                  <span>See More</span>
-                </Link>
-              </div>
+          </div>
+          <div className="row">
+            <div className="col">
+              <p>Top Borrowed</p>
             </div>
+            <div className="col d-flex justify-content-end">
+              <Link to="/page/more">
+                <span>See More</span>
+              </Link>
+            </div>
+          </div>
+          <div className="container-fluid">
             <div className="row">
-              {this.state.asianBooks.slice(0,2).map((d)=>{
-                return(
+              {this.state.asianBooks.slice(0, 2).map((d) => {
+                if (d.bookDetailsEntity.description.length > 225) {
+                  d.bookDetailsEntity.description =
+                    d.bookDetailsEntity.description.substring(0, 100) + "  ...";
+                }
+                return (
                   <div className="col">
                     <div className="card mt-5 asian-box">
                       <div className="row no-gutters">
@@ -306,16 +312,16 @@ class Content extends Component {
                           </div>
                           <div className="col-md-8">
                             <div className="card-body asian-box-body">
-                              <h5 className="card-title-books">
+                              <h5 className="card-title-books asian-title">
                                 <b>{d.bookDetailsEntity.bookTitle}</b>
                               </h5>
-                              <p className="card-text">
+                              <p className="card-text asian-desc">
                                 {d.bookDetailsEntity.description}
                               </p>
                               <div className="row">
                                 <div className="col">
                                   <p className="card-text">
-                                    <small className="text-muted">
+                                    <small className="text-muted asian-author">
                                       - {d.authorEntity.authorName} -
                                     </small>
                                   </p>
@@ -323,7 +329,8 @@ class Content extends Component {
                                 <div className="col d-flex justify-content-end">
                                   <p className="card-text">
                                     <small className="text-muted">
-                                      <i className="fa fa-star star-rate pr-1"></i>5
+                                      <i className="fa fa-star star-rate pr-1"></i>
+                                      5
                                     </small>
                                   </p>
                                 </div>
@@ -334,7 +341,7 @@ class Content extends Component {
                       </div>
                     </div>
                   </div>
-                )
+                );
               })}
             </div>
           </div>
@@ -361,7 +368,7 @@ class Content extends Component {
             </div>
 
             <ul className="books">
-              {this.state.data.slice(0,5).map((datas) => {
+              {this.state.data.slice(0, 5).map((datas) => {
                 let d = datas.bookDetailsEntity;
                 return (
                   <Link to="/page/detailpage">
@@ -383,7 +390,9 @@ class Content extends Component {
                               <div className="book-author">Tere Liye</div>
                             </div>
                             <div className="row">
-                              <div className="book-rating text-muted"><i class="fa fa-star star-rate pr-1"></i>5</div>
+                              <div className="book-rating text-muted">
+                                <i class="fa fa-star star-rate pr-1"></i>5
+                              </div>
                             </div>
                           </div>
                         </div>
