@@ -116,7 +116,7 @@ const MainNavigationsUser = (props) => (
         <Route render={authGuard(UserManagement)} path="/page/manageUser">
           {/* <UserManagement /> */}
         </Route>
-        <Route render={authGuard(DetailPage)} path="/page/detailpage">
+        <Route render={authGuard(DetailPage)} path="/page/detailpage/:bookcode">
           {/* <DetailPage /> */}
         </Route>
         <Route render={authGuard(ManageDonation)} path="/page/manage-donation">
@@ -137,7 +137,7 @@ const MainNavigationsUser = (props) => (
         <Route render={authGuard(CategoryManagement)} path="/page/manageCategory">
           {/* <CategoryManagement /> */}
         </Route>
-        <Route render={authGuard(SeeMoreBooks)} path="/page/more">
+        <Route render={authGuard(SeeMoreBooks)} path="/page/more/:title">
           {/* <SeeMoreBooks /> */}
         </Route>
 

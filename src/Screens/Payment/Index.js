@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import swal from "sweetalert";
-import axios from "axios";
+import axios from "../../Services/axios-instance";
+import AuthService from "../../Services/auth.service";
 
 // CSS
 import "./payment.css";
@@ -46,15 +47,15 @@ export default class Payment extends Component {
 
   componentDidMount() {
     // Get User Data
-      axios.get("http://localhost:8500/api/user/code/"+ sessionStorage.getItem('userCode')).then((e) => {
+      axios.get("user/code/" + AuthService.getUserCode()).then((e) => {
           this.setState({
               saldo: e.data.balance,
               userId: e.data.id,
-              userCode : sessionStorage.getItem('userCode')
+              userCode : e.data.userCode,
           })
 
           // Get Transaction Code
-          axios.get(`http://localhost:8500/api/transaction/user/${this.state.userCode}`)
+          axios.get(`transaction/user/${this.state.userCode}`)
             .then((record) => {
               this.setState({paymentRecord: record.data});
               let idCode = this.state.userCode.substring(2,this.state.userCode.length);
@@ -80,9 +81,11 @@ export default class Payment extends Component {
               } else {
                 this.setState({ lastCode: `T${idCode}001` });
               }
+            }).catch(function(error){
+              swal("Failed", error.message, "error");
             });
           // Get Transaction Detail Code
-          axios.get(`http://localhost:8500/api/transaction-detail/user/${this.state.userCode}`).then((record) => {
+          axios.get(`transaction-detail/user/${this.state.userCode}`).then((record) => {
               let idCode = this.state.userCode.substring(2,this.state.userCode.length);
               if (record.data.length !== 0) {
                 let lastDigit = record.data[record.data.length - 1].detailCode.substr(7);
@@ -106,9 +109,11 @@ export default class Payment extends Component {
               } else {
                 this.setState({ detailCode: `TD${idCode}001` });
               }
+          }).catch(function(error){
+            swal("Failed", error.message, "error");
           });
           // Get Bill
-          axios.get(`http://localhost:8500/api/transaction-detail/bill/${this.state.userCode}`).then((record)=>{
+          axios.get(`transaction-detail/bill/${this.state.userCode}`).then((record)=>{
             record.data.forEach((d)=>{
               let bill = (parseInt(this.state.sum) + parseInt(d.kredit))
               if(d.rentEntity.status === 4){
@@ -131,7 +136,11 @@ export default class Payment extends Component {
             }else{
               this.state.listBox.classList.remove("hide");
             }
-          })
+          }).catch(function(error){
+            swal("Failed", error.message, "error");
+          });
+    }).catch(function(error){
+      swal("Failed", error.message, "error");
     });
 
     // DOM
@@ -239,14 +248,18 @@ export default class Payment extends Component {
       let updateTransaction = {
         transactionCode: this.state.lastCode,
       }
-      axios.post("http://localhost:8500/api/transaction", paymentRecord).then(()=>{
+      axios.post("transaction", paymentRecord).then(()=>{
         this.state.rentCodeList.forEach((e)=>{
-          axios.put(`http://localhost:8500/api/rent/code/${e}`, updateStatus)
+          axios.put(`rent/code/${e}`, updateStatus).catch(function(error){
+            swal("Failed", error.message, "error");
+          });
         });
         this.state.tDetailCode.forEach((e)=>{
-          axios.put(`http://localhost:8500/api/transaction-detail/code/${e}`, updateTransaction)
+          axios.put(`transaction-detail/code/${e}`, updateTransaction).catch(function(error){
+            swal("Failed", error.message, "error");
+          });
         });
-        axios.put(`http://localhost:8500/api/user/balance/${this.state.userId}`, updateBalance)
+        axios.put(`user/balance/${this.state.userId}`, updateBalance)
           .then(() => {
             this.setState({ saldo: kurang });
             swal(
@@ -254,7 +267,11 @@ export default class Payment extends Component {
               "Your Payment Was Successful!",
               "success"
             ).then(() => window.open("http://localhost:3000/page/payment", "_self"));
+        }).catch(function(error){
+          swal("Failed", error.message, "error");
         });
+      }).catch(function(error){
+        swal("Failed", error.message, "error");
       });
     } else {
       swal("We're Sorry", "Your Payment Failed!", "error");
@@ -284,13 +301,13 @@ export default class Payment extends Component {
       userCode: this.state.userCode,
     };
     axios
-      .post("http://localhost:8500/api/transaction", paymentRecord)
+      .post("transaction", paymentRecord)
       .then(() => {
         axios
-          .post("http://localhost:8500/api/transaction-detail", detail)
+          .post("transaction-detail", detail)
           .then(() => {
             axios
-              .put(`http://localhost:8500/api/user/balance/${this.state.userId}`, updateBalance)
+              .put(`user/balance/${this.state.userId}`, updateBalance)
               .then(() => {
                 this.setState({ saldo: topUp, inputNominal: "" });
                 swal(
@@ -299,9 +316,17 @@ export default class Payment extends Component {
                   "success"
                 ).then(() =>
                   window.open("http://localhost:3000/page/payment", "_self")
-                );
+                ).catch(function(error){
+                  swal("Failed", error.message, "error");
+                });
+              }).catch(function(error){
+                swal("Failed", error.message, "error");
               });
+          }).catch(function(error){
+            swal("Failed", error.message, "error");
           });
+      }).catch(function(error){
+        swal("Failed", error.message, "error");
       });
   };
 

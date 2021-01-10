@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from "../../Services/axios-instance";
+import swal from "sweetalert";
 
 import "datatables.net-dt/js/dataTables.dataTables";
 import "datatables.net-dt/css/jquery.dataTables.min.css";
@@ -26,6 +27,7 @@ export default class FineManagement extends Component {
       a: false,
       b: false,
       c: false,
+      // changeClick: false,
     };
   }
 
@@ -39,9 +41,13 @@ export default class FineManagement extends Component {
     this.getCode();
   }
 
-  componentDidUpdate(){
-    
-  }
+  // componentDidUpdate(prevState){
+  //   if(this.state.changeClick){
+  //     axios.get("fine/active").then((e) => {
+  //       this.setState({ fineList: e.data });
+  //     })
+  //   }
+  // }
 
   getActiveFine = () =>{
     axios.get("fine/active").then((e) => {
@@ -51,6 +57,8 @@ export default class FineManagement extends Component {
           responsive: true,
         });
       });
+    }).catch(function(error){
+      swal("Failed", error.message, "error");
     });
   }
 
@@ -89,6 +97,8 @@ export default class FineManagement extends Component {
         this.setState({ lastCode: "F001" });
       }
       this.setState({ fineCode: this.state.lastCode });
+    }).catch(function(error){
+      swal("Failed", error.message, "error");
     });
   };
 
@@ -227,7 +237,9 @@ export default class FineManagement extends Component {
       };
       axios
         .post("fine", fineList)
-        .then(() => window.location.reload());
+        .then(() => window.location.reload()).catch(function(error){
+          swal("Failed", error.message, "error");
+        });
     } else {
       // Button name : Update Fine
       let fineList = {
@@ -238,7 +250,9 @@ export default class FineManagement extends Component {
       };
       axios
         .put(`fine/${this.state.id}`, fineList)
-        .then(() => window.location.reload());
+          .then(() => window.location.reload()).catch(function(error){
+            swal("Failed", error.message, "error");
+          });
     }
   };
 
@@ -259,13 +273,17 @@ export default class FineManagement extends Component {
         validFrom: res.validFrom,
         validTo: res.validTo,
       });
+    }).catch(function(error){
+      swal("Failed", error.message, "error");
     });
   };
 
   delete = (getId) => {
     axios
       .delete(`fine/${getId}`)
-      .then(() => window.location.reload());
+      .then(() => window.location.reload()).catch(function(error){
+        swal("Failed", error.message, "error");
+      });
   };
 
   render() {

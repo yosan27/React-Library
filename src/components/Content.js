@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import "./Slidertop.style.css";
 import Slider from "react-slick";
 import { Link, withRouter } from "react-router-dom";
-import axios from "axios";
+import axios from "../Services/axios-instance";
+import swal from "sweetalert";
 
 // css
 import "./Content.css";
@@ -39,7 +40,6 @@ function SamplePrevArrow(props) {
     />
   );
 }
-
 class Content extends Component {
   constructor(props) {
     super(props);
@@ -51,14 +51,24 @@ class Content extends Component {
   }
 
   componentDidMount() {
-    axios.get("http://localhost:8500/api/books").then((e) => {
+    axios.get("books").then((e) => {
       this.setState({ data: e.data.data });
       e.data.data.forEach((book) => {
         if (book.categoryEntity.categoryCode === "BC003") {
           this.setState({ asianBooks: [...this.state.asianBooks, book] });
         }
       });
+    }).catch(function(error){
+      swal("Failed", error.message, "error");
     });
+  }
+
+  sendBooks = () =>{
+    sessionStorage.setItem('books', JSON.stringify(this.state.data));
+  }
+
+  sendAsianBooks = () =>{
+    sessionStorage.setItem('books', JSON.stringify(this.state.asianBooks));
   }
 
   render() {
@@ -226,7 +236,7 @@ class Content extends Component {
                 <p>New Releases</p>
               </div>
               <div className="col d-flex justify-content-end">
-                <Link to="/page/more">
+                <Link to="/page/more/Best-Seller" onClick={this.sendBooks}>
                   <span>See More</span>
                 </Link>
               </div>
@@ -235,7 +245,7 @@ class Content extends Component {
             <ul className="books">
               {this.state.data.slice(0, 6).map((d) => {
                 return (
-                  <Link to="/page/detailpage">
+                  <Link to={{pathname: `/page/detailpage/${d.bookCode}`}}>
                     <li>
                       <div className="book">
                         <div className="row">
@@ -286,7 +296,7 @@ class Content extends Component {
               <p>Top Borrowed</p>
             </div>
             <div className="col d-flex justify-content-end">
-              <Link to="/page/more">
+              <Link to="/page/more/Asian"  onClick={this.sendAsianBooks}>
                 <span>See More</span>
               </Link>
             </div>
@@ -302,7 +312,7 @@ class Content extends Component {
                   <div className="col">
                     <div className="card mt-5 asian-box">
                       <div className="row no-gutters">
-                        <Link to="/page/detailpage">
+                        <Link to={{pathname: `/page/detailpage/${d.bookCode}`}}>
                           <div className="col-md-4">
                             <img
                               src={d.bookDetailsEntity.cover}
