@@ -39,8 +39,8 @@ const authGuard = (Component) => () => {
 
 const rememberMe = (Component) => () => {
   return !localStorage.getItem('userFaraday') ? (
-      <Component />
-    ) : (
+    <Component />
+  ) : (
       <Redirect to="/index" />
     );
 };
@@ -114,7 +114,7 @@ const MainNavigationsUser = (props) => (
         <Route render={authGuard(UserManagement)} path="/page/manageUser">
           {/* <UserManagement /> */}
         </Route>
-        <Route render={authGuard(DetailPage)} path="/page/detailpage">
+        <Route render={authGuard(DetailPage)} path="/page/detailpage/:id">
           {/* <DetailPage /> */}
         </Route>
         <Route render={authGuard(ManageDonation)} path="/page/manage-donation">
@@ -135,6 +135,8 @@ const MainNavigationsUser = (props) => (
         <Route render={authGuard(CategoryManagement)} path="/page/manageCategory">
           {/* <CategoryManagement /> */}
         </Route>
+        {/* <Route render={authGuard(cartuser)} path=""></Route> */}
+
 
         <Route render={authGuard(Footer)} path="/page/:id">
           {/* <Footer /> */}
