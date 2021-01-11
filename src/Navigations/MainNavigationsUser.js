@@ -30,6 +30,7 @@ import AuthorManagement from "../Screens/AuthorManagement/AuthorManagement";
 import CategoryManagement from "../Screens/CategoryManagement/categoryManagement";
 import AuthService from "../Services/auth.service";
 import SeeMoreBooks from "../Screens/SeeMoreBooks/SeeMoreBooks";
+import AllHistory from "../Screens/Payment/AllHistory";
 
 const authGuard = (Component) => () => {
   return !localStorage.getItem('userFaraday') ? (
@@ -41,8 +42,8 @@ const authGuard = (Component) => () => {
 
 const rememberMe = (Component) => () => {
   return !localStorage.getItem('userFaraday') ? (
-      <Component />
-    ) : (
+    <Component />
+  ) : (
       <Redirect to="/index" />
     );
 };
@@ -113,6 +114,9 @@ const MainNavigationsUser = (props) => (
         <Route render={authGuard(BookManagement)} path="/page/manageBook">
           {/* <BookManagement /> */}
         </Route>
+        <Route render={authGuard(BookDetailManagement)} path="/page/manageBookDetail">
+          {/* <BookManagement /> */}
+        </Route>
         <Route render={authGuard(UserManagement)} path="/page/manageUser">
           {/* <UserManagement /> */}
         </Route>
@@ -137,8 +141,12 @@ const MainNavigationsUser = (props) => (
         <Route render={authGuard(CategoryManagement)} path="/page/manageCategory">
           {/* <CategoryManagement /> */}
         </Route>
+        {/* <Route render={authGuard(cartuser)} path=""></Route> */}
         <Route render={authGuard(SeeMoreBooks)} path="/page/more/:title">
           {/* <SeeMoreBooks /> */}
+        </Route>
+        <Route render={authGuard(AllHistory)} path="/page/all-history">
+          {/* <AllHistory /> */}
         </Route>
 
         <Route render={authGuard(Footer)} path="/page/:id">

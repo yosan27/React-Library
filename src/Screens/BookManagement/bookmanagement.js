@@ -8,6 +8,7 @@ import 'datatables.net-dt/css/jquery.dataTables.min.css'
 import 'datatables.net-responsive-dt/js/responsive.dataTables.js'
 import 'datatables.net-responsive-dt/css/responsive.dataTables.css'
 import API from "../../api";
+import Axios from "../../Services/axios-instance";
 import $ from 'jquery'; 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -59,7 +60,7 @@ class BookManagement extends Component {
   async componentDidMount() {
     // DATA TABEL
     try {
-      const res = await API.get(`/api/books`);
+      const res = await Axios.get(`books`);
       const tabledata = res.data.data;
       
       this.setState({ data: tabledata });
@@ -102,8 +103,8 @@ class BookManagement extends Component {
 
   handleAddBook = () => {
     this.setState({ showAdd2: false })
-    API.post(
-      `api/newbooks`,
+    Axios.post(
+      `newbooks`,
       {
         publisherName: this.state.publisherName,
         address: this.state.publisherAddress,
@@ -117,14 +118,7 @@ class BookManagement extends Component {
         publishedDate: this.state.startDate,
         isbn: this.state.isbn,
         language: this.state.language
-      },
-        {
-          headers: {
-            Accept: "*/*",
-            "Content-Type": "application/json",
-          },
-        }
-      )
+      })
       .then(() => {
         this.setState({ 
           showAdd1: false,
@@ -145,8 +139,8 @@ class BookManagement extends Component {
   handleAddBook2 = () => {
     if (this.state.startDate && this.state.isbn) {
       this.setState({ showAdd2: false })
-    API.post(
-      `api/book`,
+      Axios.post(
+      `book`,
       {
         authorCode: this.state.authorCode,
         bookDetailCode: this.state.bookDetailCode,
@@ -154,14 +148,7 @@ class BookManagement extends Component {
         publisherCode: this.state.publisherCode,
         publishedDate: this.state.startDate,
         isbn: this.state.isbn
-      },
-        {
-          headers: {
-            Accept: "*/*",
-            "Content-Type": "application/json",
-          },
-        }
-      )
+      })
       .then(() => {
         this.setState({ 
           showAdd2: false,
@@ -181,7 +168,7 @@ class BookManagement extends Component {
   //button edit
   handleShowEdit = (bkcd) => {
     this.setState({showEdit: true, bookCode : bkcd})
-    API.get(`/api/book/${bkcd}`).then((res) => {
+    Axios.get(`book/${bkcd}`).then((res) => {
       let response = res.data.data;
       let date = moment(response.publishedDate).toDate();
       this.setState({
@@ -198,8 +185,8 @@ class BookManagement extends Component {
 
   handleSaveEdit = () => {
     this.setState({ showEdit: false, })
-    API.put(
-      `api/book/${this.state.bookCode}`,
+    Axios.put(
+      `book/${this.state.bookCode}`,
       {
         authorCode: this.state.authorCode,
         bookDetailCode: this.state.bookDetailCode,
@@ -208,14 +195,7 @@ class BookManagement extends Component {
         publishedDate: this.state.startDate,
         isbn: this.state.isbn,
         bookCode: this.state.bookCode
-      },
-        {
-          headers: {
-            Accept: "*/*",
-            "Content-Type": "application/json",
-          },
-        }
-      )
+      })
       .then(() => {
         this.setState({ editClicked: true, bookCode: "", authorCode: "", bookDetailCode: "", categoryCode: "", publisherCode: "", publishedDate: "", isbn: "" })
         swal("Great!", "Book Has Been edited", "success");
@@ -232,7 +212,7 @@ class BookManagement extends Component {
   }
 
   handleDelete = () => {
-    API.delete(`/api/book/${this.state.bookCode}`)
+    Axios.delete(`book/${this.state.bookCode}`)
       .then(()=>window.location.reload())
     // swal("Deleted!", "Book Is Successfully Deleted", "success");
     this.setState({showDelete: false})
@@ -245,7 +225,7 @@ class BookManagement extends Component {
   }
 
   async getCategory() {
-    const res = await API.get('/api/author')
+    const res = await Axios.get('author')
     const dataAuthor = res.data
     
     const options1 = dataAuthor.map(d => ({
@@ -254,7 +234,7 @@ class BookManagement extends Component {
     }))
     this.setState({ authorList: options1})
 
-    const res2 = await API.get('/api/bookdetails')
+    const res2 = await Axios.get('bookdetails')
     const dataBookDetail = res2.data.data
 
     const options2 = dataBookDetail.map(d => ({
@@ -263,7 +243,7 @@ class BookManagement extends Component {
     }))
     this.setState({ bookDetailList:options2 })
 
-    const res3 = await API.get('/api/category')
+    const res3 = await Axios.get('category')
     const dataCategory = res3.data
 
     const options3 = dataCategory.map(d => ({
@@ -272,7 +252,7 @@ class BookManagement extends Component {
     }))
     this.setState({ categoryList: options3 })
 
-    const res4 = await API.get('/api/publisher/active')
+    const res4 = await Axios.get('publisher/active')
     const dataPublisher = res4.data
 
     const options4 = dataPublisher.map(d => ({
@@ -307,7 +287,7 @@ class BookManagement extends Component {
   async componentDidUpdate(prevState) {
     if (this.state.editClicked) {
       try {
-        const res = await API.get(`/api/books`,
+        const res = await Axios.get(`books`,
         {
             headers: {
             Accept: "*/*",

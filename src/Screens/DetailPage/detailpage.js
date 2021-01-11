@@ -4,15 +4,18 @@ import { Container, Jumbotron, Modal, Button } from 'react-bootstrap'
 import './detailpage.css'
 import swal from 'sweetalert';
 import Moment from 'react-moment';
-import { withRouter } from "react-router-dom";
-import axios from "../../Services/axios-instance";
-
+import { Redirect, Link, withRouter } from 'react-router-dom';
+import Axios from "../../Services/axios-instance";
+import AuthService from "../../Services/auth.service";
 
 class DetailPage extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      popular: '',
+      getBookCode: this.props.match.params.id,
+      bookDetailsCode: '',
       heart: '\u2661',
       bookData: '',
       imageAvailable: false,
@@ -22,6 +25,7 @@ class DetailPage extends Component {
       subtitle: '',
       author: '',
       category: '',
+      categoryCode: '',
       show: false,
       register: '',
       pages: '',
@@ -31,14 +35,11 @@ class DetailPage extends Component {
   }
 
   async componentDidMount() {
-    axios.get(`book/${this.state.bookCode}`).then((e)=>{
-      console.log(e.data.data);
-    });
-
-    // try {
-    //   const res = await API.get(`/api/book/B001`);
-    //   const bookData = res.data.data;
-    //   const bookDataImage = bookData.bookDetailsEntity.cover
+    try {
+      const res = await Axios.get(`book/` + this.state.getBookCode);
+      const bookData = res.data.data;
+      const bookDataImage = bookData.bookDetailsEntity.cover
+      console.log(bookData)
 
     //   if (bookData.id) {
     //     this.setState({ bookAvailable: 'Available' });
@@ -52,23 +53,51 @@ class DetailPage extends Component {
     //     this.setState({ subtitle: 'Subtitle not available' });
     //   }
 
-    //   this.setState({ bookData: bookData });
-    //   this.setState({ register: bookData.bookCode });
-    //   this.setState({ title: bookData.bookDetailsEntity.bookTitle });
-    //   this.setState({ category: bookData.categoryEntity.categoryName });
-    //   this.setState({ publishedDate: bookData.publishedDate });
-    //   this.setState({ author: bookData.authorEntity.authorName });
-    //   this.setState({ pages: bookData.bookDetailsEntity.numberOfPages });
-    //   this.setState({ bookDataImage: bookDataImage })
-    //   this.setState({ descriptions: bookData.bookDetailsEntity.description })
-    //   console.log(this.state.descriptions)
-    // } catch (error) {
-    //   console.log(error);
-    // }
+      this.setState({ bookData: bookData });
+      this.setState({ register: bookData.bookCode });
+      this.setState({ bookDetailsCode: bookData.bookDetailsEntity.bookDetailCode });
+      this.setState({ title: bookData.bookDetailsEntity.bookTitle });
+      this.setState({ category: bookData.categoryEntity.categoryName });
+      this.setState({ category: bookData.categoryEntity.categoryCode });
+      this.setState({ publishedDate: bookData.publishedDate });
+      this.setState({ author: bookData.authorEntity.authorName });
+      this.setState({ pages: bookData.bookDetailsEntity.numberOfPages });
+      this.setState({ bookDataImage: bookDataImage })
+      this.setState({ descriptions: bookData.bookDetailsEntity.description })
+      console.log(this.state.descriptions)
+    } catch (error) {
+      console.log(error);
+    }
+
+    Axios.get('popular/BC001' + this.state.getBookCode).then((res) => {
+      const popular = res.data.data
+        this.setState({ popular: popular })
+        console.log(this.state.popular)
+    })
+
   }
 
   handleWishlist = () => {
-    
+    const wishdto = {
+      bookDetailsCode: this.state.bookDetailsCode,
+      userCode: AuthService.getUserCode()
+    }
+    console.log(wishdto)
+    Axios.post('wishlist', wishdto)
+      .then((response) => {
+        console.log(response);
+        swal("Success!", "Book Has Been Added To Your Wishlist", "success")
+      }).catch(function (error) {
+        if (error.response) {
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log('Error', error.message);
+        }
+      })
   }
 
   handleClose = () => {
@@ -77,7 +106,27 @@ class DetailPage extends Component {
 
   handleCart = () => {
     this.setState({ show: false })
-    swal("Success!", "Book Has Been Added To Your Cart", "success")
+    const wishdto = {
+      bookDetailsCode: this.state.bookDetailsCode,
+      userCode: AuthService.getUserCode()
+    }
+    console.log(wishdto)
+    Axios.post('cart', wishdto)
+      .then((response) => {
+        console.log(response);
+        swal("Success!", "Book Has Been Added To Your Cart", "success")
+        window.location.reload()
+      }).catch(function (error) {
+        if (error.response) {
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log('Error', error.message);
+        }
+      })
   }
 
   handleShow = () => {
@@ -85,7 +134,7 @@ class DetailPage extends Component {
   }
 
   render() {
-    const { bookData, register, bookDataImage, bookAvailable, title, subtitle, author, category, publishedDate, show, pages, descriptions } = this.state;
+    const { popular, bookData, register, bookDataImage, bookAvailable, title, subtitle, author, category, publishedDate, show, pages, descriptions } = this.state;
     return (
       <div className="right_col" role="main" style={{ minHeight: '100vh' }}>
         <section className="mt-5 pt-5">
@@ -150,56 +199,46 @@ class DetailPage extends Component {
                           </div>
                           {/* Description */}
 
-                          {/* most popular */}
-                          <div class="col-lg-3">
-                            <h5 class='pb-2 text-center'>Popular this week</h5>
-                            <hr />
-                            <div class="row">
-                              <div class="col text-right pt-2">
-                                <img rounded height="80" src="https://www.gramedia.com/blog/content/images/2020/05/selena_gramedia.jpg" />
-                              </div>
-                              <div
-                                class="col"
-                                style={{ display: 'flex', flexWrap: 'wrap', alignContent: 'center' }}>
-                                <div>
-                                  <h6 class="mb-0 ">Selena</h6>
-                                  <h6 class="mb-0 ">- Tere Liye</h6>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="row">
-                              <div class="col text-right pt-2">
-                                <img rounded height="80" src="https://www.gramedia.com/blog/content/images/2020/05/nebula_gramedia.jpg" />
-                              </div>
-                              <div class="col"
-                                style={{ display: 'flex', flexWrap: 'wrap', alignContent: 'center' }}>
-                                <div>
-                                  <h6 class="mb-0 ">Nebula</h6>
-                                  <h6 class="mb-0 ">- Tere Liye</h6>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="row">
-                              <div class="col text-right pt-2">
-                                <img rounded height="80" src="https://www.gramedia.com/blog/content/images/2020/05/misteri-terakhir_gramedia.jpg" />
-                              </div>
-                              <div class="col "
-                                style={{ display: 'flex', flexWrap: 'wrap', alignContent: 'center' }}>
-                                <div>
-                                  <h6 class="mb-0 ">Misteri Terakhir#1</h6>
-                                  <h6 class="mb-0 ">- S. Mara Gd</h6>
-                                </div>
-                              </div>
-                            </div>
-                            {/* button borrow */}
-                            <div className="text-center mt-5">
-                              <Button className="btn btn-warning borrow" variant="primary" onClick={this.handleShow}>
-                                Borrow
-                              </Button>
-                            </div>
-                            {/* button borrow */}
-                          </div>
-                          {/* most popular */}
+
+                          
+                                      <div class="col-lg-3">
+                                      <h5 class='pb-2 text-center'>Popular this week</h5>
+                                      <hr />
+                                      
+                        
+                        
+                                      <div class="row">
+                                        <div class="col text-right pt-2">
+                                          <img rounded height="80" src="" />
+                                        </div>
+                                        <div
+                                          class="col"
+                                          style={{ display: 'flex', flexWrap: 'wrap', alignContent: 'center' }}>
+                                          <div>
+                                            <h6 class="mb-0 ">
+                                              ""
+                                            </h6>
+                                            <h6 class="mb-0 ">- ""
+                                            </h6>
+                                          </div>
+                                        </div>
+                                      </div>
+                                     
+                                    
+                                  
+
+                                  
+                                      {/* button borrow */}
+                                      <div className="text-center mt-5">
+                                        <Button className="btn btn-warning borrow" variant="primary" onClick={this.handleShow}>
+                                          Borrow
+                                        </Button>
+                                      </div>
+                                      {/* button borrow */}
+                                    </div>
+                                   
+                          
+
                         </div>
                         {/* Descriptions & most popular */}
                         {/* info bawah */}
@@ -269,5 +308,4 @@ class DetailPage extends Component {
     );
   }
 }
-
-export default withRouter(DetailPage);
+export default withRouter(DetailPage)

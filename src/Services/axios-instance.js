@@ -2,6 +2,7 @@ import axios from "axios";
 console.log(localStorage.getItem('userFaraday'))
 // Set config defaults when creating the instance
 const instance = axios.create({
+    // baseURL: 'https://farday-library.herokuapp.com/api/',
     baseURL: 'http://localhost:8500/api/',
 });
 // Alter defaults after instance has been created

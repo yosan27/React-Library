@@ -33,7 +33,7 @@ class SeeMoreBooks extends Component {
               <ul className="books">
               {this.state.data.map((d) => {
                 return(
-                  <Link to="/page/detailpage">
+                  <Link to={{pathname: `/page/detailpage/${d.bookCode}`}}>
                     <li>
                       <div className="book">
                         <div className="row">

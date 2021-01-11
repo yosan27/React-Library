@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import "./Slidertop.style.css";
 import Slider from "react-slick";
 import { Link, withRouter } from "react-router-dom";
-import axios from "../Services/axios-instance";
+import Axios from "../Services/axios-instance";
+import AuthService from "../Services/auth.service";
 import swal from "sweetalert";
 
 // css
@@ -42,16 +43,18 @@ function SamplePrevArrow(props) {
 }
 class Content extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       data: [],
+      sliderNew: [],
+      dataBookSlider: [],
       asianBooks: [],
-    };
+    }
   }
 
   componentDidMount() {
-    axios.get("books").then((e) => {
+    Axios.get("books").then((e) => {
       this.setState({ data: e.data.data });
       e.data.data.forEach((book) => {
         if (book.categoryEntity.categoryCode === "BC003") {
@@ -61,8 +64,37 @@ class Content extends Component {
     }).catch(function(error){
       swal("Failed", error.response.data.message, "error");
     });
-  }
+      
+    Axios.get("bookdetails").then((resp) => {
+      console.log(resp)
+      this.setState({ sliderNew: resp.data.data });
+      this.state.sliderNew.map((slider, i) => {
+        if (i < 3) {
+          Axios.get("book/detailcode/" + slider.bookDetailCode).then((response) => {
+            console.log(response)
+            this.setState({
+              dataBookSlider: [...this.state.dataBookSlider, {
+                'sliderNew': slider,
+                'detailbooks': response.data.data
+              }]
+            })
+          })
+        }
 
+      })
+    }).catch(function (error) {
+      if (error.response) {
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+      } else if (error.request) {
+        console.log(error.request);
+      } else {
+        console.log('Error', error.message);
+      }
+    })
+  }
+  
   sendBooks = () =>{
     sessionStorage.setItem('books', JSON.stringify(this.state.data));
   }
@@ -72,6 +104,7 @@ class Content extends Component {
   }
 
   render() {
+    console.log(this.state.dataBookSlider)
     const settings = {
       centerMode: true,
       slidesToShow: 1,
@@ -130,96 +163,26 @@ class Content extends Component {
 
         <section>
           <Slider {...settings}>
-            <div className="item item1">
-              <Link to="/page/detailpage">
-                <div className="item-inner">
-                  <div className="text-slide">
-                    <span className="title-slide">Title Book</span>
-                    <br />
-                    <span className="author-slide">Raditya</span>
-                    <br />
-                    <br />
-                    <span className="detail-slide">
-                      Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                      Maiores obcaecati nemo a architecto, reprehenderit
-                      delectus nihil omnis recusandae.
-                    </span>
-                  </div>
+            {this.state.dataBookSlider.map((slider, i) => {
+              return (
+                <div className={"item item" + (i + 1)}>
+                  <Link to={"/page/detailpage/" + slider.detailbooks.bookCode}>
+                    <div className="item-inner" style={{ backgroundImage: "url(" + slider.sliderNew.cover + ")" }}>
+                      <div className="text-slide">
+                        <span className="title-slide">{slider.sliderNew.bookTitle}</span>
+                        <br />
+                        <span className="author-slide">{slider.detailbooks.authorEntity.authorName}</span>
+                        <br />
+                        <br />
+                        <span className="detail-slide">
+                          {slider.sliderNew.description}
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
                 </div>
-              </Link>
-            </div>
-            <div className="item item2">
-              <Link to="/page/detailpage">
-                <div className="item-inner">
-                  <div className="text-slide">
-                    <span className="title-slide">Title Book</span>
-                    <br />
-                    <span className="author-slide">Raditya</span>
-                    <br />
-                    <br />
-                    <span className="detail-slide">
-                      Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                      Maiores obcaecati nemo a architecto, reprehenderit
-                      delectus nihil omnis recusandae.
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            </div>
-            <div className="item item3">
-              <Link to="/page/detailpage">
-                <div className="item-inner">
-                  <div className="text-slide">
-                    <span className="title-slide">Title Book</span>
-                    <br />
-                    <span className="author-slide">Raditya</span>
-                    <br />
-                    <br />
-                    <span className="detail-slide">
-                      Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                      Maiores obcaecati nemo a architecto, reprehenderit
-                      delectus nihil omnis recusandae.
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            </div>
-            <div className="item item4">
-              <Link to="/page/detailpage">
-                <div className="item-inner">
-                  <div className="text-slide">
-                    <span className="title-slide">Title Book</span>
-                    <br />
-                    <span className="author-slide">Raditya</span>
-                    <br />
-                    <br />
-                    <span className="detail-slide">
-                      Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                      Maiores obcaecati nemo a architecto, reprehenderit
-                      delectus nihil omnis recusandae.
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            </div>
-            <div className="item item5">
-              <Link to="/page/detailpage">
-                <div className="item-inner">
-                  <div className="text-slide">
-                    <span className="title-slide">Title Book</span>
-                    <br />
-                    <span className="author-slide">Raditya</span>
-                    <br />
-                    <br />
-                    <span className="detail-slide">
-                      Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                      Maiores obcaecati nemo a architecto, reprehenderit
-                      delectus nihil omnis recusandae.
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            </div>
+              );
+            })}
           </Slider>
         </section>
 
