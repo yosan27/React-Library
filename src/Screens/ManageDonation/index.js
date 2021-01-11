@@ -6,12 +6,12 @@ import Select from "react-select";
 import axios from "../../Services/axios-instance";
 import swal from "sweetalert";
 
-import API from "../../api";
 import "datatables.net-dt/js/dataTables.dataTables";
 import "datatables.net-dt/css/jquery.dataTables.min.css";
 import "datatables.net-responsive-dt/js/responsive.dataTables.js";
 import "datatables.net-responsive-dt/css/responsive.dataTables.css";
-import $ from "jquery";
+import "jquery/dist/jquery.min.js";
+import $, { get } from "jquery";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import 'react-calendar/dist/Calendar.css';
@@ -28,33 +28,21 @@ class ManageDonation extends Component {
       bookTitle: "",
       author: "",
       year: "",
-      description: "",
       photo: "",
       status: "",
       categoryCode: "",
       button: "Update Data",
       categoryList: [],
       categoryName: "",
-      showAddExist: false,
-      showAdd1: false,
       showAdd2: false,
       showEdit: false,
       data: [],
-      editClicked: false,
-      bookCode: "",
-      showAddExist: false,
-      showAdd1: false,
-      showAdd2: false,
-      showEdit: false,
-      showDelete: false,
       authorCode: "",
       bookDetailCode: "",
-      categoryCode: "",
       publisherCode: "",
       urlImage: "",
       title: "",
       subtitle: "",
-      author: "",
       publisherName: "",
       publisherAddress: "",
       description: "",
@@ -70,66 +58,96 @@ class ManageDonation extends Component {
       baseImage: "",
       authorList: "",
       bookDetailList: "",
-      categoryList: "",
-      publisherList: ""
+      publisherList: "",
+      donationDate: "",
+      idAcc: ""
     }
     this.donationChange = this.donationChange.bind(this)
   }
 
-  handleExistOrNot = () => {
-    this.setState({ showAddExist: true })
-  }
-
-  handleShowAdd = () => {
-    this.setState({ showAddExist: false, showAdd1: true })
-  }
   donationChange = (event) => {
     this.setState({
       [event.target.name]: event.target.value,
     });
   }
 
-  handleAddBook = () => {
-    let addBookDonate = {
-      publisherName: this.state.publisherName,
-      address: this.state.publisherAddress,
-      bookTitle: this.state.title,
-      bookSubtitle: this.state.subtitle,
-      authorName: this.state.author,
-      cover: this.state.urlImage,
-      description: this.state.description,
-      categoryName: this.state.category,
-      numberOfPages: this.state.numberOfPages,
-      publishedDate: this.state.startDate,
-      isbn: this.state.isbn,
-      language: this.state.language
-    };
 
-    axios.post("newbooks", addBookDonate)
-      .then(() => {
-        this.setState({
-          showAdd1: false,
-          editClicked: true
-        })
-        swal("Success!", "Book Has Been Added", "success");
-        window.location.reload()
-      })
-      .catch((error) => {
-        swal("Oops!", "Please try again", "error");
-        console.log(error);
-      });
+
+  async getAllData() {
+    const res = await axios.get('author')
+    const dataAuthor = res.data
+
+    const options1 = dataAuthor.map(d => ({
+      "value": d.authorCode,
+      "label": d.authorName
+    }))
+    this.setState({ authorList: options1 })
+
+    const res2 = await axios.get('bookdetails')
+    const dataBookDetail = res2.data.data
+
+    const options2 = dataBookDetail.map(d => ({
+      "value": d.bookDetailCode,
+      "label": d.bookTitle
+    }))
+    this.setState({ bookDetailList: options2 })
+
+    const res3 = await axios.get('category')
+    const dataCategory = res3.data
+
+    const options3 = dataCategory.map(d => ({
+      "value": d.categoryCode,
+      "label": d.categoryName
+    }))
+    this.setState({ categoryList: options3 })
+
+    const res4 = await axios.get('publisher')
+    const dataPublisher = res4.data
+
+    const options4 = dataPublisher.map(d => ({
+      "value": d.publisherCode,
+      "label": d.publisherName
+    }))
+    this.setState({ publisherList: options4 })
   }
 
 
-  handleShowAdd2 = () => {
-    this.setState({ showAddExist: false, showAdd2: true })
+  handleChangeSelect1 = (e) => {
+    this.setState({ authorCode: e.value });
   }
+
+  handleChangeSelect2 = (e) => {
+    this.setState({ bookDetailCode: e.value });
+  }
+
+  handleChangeSelect3 = (e) => {
+    this.setState({ categoryCode: e.value });
+  }
+
+  handleChangeSelect4 = (e) => {
+    this.setState({ publisherCode: e.value });
+  }
+
+  handleChangeDate = date => {
+    this.setState({
+      startDate: date
+    });
+  };
+
+
+
+  handleShowAdd2 = (getId) => {
+    this.setState({ showAddExist: false, showAdd2: true, idAcc: getId })
+
+  }
+
 
   handleAddBook2 = () => {
+
     if (this.state.startDate && this.state.isbn) {
       this.setState({ showAdd2: false })
-      API.post(
-        `api/book`,
+      axios.post(
+        "book",
         {
           authorCode: this.state.authorCode,
           bookDetailCode: this.state.bookDetailCode,
@@ -146,11 +164,18 @@ class ManageDonation extends Component {
         }
       )
         .then(() => {
+          let donationList = {
+            status: this.state.status
+          };
+          axios.put(`acc-donation/${this.state.idAcc}`, donationList)
+            .then(() =>
+              swal("Success!", "Book Has Been Added", "success")
+                .then(window.location.reload()));
           this.setState({
             showAdd2: false,
             editClicked: true
           })
-          swal("Success!", "Book Has Been Added", "success");
+
         })
         .catch((error) => {
           swal("Oops!", "Please try again", "error");
@@ -163,14 +188,15 @@ class ManageDonation extends Component {
 
   handleCloseModal = () => {
     this.setState({
-      showAddExist: false, showAdd1: false, showEdit: false, showDelete: false, showAdd2: false,
-      bookCode: "", authorCode: "", bookDetailCode: "", categoryCode: "", startDate: "", date: "", isbn: ""
+      showAdd2: false,
+      bookCode: "", authorCode: "", bookDetailCode: "", categoryCode: "", startDate: "", date: "", isbn: "", publisherCode: ""
     })
   }
 
   componentDidMount() {
     this.findPerson();
     this.getCategory();
+    this.getAllData();
   }
 
   findPerson() {
@@ -194,6 +220,15 @@ class ManageDonation extends Component {
       .then(() => window.location.reload());
   };
 
+  accept = (getId) => {
+    let donationList = {
+      status: this.state.status
+    };
+    axios
+      .put(`acc-donation/${getId}`, donationList)
+      .then(() => window.location.reload());
+  }
+
 
   getDetail = (getId) => {
     this.setState({
@@ -210,7 +245,8 @@ class ManageDonation extends Component {
         description: res.description,
         photo: res.photo,
         status: res.status,
-        categoryCode: res.categoryCode
+        categoryCode: res.categoryEntity.categoryName,
+        donationDate: res.date
       });
     });
   };
@@ -290,7 +326,7 @@ class ManageDonation extends Component {
 
 
   render() {
-    const { showAdd1, showAdd2, showAddExist } = this.state;
+    const { showAdd2 } = this.state;
     return (
       <>
         <div className="right_col" role="main" style={{ minHeight: "100vh" }}>
@@ -337,7 +373,7 @@ class ManageDonation extends Component {
                                     <button
                                       className="btn btn-success"
                                       data-toggle="modal"
-                                      onClick={() => this.handleExistOrNot(donation.id)}
+                                      onClick={() => this.handleShowAdd2(donation.id)}
                                     >
                                       <i className="fa fa-check"></i>
                                     </button>
@@ -585,6 +621,17 @@ class ManageDonation extends Component {
                               <h5 class="col-lg-8 text-center">{this.state.author}</h5>
                             </div>
                             <hr />
+
+                            <div class="row justify-content-md-center">
+                              <label
+                                for="editTitle"
+                                class="col-sm-1 col-form-label"
+                              >
+                                Donation Date
+                            </label>
+                              <h5 class="col-lg-8 text-center">{this.state.donationDate}</h5>
+                            </div>
+                            <hr />
                             <div class="row justify-content-md-center">
                               <label
                                 for="editTitle"
@@ -604,264 +651,6 @@ class ManageDonation extends Component {
                   </div>
 
 
-                  {/* modal if*/}
-                  <Modal size="lg" show={showAddExist} onHide={this.handleCloseModal}>
-                    <Modal.Header closeButton>
-                      <Modal.Title>Add Book Data</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                      <p>Does Author, Book details, Category and Publisher information already exist?</p>
-                    </Modal.Body>
-                    <Modal.Footer>
-                      <Button className="btn btn-secondary" variant="secondary" onClick={() => this.handleShowAdd(this.state.id)}>
-                        <i class="fa fa-times-circle"></i> No
-                        </Button>
-                      <Button id="buttonAddBook" type="submit" className="btn btn-success" variant="primary" onClick={this.handleShowAdd2}>
-                        <i class="fa fa-plus"></i> Yes
-                        </Button>
-                    </Modal.Footer>
-                  </Modal>
-                  {/* modal add if*/}
-
-
-                  {/* modal add if data not exist*/}
-                  <Modal size="lg" show={showAdd1} onHide={this.handleCloseModal}>
-                    <Modal.Header closeButton>
-                      <Modal.Title>Add Book Data</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                      <div class='container'>
-                        <div class="modal-body">
-                          <form>
-                          </form>
-                          <form>
-                            <div class="form-group row">
-                              <label for="addTitle" class="col-sm-2 col-form-label">Title</label>
-                              <div class="col-sm-10">
-                                <input
-                                  type="text"
-                                  name="title"
-                                  class="form-control"
-                                  id="addTitle"
-                                  placeholder="Title..."
-
-                                  value={this.state.bookTitle}
-                                  onChange={(e) => this.handleChange(e, e.target.value)}
-                                  data-attribute-name="Title"
-                                  data-async
-                                />
-                              </div>
-                            </div>
-                            <div class="form-group row">
-                              <label for="addSubtitle" class="col-sm-2 col-form-label">Subtitle</label>
-                              <div class="col-sm-10">
-                                <input
-                                  type="text"
-                                  name="subtitle"
-                                  class="form-control"
-                                  id="addSubtitle"
-                                  placeholder="Subtitle..."
-                                  onChange={(e) => this.setState({ subtitle: e.target.value })}
-                                  value={this.state.subtitle}
-                                  data-attribute-name="Subtitle"
-                                  data-async
-                                />
-                              </div>
-                            </div>
-                            <div class="form-group row">
-                              <label for="addAuthor" class="col-sm-2 col-form-label">Author</label>
-                              <div class="col-sm-10">
-                                <input
-                                  type="text"
-                                  name="author"
-                                  class="form-control"
-                                  id="addAuthor"
-                                  placeholder="Author..."
-                                  onChange={(e) => this.setState({ author: e.target.value })}
-                                  value={this.state.author}
-                                  data-attribute-name="Author"
-                                  data-async
-                                />
-                              </div>
-                            </div>
-                            <div class="form-group row">
-                              <label for="addPublisher" class="col-sm-2 col-form-label">Publisher</label>
-                              <div class="col-sm-10">
-                                <input
-                                  type="text"
-                                  name="publisher"
-                                  class="form-control"
-                                  id="addPublisher"
-                                  placeholder="Publisher..."
-                                  onChange={(e) => this.setState({ publisherName: e.target.value })}
-                                  value={this.state.publisher}
-                                  data-attribute-name="Publisher"
-                                  data-async
-                                />
-                              </div>
-                            </div>
-                            <div class="form-group row">
-                              <label for="addPublisher" class="col-sm-2 col-form-label">Publisher Address</label>
-                              <div class="col-sm-10">
-                                <input
-                                  type="text"
-                                  name="publisherAddress"
-                                  class="form-control"
-                                  id="addPublisherAddress"
-                                  placeholder="Publisher Adress..."
-                                  onChange={(e) => this.setState({ publisherAddress: e.target.value })}
-                                  value={this.state.publisherAddress}
-                                  data-attribute-name="publisherAddress"
-                                  data-async
-                                />
-                              </div>
-                            </div>
-                            <div class="form-group row">
-                              <label for="addImage" class="col-sm-2 col-form-label">Url Image</label>
-                              <div class="col-sm-10">
-                                <input
-                                  type="text"
-                                  name="urlImage"
-                                  class="form-control"
-                                  id="addUrlImage"
-                                  placeholder="URL Image..."
-                                  onChange={(e) => this.setState({ urlImage: e.target.value })}
-                                  value={this.state.urlImage}
-                                  data-attribute-name="urlImage"
-                                  data-async
-                                />
-                              </div>
-                            </div>
-                            <div class="form-group row">
-                              <label for="addDesc" class="col-sm-2 col-form-label">Description</label>
-                              <div class="col-sm-10">
-                                <input
-                                  type="text"
-                                  name="description"
-                                  class="form-control"
-                                  id="addDescription"
-                                  placeholder="Description..."
-                                  onChange={(e) => this.setState({ description: e.target.value })}
-                                  value={this.state.description}
-                                  data-attribute-name="description"
-                                  data-async
-                                />
-                              </div>
-                            </div>
-                            <div class="form-group row">
-                              <label for="addDesc" class="col-sm-2 col-form-label">Category</label>
-                              <div class="col-sm-10">
-                                <input
-                                  type="text"
-                                  name="category"
-                                  class="form-control"
-                                  id="addcategory"
-                                  placeholder="Category..."
-                                  onChange={(e) => this.setState({ category: e.target.value })}
-                                  value={this.state.category}
-                                  data-attribute-name="category"
-                                  data-async
-                                />
-                              </div>
-                            </div>
-                            <hr />
-                            <div class="form-group row">
-                              <label for="addPages" class="col-sm-2 col-form-label">Number of Pages</label>
-                              <div class="col-sm-4">
-                                <input
-                                  type="text"
-                                  name="numberOfPages"
-                                  class="form-control"
-                                  id="addNumberOfPages"
-                                  placeholder="Number of Pages..."
-                                  onChange={(e) => this.setState({ numberOfPages: e.target.value })}
-                                  value={this.state.numberOfPages}
-                                  data-attribute-name="numberOfPages"
-                                  data-async
-                                />
-                              </div>
-                              <label for="addIsbn" class="col-sm-2 col-form-label">ISBN</label>
-                              <div class="col-sm-4">
-                                <input
-                                  type="text"
-                                  name="isbn"
-                                  class="form-control"
-                                  id="isbn"
-                                  placeholder="ISBN..."
-                                  onChange={(e) => this.setState({ isbn: e.target.value })}
-                                  value={this.state.isbn}
-                                  data-attribute-name="isbn"
-                                  data-async
-                                />
-                              </div>
-                            </div>
-                            <div class="form-group row">
-                              <label for="addPublishedDate" class="col-sm-2 col-form-label">Published Date</label>
-                              <div class="col-sm-4">
-                                <DatePicker
-                                  selected={this.state.startDate}
-                                  onChange={this.handleChange}
-                                  dateFormat='yyyy-MM-dd'
-                                />
-                                <br />
-                                <small className="text-muted">(yyyy-MM-dd)</small>
-                              </div>
-                              <label for="addWeight" class="col-sm-2 col-form-label">Language</label>
-                              <div class="col-sm-4">
-                                <input
-                                  type="text"
-                                  name="language"
-                                  class="form-control"
-                                  id="language"
-                                  placeholder="Language..."
-                                  onChange={(e) => this.setState({ language: e.target.value })}
-                                  value={this.state.language}
-                                  data-attribute-name="language"
-                                  data-async
-                                />
-                              </div>
-                            </div>
-                            {/* <div class="form-group row">
-                                <label for="addLang" class="col-sm-2 col-form-label">Cover</label>
-                                <div class="col-sm-4">
-                                <input 
-                                    style={{display:'none'}}
-                                    type="file" 
-                                    name="urlImage"
-                                    id="addImage" 
-                                    onBlur={this.form.handleBlurEvent}
-                                    // onChange={this.form.handleChangeEvent}
-                                    value={fields.urlImage} 
-                                    data-attribute-name="Url Image"
-                                    data-async
-                                    onChange={(e) => {
-                                      this.pickImage(e);
-                                    }}
-                                    accept=".jpeg, .png, .jpg"
-                                    ref={fileInput => this.fileInput = fileInput}
-                                  />
-                                  <Button onClick={() => this.fileInput.click()}>Pick Image</Button>
-                                  <br/><br/>
-                                  <img src={baseImage?baseImage:"assets/images/cover.png"} height="80vh" alt = 'cover'/> */}
-                            {/* <label className="error" style={{color: "red"}}>
-                                    {errors.urlImage ? errors.urlImage : ""}
-                                  </label> */}
-                            {/* </div>
-                              </div> */}
-                          </form>
-                        </div>
-                      </div>
-                    </Modal.Body>
-                    <Modal.Footer>
-                      <Button className="btn btn-secondary" variant="secondary" onClick={this.handleCloseModal}>
-                        <i class="fa fa-times-circle"></i> Close
-                        </Button>
-                      <Button id="buttonAddBook" type="submit" className="btn btn-success" variant="primary" onClick={this.handleAddBook}>
-                        <i class="fa fa-plus"></i> Add
-                        </Button>
-                    </Modal.Footer>
-                  </Modal>
-                  {/* modal add if data not exist*/}
 
 
                   {/* modal add data exist*/}
@@ -928,7 +717,7 @@ class ManageDonation extends Component {
                               <div class="col-sm-4">
                                 <DatePicker
                                   selected={this.state.startDate}
-                                  onChange={this.handleChange}
+                                  onChange={this.handleChangeDate}
                                   dateFormat='yyyy-MM-dd'
                                 />
                                 <br />
