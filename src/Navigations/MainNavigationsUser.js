@@ -42,8 +42,8 @@ const authGuard = (Component) => () => {
 
 const rememberMe = (Component) => () => {
   return !localStorage.getItem('userFaraday') ? (
-      <Component />
-    ) : (
+    <Component />
+  ) : (
       <Redirect to="/index" />
     );
 };
@@ -138,6 +138,7 @@ const MainNavigationsUser = (props) => (
         <Route render={authGuard(CategoryManagement)} path="/page/manageCategory">
           {/* <CategoryManagement /> */}
         </Route>
+        {/* <Route render={authGuard(cartuser)} path=""></Route> */}
         <Route render={authGuard(SeeMoreBooks)} path="/page/more/:title">
           {/* <SeeMoreBooks /> */}
         </Route>

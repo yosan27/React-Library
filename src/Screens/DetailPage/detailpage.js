@@ -4,15 +4,17 @@ import { Container, Jumbotron, Modal, Button } from 'react-bootstrap'
 import './detailpage.css'
 import swal from 'sweetalert';
 import Moment from 'react-moment';
-import { withRouter } from "react-router-dom";
-import axios from "../../Services/axios-instance";
-
+import { Redirect, Link, withRouter } from 'react-router-dom';
+import Axios from "../../Services/axios-instance";
+import AuthService from "../../Services/auth.service";
 
 class DetailPage extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      getBookCode: this.props.match.params.id,
+      bookDetailsCode: '',
       heart: '\u2661',
       bookData: '',
       imageAvailable: false,
@@ -31,14 +33,11 @@ class DetailPage extends Component {
   }
 
   async componentDidMount() {
-    axios.get(`book/${this.state.bookCode}`).then((e)=>{
-      console.log(e.data.data);
-    });
-
-    // try {
-    //   const res = await API.get(`/api/book/B001`);
-    //   const bookData = res.data.data;
-    //   const bookDataImage = bookData.bookDetailsEntity.cover
+    try {
+      const res = await Axios.get(`book/` + this.state.getBookCode);
+      const bookData = res.data.data;
+      const bookDataImage = bookData.bookDetailsEntity.cover
+      console.log(bookData)
 
     //   if (bookData.id) {
     //     this.setState({ bookAvailable: 'Available' });
@@ -52,23 +51,43 @@ class DetailPage extends Component {
     //     this.setState({ subtitle: 'Subtitle not available' });
     //   }
 
-    //   this.setState({ bookData: bookData });
-    //   this.setState({ register: bookData.bookCode });
-    //   this.setState({ title: bookData.bookDetailsEntity.bookTitle });
-    //   this.setState({ category: bookData.categoryEntity.categoryName });
-    //   this.setState({ publishedDate: bookData.publishedDate });
-    //   this.setState({ author: bookData.authorEntity.authorName });
-    //   this.setState({ pages: bookData.bookDetailsEntity.numberOfPages });
-    //   this.setState({ bookDataImage: bookDataImage })
-    //   this.setState({ descriptions: bookData.bookDetailsEntity.description })
-    //   console.log(this.state.descriptions)
-    // } catch (error) {
-    //   console.log(error);
-    // }
+      this.setState({ bookData: bookData });
+      this.setState({ register: bookData.bookCode });
+      this.setState({ bookDetailsCode: bookData.bookDetailsEntity.bookDetailCode });
+      this.setState({ title: bookData.bookDetailsEntity.bookTitle });
+      this.setState({ category: bookData.categoryEntity.categoryName });
+      this.setState({ publishedDate: bookData.publishedDate });
+      this.setState({ author: bookData.authorEntity.authorName });
+      this.setState({ pages: bookData.bookDetailsEntity.numberOfPages });
+      this.setState({ bookDataImage: bookDataImage })
+      this.setState({ descriptions: bookData.bookDetailsEntity.description })
+      console.log(this.state.descriptions)
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   handleWishlist = () => {
-    
+    const wishdto = {
+      bookDetailsCode: this.state.bookDetailsCode,
+      userCode: AuthService.getUserCode()
+    }
+    console.log(wishdto)
+    Axios.post('wishlist', wishdto)
+      .then((response) => {
+        console.log(response);
+        swal("Success!", "Book Has Been Added To Your Wishlist", "success")
+      }).catch(function (error) {
+        if (error.response) {
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log('Error', error.message);
+        }
+      })
   }
 
   handleClose = () => {
@@ -77,7 +96,27 @@ class DetailPage extends Component {
 
   handleCart = () => {
     this.setState({ show: false })
-    swal("Success!", "Book Has Been Added To Your Cart", "success")
+    const wishdto = {
+      bookDetailsCode: this.state.bookDetailsCode,
+      userCode: AuthService.getUserCode()
+    }
+    console.log(wishdto)
+    Axios.post('cart', wishdto)
+      .then((response) => {
+        console.log(response);
+        swal("Success!", "Book Has Been Added To Your Cart", "success")
+        window.location.reload()
+      }).catch(function (error) {
+        if (error.response) {
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log('Error', error.message);
+        }
+      })
   }
 
   handleShow = () => {
@@ -269,5 +308,4 @@ class DetailPage extends Component {
     );
   }
 }
-
-export default withRouter(DetailPage);
+export default withRouter(DetailPage)
