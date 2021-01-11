@@ -27,6 +27,11 @@ div.footerDetail.jumbotron.jumbotron-fluid {
   margin-bottom: 0;
 }
 
+button.ml-4.btn.btn-primary:focus {
+  outline: none !important;
+  outline-offset: none !important;
+}
+
 /* iPad pro */
 @media only screen and (max-width: 1024px) {
   div.footerDetail.jumbotron.jumbotron-fluid {

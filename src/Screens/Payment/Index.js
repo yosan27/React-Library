@@ -290,19 +290,19 @@ export default class Payment extends Component {
       paymentStatus: 2,
       userCode: this.state.userCode,
     };
-    let detail = {
-      detailCode: this.state.detailCode,
-      transactionCode: this.state.lastCode,
-      description: "Top-Up",
-      debet: this.state.nominalTopUp,
-      kredit: 0,
-      fineCode: null,
-      rentCode: null,
-      userCode: this.state.userCode,
-    };
     axios
       .post("transaction", paymentRecord)
       .then(() => {
+        let detail = {
+          detailCode: this.state.detailCode,
+          transactionCode: this.state.lastCode,
+          description: "Top-Up",
+          debet: this.state.nominalTopUp,
+          kredit: 0,
+          fineCode: "NULL",
+          rentCode: "NULL",
+          userCode: this.state.userCode,
+        };
         axios
           .post("transaction-detail", detail)
           .then(() => {
@@ -421,7 +421,7 @@ export default class Payment extends Component {
                           <div className="col">
                             <p>Or enter the top-up amount here</p>
                             <input
-                              className="pl-3 pt-2 pb-2"
+                              className="pl-3 pt-2 pb-2 minimum-input-box"
                               type="text"
                               value={this.state.inputNominal}
                               placeholder="Minimun Rp 10.000"

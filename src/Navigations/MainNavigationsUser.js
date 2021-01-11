@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 
 import HeaderUser from "../components/HeaderUser";
@@ -28,7 +28,6 @@ import DetailPage from "../Screens/DetailPage/detailpage";
 import FineManagement from "../Screens/FineManagement/fineManagement";
 import AuthorManagement from "../Screens/AuthorManagement/AuthorManagement";
 import CategoryManagement from "../Screens/CategoryManagement/categoryManagement";
-import AuthService from "../Services/auth.service";
 import SeeMoreBooks from "../Screens/SeeMoreBooks/SeeMoreBooks";
 import AllHistory from "../Screens/Payment/AllHistory";
 
@@ -115,7 +114,7 @@ const MainNavigationsUser = (props) => (
           {/* <BookManagement /> */}
         </Route>
         <Route render={authGuard(BookDetailManagement)} path="/page/manageBookDetail">
-          {/* <BookManagement /> */}
+          {/* <BookDetailManagement /> */}
         </Route>
         <Route render={authGuard(UserManagement)} path="/page/manageUser">
           {/* <UserManagement /> */}

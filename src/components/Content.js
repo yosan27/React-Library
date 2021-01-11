@@ -68,7 +68,7 @@ class Content extends Component {
     Axios.get("bookdetails").then((resp) => {
       console.log(resp)
       this.setState({ sliderNew: resp.data.data });
-      this.state.sliderNew.map((slider, i) => {
+      this.state.sliderNew.forEach((slider, i) => {
         if (i < 3) {
           Axios.get("book/detailcode/" + slider.bookDetailCode).then((response) => {
             console.log(response)

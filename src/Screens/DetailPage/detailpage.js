@@ -4,7 +4,7 @@ import { Container, Jumbotron, Modal, Button } from 'react-bootstrap'
 import './detailpage.css'
 import swal from 'sweetalert';
 import Moment from 'react-moment';
-import { Redirect, Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import Axios from "../../Services/axios-instance";
 import AuthService from "../../Services/auth.service";
 
@@ -13,8 +13,7 @@ class DetailPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      popular: '',
-      getBookCode: this.props.match.params.id,
+      editClicked: false,
       bookDetailsCode: '',
       heart: '\u2661',
       bookData: '',
@@ -31,15 +30,15 @@ class DetailPage extends Component {
       pages: '',
       descriptions: '',
       bookCode: this.props.match.params.bookcode,
+      popular: []
     }
   }
 
   async componentDidMount() {
     try {
-      const res = await Axios.get(`book/` + this.state.getBookCode);
+      const res = await Axios.get(`book/` + this.state.bookCode);
       const bookData = res.data.data;
       const bookDataImage = bookData.bookDetailsEntity.cover
-      console.log(bookData)
 
     //   if (bookData.id) {
     //     this.setState({ bookAvailable: 'Available' });
@@ -58,21 +57,21 @@ class DetailPage extends Component {
       this.setState({ bookDetailsCode: bookData.bookDetailsEntity.bookDetailCode });
       this.setState({ title: bookData.bookDetailsEntity.bookTitle });
       this.setState({ category: bookData.categoryEntity.categoryName });
-      this.setState({ category: bookData.categoryEntity.categoryCode });
+      this.setState({ categoryCode: bookData.categoryEntity.categoryCode });
       this.setState({ publishedDate: bookData.publishedDate });
       this.setState({ author: bookData.authorEntity.authorName });
       this.setState({ pages: bookData.bookDetailsEntity.numberOfPages });
       this.setState({ bookDataImage: bookDataImage })
       this.setState({ descriptions: bookData.bookDetailsEntity.description })
-      console.log(this.state.descriptions)
+      console.log(this.state.categoryCode)
     } catch (error) {
       console.log(error);
     }
 
-    Axios.get('popular/BC001' + this.state.getBookCode).then((res) => {
-      const popular = res.data.data
-        this.setState({ popular: popular })
-        console.log(this.state.popular)
+    Axios.get(`popular/` + this.state.categoryCode).then((res) => {
+      const popular = res.data.data;
+      const popularWithoutCurrent = popular.filter((word) => word.bookCode !== this.state.bookCode);
+        this.setState({ popular: popularWithoutCurrent })
     })
 
   }
@@ -131,6 +130,42 @@ class DetailPage extends Component {
 
   handleShow = () => {
     this.setState({ show: true })
+  }
+
+  handlePopClick = (bkcd) => {
+    this.setState({ bookCode: bkcd, editClicked : true })
+  }
+
+  async componentDidUpdate(prevState) {
+    if (this.state.editClicked) {
+      try {
+        const res = await Axios.get(`book/` + this.state.bookCode);
+        const bookData = res.data.data;
+        const bookDataImage = bookData.bookDetailsEntity.cover
+        this.setState({ 
+          bookData: bookData,
+          register: bookData.bookCode,
+          bookDetailsCode: bookData.bookDetailsEntity.bookDetailCode, 
+          title: bookData.bookDetailsEntity.bookTitle,
+          category: bookData.categoryEntity.categoryName,
+          categoryCode: bookData.categoryEntity.categoryCode,
+          publishedDate: bookData.publishedDate,
+          author: bookData.authorEntity.authorName,
+          pages: bookData.bookDetailsEntity.numberOfPages,
+          bookDataImage: bookDataImage,
+          descriptions: bookData.bookDetailsEntity.description
+        });
+
+        Axios.get(`popular/` + this.state.categoryCode).then((res) => {
+          const popular = res.data.data;
+          const popularWithoutCurrent = popular.filter((word) => word.bookCode !== this.state.bookCode);
+            this.setState({ popular: popularWithoutCurrent, editClicked: false })
+        })
+
+      } catch (error) {
+        console.log(error);
+      }; 
+    }
   }
 
   render() {
@@ -199,46 +234,52 @@ class DetailPage extends Component {
                           </div>
                           {/* Description */}
 
+                          {/* most popular */}
+                          <div class="col-lg-3">
+                            <h5 class='pb-2 text-center'>Popular {category} books</h5>
+                            <hr />
 
-                          
-                                      <div class="col-lg-3">
-                                      <h5 class='pb-2 text-center'>Popular this week</h5>
-                                      <hr />
-                                      
-                        
-                        
-                                      <div class="row">
-                                        <div class="col text-right pt-2">
-                                          <img rounded height="80" src="" />
-                                        </div>
-                                        <div
-                                          class="col"
-                                          style={{ display: 'flex', flexWrap: 'wrap', alignContent: 'center' }}>
-                                          <div>
-                                            <h6 class="mb-0 ">
-                                              ""
-                                            </h6>
-                                            <h6 class="mb-0 ">- ""
-                                            </h6>
-                                          </div>
+                            {/* popular */}
+                            {
+                            popular.map((pop, index) => {
+                              return (
+                                  <Button 
+                                    className="ml-4"
+                                    style={{
+                                      backgroundColor: "Transparent",
+                                      color: "#000",
+                                      border: "none",
+                                      cursor: "pointer"}}
+                                    onClick = { ()=> {this.handlePopClick(pop.bookCode)}}
+                                  >
+                                    <div class="row">
+                                      <div class="col text-right pt-2">
+                                        <img rounded height="80" src={pop.bookDetailsEntity.cover} alt=""/>
+                                      </div>
+                                      <div
+                                        class="col"
+                                        style={{ display: 'flex', flexWrap: 'wrap', alignContent: 'center' }}>
+                                        <div>
+                                          <h6 class="mb-0 ">{pop.bookDetailsEntity.bookTitle}</h6>
+                                          <h6 class="mb-0 ">- {pop.authorEntity.authorName}</h6>
                                         </div>
                                       </div>
-                                     
-                                    
-                                  
-
-                                  
-                                      {/* button borrow */}
-                                      <div className="text-center mt-5">
-                                        <Button className="btn btn-warning borrow" variant="primary" onClick={this.handleShow}>
-                                          Borrow
-                                        </Button>
-                                      </div>
-                                      {/* button borrow */}
                                     </div>
-                                   
-                          
+                                  </Button>
+                                )
+                              })
+                            } 
+                            {/* popular */}
 
+                            {/* button borrow */}
+                            <div className="text-center mt-5">
+                              <Button className="btn btn-warning borrow" variant="primary" onClick={this.handleShow}>
+                                Borrow
+                              </Button>
+                            </div>
+                            {/* button borrow */}
+                          </div>
+                          {/* most popular */}
                         </div>
                         {/* Descriptions & most popular */}
                         {/* info bawah */}
@@ -255,7 +296,7 @@ class DetailPage extends Component {
                         <div class='container'>
                           <div class="row-lg">
                             <div class="col-6-lg d-flex justify-content-center align-items-center">
-                              <img class="rounded novel" src={bookDataImage ? bookDataImage : 'https://res.cloudinary.com/todidewantoro/image/upload/v1604943658/bootcamp/covernya_ejy4v1.jpg'} />
+                              <img class="rounded novel" src={bookDataImage ? bookDataImage : 'https://res.cloudinary.com/todidewantoro/image/upload/v1604943658/bootcamp/covernya_ejy4v1.jpg'} alt=""/>
                             </div>
                             <div
                               className='container'>
