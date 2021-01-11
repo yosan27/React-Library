@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import axios from 'axios'
+import Axios from '../../Services/axios-instance'
+import AuthService from '../../Services/auth.service'
 
 import 'datatables.net-dt/js/dataTables.dataTables'
 import 'datatables.net-dt/css/jquery.dataTables.min.css'
@@ -7,7 +8,6 @@ import 'datatables.net-responsive-dt/js/responsive.dataTables.js'
 import 'datatables.net-responsive-dt/css/responsive.dataTables.css'
 import 'jquery/dist/jquery.min.js'
 import $ from 'jquery'
-import { Link } from 'react-router-dom'
 
 class HistoryUser extends Component {
     constructor(props) {
@@ -21,36 +21,36 @@ class HistoryUser extends Component {
             dateBorrow: '',
             dueDate: '',
             dateReturn: '',
-            status: '',
-            totalFine: ''
+            status: ''
         }
     }
 
     componentDidMount() {
-        axios.get("http://localhost:8500/api/user-by-code/"+ sessionStorage.getItem('userCode')).then((e) => {
-          this.setState({
-              userCode : sessionStorage.getItem('userCode')
-          })
-
-          this.getAll()
-          document.addEventListener('click', this.clearModal);
+        Axios.get("user/code/"+ AuthService.getUserCode()).then(() => {
+            this.setState({
+                userCode : AuthService.getUserCode()
+            })
+          
+            this.getAll()
+            document.addEventListener('click', this.clearModal);
         })
     }
 
     getAll() {
-        axios.get('http://localhost:8500/api/rent/user-code/' + this.state.userCode).then((res) => {
+        Axios.get('rent/usercode/' + this.state.userCode).then((res) => {
             this.setState({ rent: res.data })
 
             $(function () {
                 $('#historyUser').DataTable({
-                    responsive: true
+                    responsive: true,
+                    order: [[ 0, 'desc' ]]
                 })
             })
         })
     }
 
     getById(id) {
-        axios.get(`http://localhost:8500/api/rent/id/${id}`).then((res) => {
+        Axios.get(`rent/id/${id}`).then((res) => {
             this.setState({
                 rentCode: res.data.rentCode,
                 bookTitle: res.data.bookEntity.bookDetailsEntity.bookTitle,
@@ -60,18 +60,16 @@ class HistoryUser extends Component {
                 status: res.data.status
             })
             
-            axios.get(`http://localhost:8500/api/transaction-detail/get-by-rent-code/${this.state.rentCode}`).then((res) => {
-                res.data.map((d) => {
-                    this.setState({
-                        fine: [ ...this.state.fine, d ]
-                    })
+            Axios.get(`transaction-detail/rent/${this.state.rentCode}`).then((res) => {
+                res.data.forEach((d) => {
+                    this.setState({ fine: [ ...this.state.fine, d ] })
                 })
             })
         })
     }
 
     getFine(getRentCode) {
-        axios.get(`http://localhost:8500/api/transaction-detail/get-by-rent-code/${getRentCode}`).then((res) => {
+        Axios.get(`transaction-detail/rent/${getRentCode}`).then((res) => {
             this.setState({ fine: res.data })
         })
     }
@@ -92,11 +90,14 @@ class HistoryUser extends Component {
         }
     }
 
-    setPay(status) {
+    setPayButton(status) {
         if(status === 4) {
-            return <button className="btn btn-info">Pay</button>
+            return <button className="btn btn-info" onClick={this.goToPayment}>Pay</button>
         }
-        
+    }
+
+    goToPayment = () => {
+        window.open("http://localhost:3000/page/payment", "_self")
     }
 
     clearModal = (e) => {
@@ -160,11 +161,11 @@ class HistoryUser extends Component {
                 </section >
 
                 {/* MODAL INFO */}
-                <div className="modal fade" id="info" tabIndex="-1" aria-labelledby="infoLabel" aria-hidden="true">
+                <div className="modal fade" id="info" tabIndex="-1">
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h5 className="modal-title" id="infoLabel">Info</h5>
+                                <h5 className="modal-title">Info</h5>
                                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true" className="modal-clear">&times;</span>
                                 </button>
@@ -174,13 +175,13 @@ class HistoryUser extends Component {
                                     <div className="form-group row">
                                         <label className="col-sm-4 col-form-label">Rent Code</label>
                                         <div className="col-sm-8">
-                                            <input type="text" readOnly className="form-control-plaintext" value={this.state.rentCode} />
+                                            <input type="text" className="form-control-plaintext" value={this.state.rentCode} readOnly />
                                         </div>
                                     </div>
                                     <div className="form-group row">
                                         <label className="col-sm-4 col-form-label">Book Title</label>
                                         <div className="col-sm-8">
-                                            <input type="text" readOnly className="form-control-plaintext" value={this.state.bookTitle} />
+                                            <input type="text" className="form-control-plaintext" value={this.state.bookTitle} readOnly />
                                         </div>
                                     </div>
                                     <hr></hr>
@@ -230,17 +231,11 @@ class HistoryUser extends Component {
                                         }
                                         </div>
                                     </div>
-                                    <div className="form-group row">
-                                        <label className="col-sm-4 col-form-label"><b>Total Fine</b></label>
-                                        <div className="col-sm-8">
-                                            <input type="text" readOnly className="form-control-plaintext" defaultValue="0" />
-                                        </div>
-                                    </div>
                                 </form>
                             </div>
                             <div className="modal-footer">
                                 <button className="btn btn-secondary modal-clear" data-dismiss="modal">Close</button>
-                                <Link to={`/page/payment`}>{this.setPay(this.state.status)}</Link>
+                                <span>{this.setPayButton(this.state.status)}</span>
                             </div>
                         </div>
                     </div>

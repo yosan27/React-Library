@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import axios from "axios";
 import { Link, withRouter } from "react-router-dom";
+import moment from "moment";
 import swal from "sweetalert";
+import Axios from "../../Services/axios-instance";
 
 class ReturnForm extends Component {
   constructor(props) {
@@ -10,11 +11,13 @@ class ReturnForm extends Component {
       id: this.props.match.params.id,
       rentCode: "",
       fullName: "",
+      bookCode: "",
       bookTitle: "",
       dateBorrow: "",
       dueDate: "",
       status: "",
       late: "",
+      lateDays: "",
       fine: [],
       lateNominal: "", //+
       fineChecked: [], //+
@@ -22,6 +25,7 @@ class ReturnForm extends Component {
       userCode: "", //+
       total: "", //+
       fineLateCode: "", //+
+      hidden: true
     };
   }
 
@@ -33,12 +37,13 @@ class ReturnForm extends Component {
   }
 
   async getData(id) {
-    await axios.get(`http://localhost:8500/api/rent/id/${id}`).then((res) => {
+    await Axios.get(`rent/id/${id}`).then((res) => {
       let rent = res.data;
       this.setState({
         rentCode: rent.rentCode,
         fullName: rent.userEntity.fullName,
         userCode: rent.userEntity.userCode,
+        bookCode: rent.bookEntity.bookCode,
         bookTitle: rent.bookEntity.bookDetailsEntity.bookTitle,
         dateBorrow: rent.dateBorrow,
         dueDate: rent.dueDate,
@@ -49,9 +54,9 @@ class ReturnForm extends Component {
 
   getTransactionDetailCode() {
     // Get Transaction Detail Code
-    axios
+    Axios
       .get(
-        `http://localhost:8500/api/transaction-detail/user/${this.state.userCode}`
+        `transaction-detail/user/${this.state.userCode}`
       )
       .then((record) => {
         let idCode = this.state.userCode.substring(
@@ -68,7 +73,7 @@ class ReturnForm extends Component {
   }
 
   getFine() {
-    axios.get("http://localhost:8500/api/fine/active").then((res) => {
+    Axios.get("fine/active").then((res) => {
       res.data.forEach((e) => {
         //+
         if (e.fineType !== "Late") {
@@ -82,22 +87,11 @@ class ReturnForm extends Component {
     });
   }
 
-  formatDate(date) {
-    var d = new Date(date);
-    var year = d.getFullYear();
-    var month = "" + (d.getMonth() + 1);
-    var day = "" + d.getDate();
-
-    if (month.length < 2) month = "0" + month;
-    if (day.length < 2) day = "0" + day;
-
-    return [year, month, day].join("-");
-  }
-
   setLate = (due) => {
-    var today = this.formatDate(Date.now());
+    this.setState({ dateReturn: moment(Date.now()).format('YYYY-MM-DD') });
+
     var limit = new Date(due);
-    var current = new Date(today);
+    var current = new Date(this.state.dateReturn);
 
     if (limit < current) {
       var diffTime = Math.abs(current - limit);
@@ -108,11 +102,7 @@ class ReturnForm extends Component {
       latefine = 0;
     }
 
-    document.getElementById("dateReturn").value = today;
-    document.getElementById("latePrice").value = "Rp " + latefine;
-    document.getElementById("lateDays").innerText = diffDays + " day(s) late";
-
-    this.setState({ late: latefine });
+    this.setState({ late: latefine, lateDays: diffDays });
     this.setTotal(1); //+ note: isinya sebenernya bebas cuma buat parameter aja
   };
 
@@ -139,7 +129,32 @@ class ReturnForm extends Component {
   };
 
   alertSubmit = () => {
-    let date = this.formatDate(Date.now());
+    swal({
+      title: "Are you sure?",
+      text: "Make sure the data is correct!",
+      icon: "warning",
+      buttons: {
+        cancel: true,
+        confirm: "Confirm",
+    }
+    }).then((ok) => {
+      if (ok) {
+          this.submit();
+      } else {
+          swal("Canceled!", "The book has not been returned", "error");
+      }
+    })
+  }
+
+  submit = () => {
+    let date = this.state.dateReturn;
+    let bookStatus = {
+      status: 1
+    }
+
+    // Change book status
+    Axios.put('book/status/' + this.state.bookCode, bookStatus)
+
     // Jika ada denda
     if (this.state.late === 0 && this.state.fineChecked.length === 0) {
       let updateStat = {
@@ -147,9 +162,9 @@ class ReturnForm extends Component {
         status: 5,
         dateReturn: date,
       };
-      axios
+      Axios
         .put(
-          `http://localhost:8500/api/rent/code/${this.state.rentCode}`,
+          `rent/code/${this.state.rentCode}`,
           updateStat
         ) //+
         .then(() => {
@@ -170,7 +185,7 @@ class ReturnForm extends Component {
               rentCode: this.state.rentCode,
               userCode: this.state.userCode,
             };
-            axios.post("http://localhost:8500/api/transaction-detail", detail);
+            Axios.post("transaction-detail", detail);
           });
           swal("Success!", "Book has been returned", "success").then(() => {
             window.open("http://localhost:3000/page/history", "_self");
@@ -189,9 +204,9 @@ class ReturnForm extends Component {
         fineCode: this.state.fineLateCode,
       };
       this.setState({ fineChecked: [...this.state.fineChecked, totalLate] });
-      axios
+      Axios
         .put(
-          `http://localhost:8500/api/rent/code/${this.state.rentCode}`,
+          `rent/code/${this.state.rentCode}`,
           updateStat
         ) //+
         .then(() => {
@@ -212,7 +227,7 @@ class ReturnForm extends Component {
               rentCode: this.state.rentCode,
               userCode: this.state.userCode,
             };
-            axios.post("http://localhost:8500/api/transaction-detail", detail);
+            Axios.post("transaction-detail", detail);
           });
           swal("Success!", "Book has been returned", "success").then(() => {
             window.open("http://localhost:3000/page/history", "_self");
@@ -314,7 +329,7 @@ class ReturnForm extends Component {
                             <input
                               type="text"
                               className="form-control"
-                              id="dateReturn"
+                              value={this.state.dateReturn}
                               disabled
                             />
                           </div>
@@ -326,15 +341,13 @@ class ReturnForm extends Component {
                         <div className="col-sm-3">
                           <input
                             type="text"
-                            readOnly
                             className="form-control"
-                            id="latePrice"
+                            value={"Rp " + this.state.late}
                             disabled
                           />
-                          <small
-                            className="form-text text-muted"
-                            id="lateDays"
-                          ></small>
+                          <small className="form-text text-muted">
+                            {this.state.lateDays + " day(s) late"}
+                          </small>
                         </div>
                       </div>
                       <div className="form-group row pb-2">
@@ -348,24 +361,26 @@ class ReturnForm extends Component {
                                 <div className="form-check">
                                   <input
                                     type="checkbox"
-                                    className="form-check-input damage"
+                                    className="form-check-input"
+                                    id={"damage"+index}
                                     value={fine.nominal}
                                     onClick={() => this.setTotal(fine)}
                                   />{" "}
                                   {/* + */}
-                                  <label className="form-check-label">
+                                  <label className="form-check-label" for={"damage"+index}>
                                     {fine.fineType + " - " + fine.nominal}
                                   </label>
                                 </div>
-                                <div className="mt-2">
-                                  <input
-                                    type="number"
-                                    className="replyNumber"
+                                <div className="form-group row mt-2 ml-3" hidden={this.state.hidden}>
+                                  <input 
+                                    type="number" 
+                                    className="col-sm-2 form-control" 
+                                    id={"damage-input"+index} 
                                     min="0"
-                                    defaultValue="0"
-                                    data-bind="value:replyNumber"
-                                    hidden="true"
                                   />
+                                  <label className="col-sm-10 form-check-label">
+                                    {"Rp " + fine.nominal + "/page"}
+                                  </label>
                                 </div>
                               </div>
                             );

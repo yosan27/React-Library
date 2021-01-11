@@ -6,7 +6,7 @@ import 'datatables.net-responsive-dt/css/responsive.dataTables.css'
 import 'jquery/dist/jquery.min.js'
 import $ from 'jquery'
 import swal from "sweetalert";
-import axios from "axios";
+import moment from "moment";
 import Axios from "../../Services/axios-instance";
 import AuthService from "../../Services/auth.service";
 
@@ -125,6 +125,66 @@ export default class Cart extends Component {
             })
     }
 
+    alertBorrowBook = () => {
+        Axios.get('rent/userstatus/' + this.state.userCode).then((rent) => {
+            let countRent = rent.data.length
+            let countCart = this.state.dataCart.length
+            let total = countRent + countCart
+            
+            if (total > 3) {
+                swal("Failed!", "You can't borrow more than 3 books", "error")
+            } else {
+                swal({
+                    title: "Are you sure?",
+                    text: "Make sure the books you borrow!",
+                    icon: "warning",
+                    buttons: {
+                        cancel: true,
+                        confirm: "Confirm",
+                    }
+                }).then((ok) => {
+                    if (ok) {
+                        this.borrowBook()
+                        swal("Thank You!", "Please take your books at Faraday Library", "success").then(() => {
+                            window.open("http://localhost:3000/page/historyUser", "_self")
+                        })
+                    } else {
+                        swal("Cancelled!", "The books are still in your cart", "error")
+                    }
+                })
+            }
+        })
+    }
+
+    borrowBook = () => {
+        let borrow = this.state.value
+        let due = moment(this.state.value).add(7,'d').format('YYYY-MM-DD')
+        let user = this.state.userCode
+        
+        this.setState({ dataCart: [ ...this.state.dataCart ] })
+        this.state.dataCart.forEach((res) => {
+            let cartNo = res.id
+            let bookDetail = res.bookDetailsEntity.bookDetailCode
+            Axios.get('book/detailcode/' + bookDetail).then((result) => {
+                let bookData = result.data.data.bookCode
+                let rentData = {
+                    dateBorrow: borrow,
+                    dueDate: due,
+                    userCode: user,
+                    bookCode: bookData
+                }
+                let bookStatus = {
+                    status: 2
+                }
+                Axios.post('rent', rentData).then(() => {
+                    Axios.put('book/status/' + bookData, bookStatus).then(() => {
+                        Axios.delete('cart/' + cartNo)
+                    })
+                })
+            })
+        })
+    }
+
     render() {
         const mystyleBtn = {
             color: "white",
@@ -215,7 +275,7 @@ export default class Cart extends Component {
                                                 <div className="col-lg-12">
                                                     <div className="form-group">
                                                         <label className="text-success">*Ajukan Peminjaman</label>
-                                                        <a id="btn-confirmPinjam" style={mystyleBtn} onClick={() => this.order()} className="btn shadow disabled btn-sm btn-success btn-block">
+                                                        <a id="btn-confirmPinjam" style={mystyleBtn} onClick={() => this.alertBorrowBook()} className="btn shadow disabled btn-sm btn-success btn-block">
                                                             Borrow
                                                         </a>
                                                     </div>
