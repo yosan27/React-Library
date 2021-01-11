@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Container, Jumbotron, Modal, Button } from 'react-bootstrap'
-import API from "../../api";
+// import API from "../../api";
 import './detailpage.css'
 import swal from 'sweetalert';
 import Moment from 'react-moment';
@@ -27,7 +27,8 @@ class DetailPage extends Component {
       show: false,
       register: '',
       pages: '',
-      descriptions: ''
+      descriptions: '',
+      bookCode: this.props.match.params.bookcode,
     }
   }
 
@@ -38,17 +39,17 @@ class DetailPage extends Component {
       const bookDataImage = bookData.bookDetailsEntity.cover
       console.log(bookData)
 
-      if (bookData.id) {
-        this.setState({ bookAvailable: 'Available' });
-      } else {
-        this.setState({ bookAvailable: 'Not Available' });
-      }
+    //   if (bookData.id) {
+    //     this.setState({ bookAvailable: 'Available' });
+    //   } else {
+    //     this.setState({ bookAvailable: 'Not Available' });
+    //   }
 
-      if (bookData.bookDetailsEntity.subtitle !== undefined) {
-        this.setState({ subtitle: bookData.bookDetailsEntity.subtitle });
-      } else {
-        this.setState({ subtitle: 'Subtitle not available' });
-      }
+    //   if (bookData.bookDetailsEntity.subtitle !== undefined) {
+    //     this.setState({ subtitle: bookData.bookDetailsEntity.subtitle });
+    //   } else {
+    //     this.setState({ subtitle: 'Subtitle not available' });
+    //   }
 
       this.setState({ bookData: bookData });
       this.setState({ register: bookData.bookCode });
@@ -308,4 +309,3 @@ class DetailPage extends Component {
   }
 }
 export default withRouter(DetailPage)
-// export default DetailPage;
