@@ -290,19 +290,19 @@ export default class Payment extends Component {
       paymentStatus: 2,
       userCode: this.state.userCode,
     };
-    let detail = {
-      detailCode: this.state.detailCode,
-      transactionCode: this.state.lastCode,
-      description: "Top-Up",
-      debet: this.state.nominalTopUp,
-      kredit: 0,
-      fineCode: null,
-      rentCode: null,
-      userCode: this.state.userCode,
-    };
     axios
       .post("transaction", paymentRecord)
       .then(() => {
+        let detail = {
+          detailCode: this.state.detailCode,
+          transactionCode: this.state.lastCode,
+          description: "Top-Up",
+          debet: this.state.nominalTopUp,
+          kredit: 0,
+          fineCode: "NULL",
+          rentCode: "NULL",
+          userCode: this.state.userCode,
+        };
         axios
           .post("transaction-detail", detail)
           .then(() => {
