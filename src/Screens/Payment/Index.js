@@ -250,7 +250,7 @@ export default class Payment extends Component {
       }
       axios.post("transaction", paymentRecord).then(()=>{
         this.state.rentCodeList.forEach((e)=>{
-          axios.put(`rent/code/${e}`, updateStatus).catch(function(error){
+          axios.put(`rent/code/status/${e}`, updateStatus).catch(function(error){
             swal("Failed", error.response.data.message, "error");
           });
         });
