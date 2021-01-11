@@ -4,7 +4,7 @@ import { Container, Jumbotron, Modal, Button } from 'react-bootstrap'
 import './detailpage.css'
 import swal from 'sweetalert';
 import Moment from 'react-moment';
-import { Redirect, Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import Axios from "../../Services/axios-instance";
 import AuthService from "../../Services/auth.service";
 
@@ -13,7 +13,6 @@ class DetailPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      getBookCode: this.props.match.params.id,
       bookDetailsCode: '',
       heart: '\u2661',
       bookData: '',
@@ -34,7 +33,7 @@ class DetailPage extends Component {
 
   async componentDidMount() {
     try {
-      const res = await Axios.get(`book/` + this.state.getBookCode);
+      const res = await Axios.get(`book/` + this.state.bookCode);
       const bookData = res.data.data;
       const bookDataImage = bookData.bookDetailsEntity.cover
       console.log(bookData)
@@ -195,7 +194,7 @@ class DetailPage extends Component {
                             <hr />
                             <div class="row">
                               <div class="col text-right pt-2">
-                                <img rounded height="80" src="https://www.gramedia.com/blog/content/images/2020/05/selena_gramedia.jpg" />
+                                <img rounded height="80" src="https://www.gramedia.com/blog/content/images/2020/05/selena_gramedia.jpg" alt=""/>
                               </div>
                               <div
                                 class="col"
@@ -208,7 +207,7 @@ class DetailPage extends Component {
                             </div>
                             <div class="row">
                               <div class="col text-right pt-2">
-                                <img rounded height="80" src="https://www.gramedia.com/blog/content/images/2020/05/nebula_gramedia.jpg" />
+                                <img rounded height="80" src="https://www.gramedia.com/blog/content/images/2020/05/nebula_gramedia.jpg" alt=""/>
                               </div>
                               <div class="col"
                                 style={{ display: 'flex', flexWrap: 'wrap', alignContent: 'center' }}>
@@ -220,7 +219,7 @@ class DetailPage extends Component {
                             </div>
                             <div class="row">
                               <div class="col text-right pt-2">
-                                <img rounded height="80" src="https://www.gramedia.com/blog/content/images/2020/05/misteri-terakhir_gramedia.jpg" />
+                                <img rounded height="80" src="https://www.gramedia.com/blog/content/images/2020/05/misteri-terakhir_gramedia.jpg" alt=""/>
                               </div>
                               <div class="col "
                                 style={{ display: 'flex', flexWrap: 'wrap', alignContent: 'center' }}>
@@ -255,7 +254,7 @@ class DetailPage extends Component {
                         <div class='container'>
                           <div class="row-lg">
                             <div class="col-6-lg d-flex justify-content-center align-items-center">
-                              <img class="rounded novel" src={bookDataImage ? bookDataImage : 'https://res.cloudinary.com/todidewantoro/image/upload/v1604943658/bootcamp/covernya_ejy4v1.jpg'} />
+                              <img class="rounded novel" src={bookDataImage ? bookDataImage : 'https://res.cloudinary.com/todidewantoro/image/upload/v1604943658/bootcamp/covernya_ejy4v1.jpg'} alt=""/>
                             </div>
                             <div
                               className='container'>
