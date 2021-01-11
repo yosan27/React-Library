@@ -172,6 +172,10 @@
   list-style: circle;
 }
 
+.payment-arrow{
+  color: grey;
+}
+
 @media only screen and (max-width: 768px) {
   .header-logo-bar .logo h4{
     font-size: 20px;
@@ -211,6 +215,26 @@
   .method-title{
     font-size: 1.1em;
     padding: 8px;
+  }
+
+  .history-nominal{
+    font-size: 9px;
+  }
+
+  .payment-status{
+    font-size: 10px;
+  }
+
+  .payment-method{
+    font-size: 10px;
+  }
+
+  .payment-date{
+    font-size: 12px;
+  }
+
+  .payment-code{
+    font-size: 12px;
   }
 }
 

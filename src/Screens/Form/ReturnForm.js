@@ -74,6 +74,7 @@ class ReturnForm extends Component {
 
   getFine() {
     Axios.get("fine/active").then((res) => {
+      console.log(res.data);
       res.data.forEach((e) => {
         //+
         if (e.fineType !== "Late") {

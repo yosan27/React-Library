@@ -243,7 +243,7 @@ export default class Payment extends Component {
         userCode: this.state.userCode,
       };
       let updateStatus = {
-        status: 5
+        status: 5,
       }
       let updateTransaction = {
         transactionCode: this.state.lastCode,
