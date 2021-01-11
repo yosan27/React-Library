@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import axios from "axios";
+import axios from "../../Services/axios-instance";
 import Image from 'react-bootstrap/Image'
 import { Modal, Button, Card, Table, Form, Row, Col, Badge } from 'react-bootstrap';
 //Datatable Modules
@@ -20,6 +20,7 @@ class UserManagement extends Component {
             email: "",
             status: "",
             address: "",
+            profilePict: "",
 
             data: [
                 { "id": "1", "username": "Yosan27", "fullname": "Yosan Fandi", "email": "yosan27@gmail.com", "status": "Active", "card": "https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg" },
@@ -58,14 +59,6 @@ class UserManagement extends Component {
                     swal('User will be suspended!', {
                         icon: "success",
                     })
-                    this.setState({
-                        data: [
-                            { "id": "1", "username": "Yosan27", "fullname": "Yosan Fandi", "email": "yosan27@gmail.com", "status": "Suspended", "card": "https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg" },
-                            { "id": "2", "username": "Cleo", "fullname": "Cleoputra", "email": "cleo@gmail.com", "status": "Active", "card": "https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg" },
-                            { "id": "3", "username": "Todi", "fullname": "Todi Dewaranto", "email": "todi@gmail.com", "status": "Active", "card": "https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg" },
-                        ],
-                        showSuspend: false
-                    })
                 } else {
                     swal('User will not be suspended!');
                 }
@@ -92,7 +85,7 @@ class UserManagement extends Component {
             $(this).css({ width: "-=30%" });
         }
 
-        axios.get("http://localhost:8500/api/user").then((e) => {
+        axios.get('user').then((e) => {
             this.setState({ userList: e.data });
 
             $(function () {
@@ -104,14 +97,15 @@ class UserManagement extends Component {
     }
 
     getById(id) {
-        axios.get(`http://localhost:8500/api/user-by-id/${id}`).then((res) => {
+        axios.get(`user/id-all/${id}`).then((res) => {
             this.setState({
                 id: res.data.id,
                 userName: res.data.userName,
                 fullName: res.data.fullName,
                 address: res.data.address,
                 phone: res.data.phone,
-                status: res.data.status
+                status: res.data.status,
+                profilePict: res.data.profilePict,
             });
         })
     }
@@ -120,7 +114,7 @@ class UserManagement extends Component {
         let status = {
             status: this.state.status
         }
-        axios.put(`http://localhost:8500/api/user/suspendate/${this.state.id}`, status).then((e) => {
+        axios.put(`user/suspendate/${this.state.id}`, status).then((e) => {
             this.alertEdit()
         })
     }
@@ -234,7 +228,7 @@ class UserManagement extends Component {
             </div>
              {/* modal suspend*/}
      
-             {/* MODAL iden */}
+             {/* modal iden */}
              <div className="modal fade" id="card" tabIndex="-1" aria-labelledby="infoLabel" aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">
@@ -248,7 +242,7 @@ class UserManagement extends Component {
                                 <div class="card mb-3">
                                     <div class="row no-gutters">
                                         <div class="col-md-4">
-                                            <Image className='photoOfOrder text-center img-card card-img-top' src='https://widgetwhats.com/app/uploads/2019/11/free-profile-photo-whatsapp-4.png' wrapped ui={false} style={{ width: '100%', height: 'auto' }} />
+                                            <Image className='photoOfOrder text-center img-card card-img-top' src={this.state.profilePict} wrapped ui={false} style={{ width: '100%', height: 'auto' }} />
                                         </div>
                                         <div class="col-md-8">
                                             <div class="card-body">
@@ -276,6 +270,7 @@ class UserManagement extends Component {
                         </div>
                     </div>
                 </div>
+                {/* modal iden */}
             </div >
         )
 

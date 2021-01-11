@@ -4,6 +4,9 @@ import API from "../../api";
 import './detailpage.css'
 import swal from 'sweetalert';
 import Moment from 'react-moment';
+import Image from 'react-bootstrap/Image';
+import Box from '@material-ui/core/Box';
+import Rating from '@material-ui/lab/Rating';
 
 
 class DetailPage extends Component {
@@ -23,13 +26,15 @@ class DetailPage extends Component {
       show: false,
       register: '',
       pages: '',
-      descriptions: ''
+      descriptions: '',
+      reviewData: [],
     }
   }
 
   async componentDidMount() {
 
     try {
+      const  { bookCode } = this.props.location.state;
       const res = await API.get(`/api/book/B001`);
       const bookData = res.data.data;
       const bookDataImage = bookData.bookDetailsEntity.cover
@@ -45,7 +50,7 @@ class DetailPage extends Component {
       } else {
         this.setState({ subtitle: 'Subtitle not available' });
       }
-
+      this.setState({ bookCode: bookCode})
       this.setState({ bookData: bookData });
       this.setState({ register: bookData.bookCode });
       this.setState({ title: bookData.bookDetailsEntity.bookTitle });
@@ -56,6 +61,7 @@ class DetailPage extends Component {
       this.setState({ bookDataImage: bookDataImage })
       this.setState({ descriptions: bookData.bookDetailsEntity.description })
       console.log(this.state.descriptions)
+      console.log(bookCode)
     } catch (error) {
       console.log(error);
     }
@@ -76,6 +82,45 @@ class DetailPage extends Component {
 
   handleShow = () => {
     this.setState({ show: true })
+  }
+
+  setRate(rate) {
+    if(rate == 1) {
+        return <div> <span class="fa fa-star checked"></span>
+        <span class="fa fa-star"></span>
+        <span class="fa fa-star "></span>
+        <span class="fa fa-star"></span>
+        <span class="fa fa-star"></span>
+        </div>
+    } else if(rate == 2) {
+        return <div> <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star "></span>
+        <span class="fa fa-star"></span>
+        <span class="fa fa-star"></span>
+        </div>
+    } else if(rate == 3) {
+        return <div> <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star"></span>
+        <span class="fa fa-star"></span>
+        </div>
+    } else if(rate == 4) {
+        return <div> <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star "></span>
+        </div>
+    } else if(rate == 5) {
+        return <div> <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        </div>
+    } 
   }
 
   render() {
@@ -190,6 +235,9 @@ class DetailPage extends Component {
                               <Button className="btn btn-warning borrow" variant="primary" onClick={this.handleShow}>
                                 Borrow
                               </Button>
+                              <button className="btn btn-primary" data-toggle="modal" data-target="#review">
+                                   Review
+                                </button>
                             </div>
                             {/* button borrow */}
                           </div>
@@ -252,6 +300,107 @@ class DetailPage extends Component {
                       </Modal.Footer>
                     </Modal>
                     {/* modal borrow */}
+                    {/* modal look review*/}
+                    <div className="modal fade" id="review" tabIndex="-1" aria-labelledby="infoLabel" aria-hidden="true">
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title" id="infoLabel">Info Review</h5>
+                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                    <div className="modal-body">
+                                    {this.state.reviewData.map((book, index) => {
+                                    return(
+                                        <form key={index}>
+                                                <div class="form-group row">
+                                                <label for="editImage" class="col-sm-2 col-form-label">By   
+                                                {Object.keys(book.userEntity?book.userEntity:"").map(key => {
+                                                    if (key === "userName"){
+                                                    const name = (book.userEntity[key])
+                                                    return name;
+                                                    }
+                                                })}                       
+                                                <br />       
+                                                {this.setRate(book.rate)}         
+                                                </label>
+                                                <div class="col-sm-10" >
+                                                    {book.review}
+                                                </div>
+                                                </div>
+                                                <hr />
+                                        </form>   
+                                        );
+                                    })}  
+                                        </div>
+                                    
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button className="btn btn-primary btn-sm rounded-sm w-30 mr-1" data-toggle="modal" data-target="#reviewAdd">
+                                        <i className="fa fa-edit"></i>Add Review
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>                                           
+                    {/* Modal look review */}
+                    {/* Modal create review */}
+                    <div className="modal fade" id="reviewAdd" tabIndex="-1" aria-labelledby="addLabel" aria-hidden="true">
+                          <div className="modal-dialog">
+                              <div className="modal-content">
+                                  <div className="modal-header">
+                                      <h5 className="modal-title" id="addLabel">Add Review</h5>
+                                      <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                          <span aria-hidden="true" className="modal-clear">&times;</span>
+                                      </button>
+                                  </div>
+                                  <div className="modal-body">
+                                      <form>
+                                      <div class="form-group row">
+                                          <div class="col-sm-12 text-center">
+                                          <Image className='' src={"https://www.gramedia.com/blog/content/images/2020/05/selena_gramedia.jpg"} wrapped ui={false} style={{width:'20%',height:'auto'}}/>
+                                          </div>
+                                      </div>
+                                      <div className="form-group row">
+                                          <div className="col-sm-9">
+                                              <input type="hidden" className="form-control input" name="bookCode" readOnly 
+                                              value={this.state.bookCode} />
+                                          </div>
+                                      </div>
+                                    <div class="form-group row">
+                                          <label for="rating" class="col-sm-2 col-form-label">Rating</label>
+                                          <div class="col-sm-10">
+                                          <Box component="fieldset" mb={3} borderColor="transparent">
+                                              <Rating
+                                              name="simple-controlled"
+                                              name="rate"
+                                              id="rate"
+                                              onChange={this.changeRateHandler}
+                                              value={this.state.rate}
+                                              />
+                                          </Box>           
+                                          </div>
+                                      </div>
+                                      <div class="form-group row">
+                                          <label for="editRev" class="col-sm-2 col-form-label">Review</label>
+                                          <div class="col-sm-10">
+                                          <input className="form-control input" name="review" id="review" placeholder="Review..."
+                                              value={this.state.review} onChange={this.changeReviewHandler} />
+                                          </div>
+                                    </div>
+                                      </form>
+                                  </div>
+                                  <div className="modal-footer">
+                                      <button className="btn btn-secondary modal-clear" data-dismiss="modal">Cancel</button>
+                                      <button className="btn btn-success" data-dismiss="modal" onClick={this.handlePostReview}>Add</button>
+                                  </div>
+                              </div>
+                          </div>
+                    </div>
+                    {/* modal create review */}
+
+
                   </div>
                 </div>
               </div>
