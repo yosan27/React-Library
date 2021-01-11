@@ -8,8 +8,10 @@ body {
   font-size: 17px;
 }
 
-.nav_title a img{
-  width: 40px;
+.logo{
+  width: 40px !important;
+  height: 40px;
+  display: inline-block;
 }
 
 .history h3{

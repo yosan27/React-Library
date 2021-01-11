@@ -49,57 +49,63 @@ export default class FineManagement extends Component {
   //   }
   // }
 
-  getActiveFine = () =>{
-    axios.get("fine/active").then((e) => {
-      this.setState({ fineList: e.data });
-      $(function () {
-        $("#fine-list").DataTable({
-          responsive: true,
+  getActiveFine = () => {
+    axios
+      .get("fine/active")
+      .then((e) => {
+        this.setState({ fineList: e.data });
+        $(function () {
+          $("#fine-list").DataTable({
+            responsive: true,
+          });
         });
+      })
+      .catch(function (error) {
+        swal("Failed", error.response.data.message, "error");
       });
-    }).catch(function(error){
-      swal("Failed", error.response.data.message, "error");
-    });
-  }
+  };
 
   getCode = () => {
-    axios.get("fine").then((e) => {
-      this.setState({
-        allList: e.data,
-      });
-      // Get Fine Code
-      if (this.state.allList.length !== 0) {
-        let lastDigit = this.state.allList[
-          this.state.allList.length - 1
-        ].fineCode.substr(3);
-        let secondDigit = this.state.allList[
-          this.state.allList.length - 1
-        ].fineCode.substr(2, 1);
-        let firstDigit = this.state.allList[
-          this.state.allList.length - 1
-        ].fineCode.substr(1, 1);
-        if (lastDigit === 9) {
-          if (secondDigit === 9) {
-            let firstPlus = parseInt(firstDigit) + 1;
-            let code = `F${firstPlus}00`;
-            this.setState({ lastCode: code });
+    axios
+      .get("fine")
+      .then((e) => {
+        this.setState({
+          allList: e.data,
+        });
+        // Get Fine Code
+        if (this.state.allList.length !== 0) {
+          let lastDigit = this.state.allList[
+            this.state.allList.length - 1
+          ].fineCode.substr(3);
+          let secondDigit = this.state.allList[
+            this.state.allList.length - 1
+          ].fineCode.substr(2, 1);
+          let firstDigit = this.state.allList[
+            this.state.allList.length - 1
+          ].fineCode.substr(1, 1);
+          if (lastDigit === 9) {
+            if (secondDigit === 9) {
+              let firstPlus = parseInt(firstDigit) + 1;
+              let code = `F${firstPlus}00`;
+              this.setState({ lastCode: code });
+            } else {
+              let secondPlus = parseInt(secondDigit) + 1;
+              let code = `F${firstDigit}${secondPlus}0`;
+              this.setState({ lastCode: code });
+            }
           } else {
-            let secondPlus = parseInt(secondDigit) + 1;
-            let code = `F${firstDigit}${secondPlus}0`;
+            let lastPlus = parseInt(lastDigit) + 1;
+            let code = `F${firstDigit}${secondDigit}${lastPlus}`;
             this.setState({ lastCode: code });
           }
         } else {
-          let lastPlus = parseInt(lastDigit) + 1;
-          let code = `F${firstDigit}${secondDigit}${lastPlus}`;
-          this.setState({ lastCode: code });
+          this.setState({ lastCode: "F001" });
         }
-      } else {
-        this.setState({ lastCode: "F001" });
-      }
-      this.setState({ fineCode: this.state.lastCode });
-    }).catch(function(error){
-      swal("Failed", error.response.data.message, "error");
-    });
+        this.setState({ fineCode: this.state.lastCode });
+      })
+      .catch(function (error) {
+        swal("Failed", error.response.data.message, "error");
+      });
   };
 
   clearModal = (e) => {
@@ -120,7 +126,7 @@ export default class FineManagement extends Component {
       });
       document.querySelector(".add-btn").classList.add("disabled");
       if (this.state.button === "Update Fine") {
-        this.setState({ button: "Add Fine" })
+        this.setState({ button: "Add Fine" });
       }
     }
   };
@@ -140,7 +146,7 @@ export default class FineManagement extends Component {
     const date = /^[0-9/]+$/;
 
     if (button !== "Add Fine") {
-      this.setState({ a: true, b: true, c: true })
+      this.setState({ a: true, b: true, c: true });
     }
 
     // Validate user input
@@ -212,7 +218,7 @@ export default class FineManagement extends Component {
       if (value !== "") {
         this.setState({
           [event.target.name]: event.target.value,
-          c: true
+          c: true,
         });
         if (value !== " ") {
           if (b && a) {
@@ -227,33 +233,55 @@ export default class FineManagement extends Component {
   };
 
   addFine = () => {
-    // Check button name
-    if (this.state.button === "Add Fine") {
-      let fineList = {
-        fineCode: this.state.fineCode,
-        fineType: this.state.fineType,
-        nominal: this.state.nominal,
-        validTo: this.state.validTo,
-      };
-      axios
-        .post("fine", fineList)
-        .then(() => window.location.reload()).catch(function(error){
-          swal("Failed", error.response.data.message, "error");
-        });
-    } else {
-      // Button name : Update Fine
-      let fineList = {
-        fineCode: this.state.fineCode,
-        fineType: this.state.fineType,
-        nominal: this.state.nominal,
-        validTo: this.state.validTo,
-      };
-      axios
-        .put(`fine/${this.state.id}`, fineList)
-          .then(() => window.location.reload()).catch(function(error){
+    swal({
+      title: "Are you sure?",
+      text: "Make sure the data is correct!",
+      icon: "warning",
+      buttons: {
+        cancel: true,
+        confirm: "Confirm",
+      },
+    }).then((ok) => {
+      if(ok){
+      // Check button name
+      if (this.state.button === "Add Fine") {
+        let fineList = {
+          fineCode: this.state.fineCode,
+          fineType: this.state.fineType,
+          nominal: this.state.nominal,
+          validTo: this.state.validTo,
+        };
+        axios
+          .post("fine", fineList)
+          .then(() =>{
+            swal("Success!", "Data added successfully", "success").then(()=>{
+              window.location.reload();
+            })
+          })
+          .catch(function (error) {
             swal("Failed", error.response.data.message, "error");
           });
-    }
+      } else {
+        // Button name : Update Fine
+        let fineList = {
+          fineCode: this.state.fineCode,
+          fineType: this.state.fineType,
+          nominal: this.state.nominal,
+          validTo: this.state.validTo,
+        };
+        axios
+          .put(`fine/${this.state.id}`, fineList)
+          .then(() => {
+            swal("Success!", "Data updated successfully", "success").then(()=>{
+              window.location.reload();
+            })
+          })
+          .catch(function (error) {
+            swal("Failed", error.response.data.message, "error");
+          });
+        }
+      }
+    });
   };
 
   update = (getId) => {
@@ -264,26 +292,49 @@ export default class FineManagement extends Component {
     });
 
     // Get data by id and fill form
-    axios.get(`fine/id/${getId}`).then((e) => {
-      let res = e.data;
-      this.setState({
-        fineCode: res.fineCode,
-        fineType: res.fineType,
-        nominal: res.nominal,
-        validFrom: res.validFrom,
-        validTo: res.validTo,
+    axios
+      .get(`fine/id/${getId}`)
+      .then((e) => {
+        let res = e.data;
+        this.setState({
+          fineCode: res.fineCode,
+          fineType: res.fineType,
+          nominal: res.nominal,
+          validFrom: res.validFrom,
+          validTo: res.validTo,
+        });
+      })
+      .catch(function (error) {
+        swal("Failed", error.response.data.message, "error");
       });
-    }).catch(function(error){
-      swal("Failed", error.response.data.message, "error");
-    });
   };
 
   delete = (getId) => {
-    axios
-      .delete(`fine/${getId}`)
-      .then(() => window.location.reload()).catch(function(error){
-        swal("Failed", error.response.data.message, "error");
-      });
+    swal({
+      title: "Are you sure?",
+      text:
+        "Do you really want to delete these data? This process cannot be undone.",
+      icon: "warning",
+      buttons: {
+        cancel: true,
+        confirm: "Confirm",
+      },
+    }).then((ok) => {
+      if (ok) {
+        axios
+          .delete(`fine/${getId}`)
+          .then(() => {
+            swal("Success!", "Data deleted successfully", "success").then(
+              () => {
+                window.location.reload();
+              }
+            );
+          })
+          .catch(function (error) {
+            swal("Failed", error.response.data.message, "error");
+          });
+      }
+    });
   };
 
   render() {
@@ -410,7 +461,11 @@ export default class FineManagement extends Component {
                       <label for="fineType" className="col-sm-3">
                         Fine Type
                       </label>
-                      <select value={this.state.fineType} name="fineType" onChange={(e) => this.handleChange(e, e.target.value)}>
+                      <select
+                        value={this.state.fineType}
+                        name="fineType"
+                        onChange={(e) => this.handleChange(e, e.target.value)}
+                      >
                         <option value=" ">- Select -</option>
                         <option value="Late">Late</option>
                         <option value="Fold">Fold</option>
@@ -447,7 +502,7 @@ export default class FineManagement extends Component {
                         autoComplete="off"
                         value={this.state.validTo}
                         onChange={(e) => this.handleChange(e, e.target.value)}
-                      // onInput={this.maxLengthCheck}
+                        // onInput={this.maxLengthCheck}
                       ></input>
                     </div>
                   </form>

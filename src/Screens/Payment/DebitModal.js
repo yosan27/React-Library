@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import NumberFormat from "react-number-format";
+import swal from "sweetalert";
 
 export default class DebitModal extends Component {
   constructor(props) {
@@ -133,6 +134,22 @@ export default class DebitModal extends Component {
     }
   };
 
+  confirm = () =>{
+    swal({
+      title: "Are you sure?",
+      text: "Make sure the data is correct!",
+      icon: "warning",
+      buttons: {
+        cancel: true,
+        confirm: "Confirm",
+    }
+    }).then((ok) => {
+      if(ok){
+        this.props.debitPay();
+      }
+    })
+  }
+
   render() {
     return (
       <div className="modal fade" tabindex="-1" id="debitModal">
@@ -170,6 +187,7 @@ export default class DebitModal extends Component {
                       className="long-input"
                       maxLength="32"
                       type="text"
+                      placeholder="Card Holder Name"
                       name="nameCard"
                       autocomplete="off"
                       value={this.state.nameCard}
@@ -188,6 +206,7 @@ export default class DebitModal extends Component {
                     <input
                       className="long-input"
                       maxLength="16"
+                      placeholder="Minimum 16 Digit"
                       type="text"
                       name="cardNumber"
                       autocomplete="off"
@@ -284,7 +303,7 @@ export default class DebitModal extends Component {
                           className="btn debit-modal-pay-btn disabled"
                           type="button"
                           data-dismiss="modal"
-                          onClick={() => this.props.debitPay()}
+                          onClick={this.confirm}
                         >
                           Pay
                         </Link>
