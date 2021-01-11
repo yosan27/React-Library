@@ -243,14 +243,14 @@ export default class Payment extends Component {
         userCode: this.state.userCode,
       };
       let updateStatus = {
-        status: 5
+        status: 5,
       }
       let updateTransaction = {
         transactionCode: this.state.lastCode,
       }
       axios.post("transaction", paymentRecord).then(()=>{
         this.state.rentCodeList.forEach((e)=>{
-          axios.put(`rent/code/${e}`, updateStatus).catch(function(error){
+          axios.put(`rent/code/status/${e}`, updateStatus).catch(function(error){
             swal("Failed", error.response.data.message, "error");
           });
         });
