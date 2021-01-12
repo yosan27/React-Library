@@ -31,6 +31,7 @@ class History extends Component {
     componentDidMount() {
         this.getAll()
         document.addEventListener('click', this.clearModal);
+        
     }
 
     getAll() {
@@ -135,7 +136,7 @@ class History extends Component {
     }
 
     render() {
-        const { rent } = this.state;
+        const {rent}  = this.state;
         return (
             <div className="right_col" role="main" style={{ minHeight: '100vh' }}>
                 <section className="mt-5 pt-5">
