@@ -6,9 +6,9 @@ import 'datatables.net-dt/js/dataTables.dataTables'
 import 'datatables.net-dt/css/jquery.dataTables.min.css'
 import 'datatables.net-responsive-dt/js/responsive.dataTables.js'
 import 'datatables.net-responsive-dt/css/responsive.dataTables.css'
-import $ from 'jquery'; 
-import API from "../../api";
- 
+import $ from 'jquery';
+import axios from "../../Services/axios-instance";
+
 class PublisherManagement extends Component {
   constructor(props) {
     super(props);
@@ -27,12 +27,13 @@ class PublisherManagement extends Component {
   async componentDidMount() {
     // DATA TABEL
     try {
-      const res = await API.get(`/api/publisher/active`,
-      {
+      const res = await axios.get(`publisher/active`,
+        {
           headers: {
-          Accept: "*/*",
-          "Content-Type": "application/json",}
-      }
+            Accept: "*/*",
+            "Content-Type": "application/json",
+          }
+        }
       );
       const tabledata = res.data;
       this.setState({ tabledata: tabledata });
@@ -42,10 +43,10 @@ class PublisherManagement extends Component {
 
     $(function () {
       $('#publishermanagement').DataTable({
-          responsive: true
+        responsive: true
       });
     });
-    
+
   }
 
   //modal add
@@ -54,19 +55,19 @@ class PublisherManagement extends Component {
   }
 
   handleAddPublisher = (e) => {
-    API.post(
-      `api/publisher`,
+    axios.post(
+      `publisher`,
       {
         publisherName: this.state.publisherName,
         address: this.state.address,
       },
-        {
-          headers: {
-            Accept: "*/*",
-            "Content-Type": "application/json",
-          },
-        }
-      )
+      {
+        headers: {
+          Accept: "*/*",
+          "Content-Type": "application/json",
+        },
+      }
+    )
       .then(() => {
         window.location.reload();
         swal("Success!", "Publisher Has Been Added", "success");
@@ -79,33 +80,33 @@ class PublisherManagement extends Component {
 
   //button edit
   handleShowEdit = (pbid) => {
-    this.setState({showEdit: true, publisherId : pbid})
-    API.get(`/api/publisher/id/${pbid}`).then((res) => {
+    this.setState({ showEdit: true, publisherId: pbid })
+    axios.get(`publisher/id/${pbid}`).then((res) => {
       let response = res.data;
       this.setState({
         publisherName: response.publisherName,
         address: response.address,
-        publisherCode : response.publisherCode
+        publisherCode: response.publisherCode
       });
     });
   };
 
   handleSaveEdit = () => {
     this.setState({ showEdit: false })
-    API.put(
-      `api/publisher/${this.state.publisherId}`,
+    axios.put(
+      `publisher/${this.state.publisherId}`,
       {
         publisherName: this.state.publisherName,
         address: this.state.address,
         publisherCode: this.state.publisherCode,
       },
-        {
-          headers: {
-            Accept: "*/*",
-            "Content-Type": "application/json",
-          },
-        }
-      )
+      {
+        headers: {
+          Accept: "*/*",
+          "Content-Type": "application/json",
+        },
+      }
+    )
       .then(() => {
         this.setState({ publisherId: "" })
         window.location.reload();
@@ -119,25 +120,27 @@ class PublisherManagement extends Component {
 
   //button delete
   handleShowDelete = (pbid) => {
-    this.setState({showDelete: true, publisherId : pbid})
+    this.setState({ showDelete: true, publisherId: pbid })
   }
 
   handleDelete = () => {
     this.setState({ showDelete: false });
-    API.delete(`/api/publisher/${this.state.publisherId}`)
-      .then(()=>window.location.reload())
+    axios.delete(`publisher/${this.state.publisherId}`)
+      .then(() => window.location.reload())
     swal("Deleted!", "Publisher Is Successfully Deleted", "success");
   }
 
   //util
   handleCloseModal = () => {
-    this.setState({ showAdd: false, showEdit: false, showDelete: false, publisherName: "",
-    publisherCode: "", address: ""})
+    this.setState({
+      showAdd: false, showEdit: false, showDelete: false, publisherName: "",
+      publisherCode: "", address: ""
+    })
   }
 
   render() {
     const { showAdd, showEdit, showDelete, tabledata, disableSubmitting, publisherName, address } = this.state;
-   
+
     return (
       // page content
       <div className="right_col" role="main" style={{ minHeight: '100vh' }}>
@@ -161,35 +164,35 @@ class PublisherManagement extends Component {
                     {/* publisher management table */}
                     <Table responsive striped id="publishermanagement" style={{ width: '100%' }}>
                       <thead>
-                          <tr>
-                            <th>Publisher Code</th>
-                            <th>Action</th>
-                            <th>Publisher Name</th>
-                            <th>Address</th>
-                          </tr>
+                        <tr>
+                          <th>Publisher Code</th>
+                          <th>Action</th>
+                          <th>Publisher Name</th>
+                          <th>Address</th>
+                        </tr>
                       </thead>
                       <tbody>
                         {
-                        tabledata.map((pb, index) => {
-                          return (
+                          tabledata.map((pb, index) => {
+                            return (
                               <tr key={index}>
                                 <td>{pb.publisherCode}</td>
                                 <td>
                                   <div class='d-flex justify-content-around mt-4' style={{ border: 'none' }}>
-                                    <button class="btn btn-primary" data-toggle="modal" data-target="#edit" 
-                                                  onClick={ ()=> {this.handleShowEdit(pb.id)}}><i
-                                      class="fa fa-edit"></i></button>
+                                    <button class="btn btn-primary" data-toggle="modal" data-target="#edit"
+                                      onClick={() => { this.handleShowEdit(pb.id) }}><i
+                                        class="fa fa-edit"></i></button>
                                     <button class="btn btn-danger" data-toggle="modal" data-target="#delete"
-                                                  onClick={()=> this.handleShowDelete(pb.id)}><i
-                                      class="fa fa-trash"></i></button>
+                                      onClick={() => this.handleShowDelete(pb.id)}><i
+                                        class="fa fa-trash"></i></button>
                                   </div>
                                 </td>
                                 <td>{pb.publisherName}</td>
                                 <td>{pb.address}</td>
                               </tr>
-                          )
-                        })
-                      } 
+                            )
+                          })
+                        }
                       </tbody>
                     </Table>
 
@@ -205,32 +208,32 @@ class PublisherManagement extends Component {
                               <div class="form-group row">
                                 <label for="addPublisherName" class="col-sm-2 col-form-label">Publisher Name</label>
                                 <div class="col-sm-10">
-                                  <input 
-                                  type="text" 
-                                  name="publisherName"
-                                  class="form-control" 
-                                  id="addPublisherName" 
-                                  placeholder="Name..." 
-                                  onChange={(e) => this.setState({publisherName : e.target.value})}
-                                  value={publisherName} 
-                                  data-attribute-name="Name"
-                                  data-async
+                                  <input
+                                    type="text"
+                                    name="publisherName"
+                                    class="form-control"
+                                    id="addPublisherName"
+                                    placeholder="Name..."
+                                    onChange={(e) => this.setState({ publisherName: e.target.value })}
+                                    value={publisherName}
+                                    data-attribute-name="Name"
+                                    data-async
                                   />
                                 </div>
                               </div>
                               <div class="form-group row">
                                 <label for="addPublisherAddress" class="col-sm-2 col-form-label">Address</label>
                                 <div class="col-sm-10">
-                                  <input 
-                                  type="text" 
-                                  name="address"
-                                  class="form-control" 
-                                  id="addAddress" 
-                                  placeholder="Address..." 
-                                  onChange={(e) => this.setState({address : e.target.value})}
-                                  value={address} 
-                                  data-attribute-name="Address"
-                                  data-async
+                                  <input
+                                    type="text"
+                                    name="address"
+                                    class="form-control"
+                                    id="addAddress"
+                                    placeholder="Address..."
+                                    onChange={(e) => this.setState({ address: e.target.value })}
+                                    value={address}
+                                    data-attribute-name="Address"
+                                    data-async
                                   />
                                 </div>
                               </div>
@@ -261,25 +264,25 @@ class PublisherManagement extends Component {
                               <div class="form-group row">
                                 <label for="editPublisherName" class="col-sm-2 col-form-label">Publisher Name</label>
                                 <div class="col-sm-10">
-                                  <input 
-                                    type="text" 
-                                    class="form-control" 
-                                    id="editPublisherName" 
-                                    placeholder="Please input publisher" 
-                                    value={publisherName} 
-                                    onChange={(e) => this.setState({publisherName : e.target.value})}/>
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    id="editPublisherName"
+                                    placeholder="Please input publisher"
+                                    value={publisherName}
+                                    onChange={(e) => this.setState({ publisherName: e.target.value })} />
                                 </div>
                               </div>
                               <div class="form-group row">
                                 <label for="editAddress" class="col-sm-2 col-form-label">Address</label>
                                 <div class="col-sm-10">
-                                  <input 
-                                    type="text" 
-                                    class="form-control" 
-                                    id="editAddress" 
-                                    placeholder="Please input address" 
-                                    value={address} 
-                                    onChange={(e) => this.setState({address : e.target.value})}/>
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    id="editAddress"
+                                    placeholder="Please input address"
+                                    value={address}
+                                    onChange={(e) => this.setState({ address: e.target.value })} />
                                 </div>
                               </div>
                             </form>

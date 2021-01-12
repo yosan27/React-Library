@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Redirect, Link, withRouter } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import './HeaderUser.style.css';
-// import axios from "axios";
 import Axios from "../Services/axios-instance";
 import AuthService from "../Services/auth.service";
 
@@ -14,7 +13,8 @@ class HeaderUser extends Component {
             userCode: "",
             userData: [],
             countCart: "0",
-            statusUser: ""
+            statusUser: "",
+            searchInput: "",
         };
     }
 
@@ -41,8 +41,20 @@ class HeaderUser extends Component {
         })
     }
 
+    handleChange = (e) =>{
+        this.setState({searchInput:e})
+    }
+
+    handleSubmit=()=>{
+        if(window.location.pathname.includes("result")){
+            this.props.history.push(`${this.state.searchInput}`);
+        }else{
+            this.props.history.push(`result/${this.state.searchInput}`);
+        }
+    }
+
     render() {
-        const { condition, username } = this.state;
+        const { condition} = this.state;
         const mystyle = {
             color: "#495464 !important",
             cursor: 'pointer',
@@ -119,10 +131,13 @@ class HeaderUser extends Component {
                             <form className="form-inline pt-2">
                                 <div className="input-group input-group-sm">
                                     <input className="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search"
-                                        style={{ backgroundColor: 'white', border: 0, borderTopLeftRadius: '25px', borderBottomLeftRadius: '25px', }} />
+                                        style={{ backgroundColor: 'white', border: 0, borderTopLeftRadius: '25px', borderBottomLeftRadius: '25px', }} 
+                                        value={this.state.searchInput}
+                                        onChange={(e)=>this.handleChange(e.target.value)}/>
                                     <div className="input-group-append">
                                         <button className="btn btn-navbar m-0" type="submit"
-                                            style={{ backgroundColor: 'white', border: 0, borderTopRightRadius: '25px', borderBottomRightRadius: '25px', }}>
+                                            style={{ backgroundColor: 'white', border: 0, borderTopRightRadius: '25px', borderBottomRightRadius: '25px', }}
+                                            onClick={this.handleSubmit}>
                                             <i className="fa fa-search pr-2"></i>
                                         </button>
                                     </div>
@@ -245,10 +260,13 @@ class HeaderUser extends Component {
                             <form className="form-inline pt-2">
                                 <div className="input-group input-group-sm">
                                     <input className="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search"
-                                        style={{ backgroundColor: 'white', border: 0, borderTopLeftRadius: '25px', borderBottomLeftRadius: '25px', }} />
+                                        style={{ backgroundColor: 'white', border: 0, borderTopLeftRadius: '25px', borderBottomLeftRadius: '25px', }} 
+                                        value={this.state.searchInput}
+                                        onChange={(e)=>this.handleChange(e.target.value)}/>
                                     <div className="input-group-append">
                                         <button className="btn btn-navbar m-0" type="submit"
-                                            style={{ backgroundColor: 'white', border: 0, borderTopRightRadius: '25px', borderBottomRightRadius: '25px', }}>
+                                            style={{ backgroundColor: 'white', border: 0, borderTopRightRadius: '25px', borderBottomRightRadius: '25px', }}
+                                            onClick={this.handleSubmit}>
                                             <i className="fa fa-search pr-2"></i>
                                         </button>
                                     </div>

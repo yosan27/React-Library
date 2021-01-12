@@ -3,7 +3,6 @@ import "./Slidertop.style.css";
 import Slider from "react-slick";
 import { Link, withRouter } from "react-router-dom";
 import Axios from "../Services/axios-instance";
-import AuthService from "../Services/auth.service";
 import swal from "sweetalert";
 
 // css
@@ -50,6 +49,7 @@ class Content extends Component {
       sliderNew: [],
       dataBookSlider: [],
       asianBooks: [],
+      getRate: [],
     }
   }
 
@@ -64,14 +64,18 @@ class Content extends Component {
     }).catch(function(error){
       swal("Failed", error.response.data.message, "error");
     });
+
+    Axios.get("review").then((e)=>{
+      this.setState({getRate:e.data})
+    })
       
     Axios.get("bookdetails").then((resp) => {
-      console.log(resp)
+      // console.log(resp)
       this.setState({ sliderNew: resp.data.data });
       this.state.sliderNew.forEach((slider, i) => {
         if (i < 3) {
           Axios.get("book/detailcode/" + slider.bookDetailCode).then((response) => {
-            console.log(response)
+            // console.log(response)
             this.setState({
               dataBookSlider: [...this.state.dataBookSlider, {
                 'sliderNew': slider,
@@ -92,7 +96,7 @@ class Content extends Component {
       } else {
         console.log('Error', error.message);
       }
-    })
+    });
   }
   
   sendBooks = () =>{
@@ -104,7 +108,7 @@ class Content extends Component {
   }
 
   render() {
-    console.log(this.state.dataBookSlider)
+    // console.log(this.state.dataBookSlider)
     const settings = {
       centerMode: true,
       slidesToShow: 1,

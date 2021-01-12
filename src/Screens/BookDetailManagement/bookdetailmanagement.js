@@ -64,7 +64,7 @@ class BookDetailManagement extends Component {
     //       responsive: true
     //   });
     // });
-  // }
+  // }development
 
   //modal add
   handleShowAdd = () => {
