@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import axios from "axios";
+import axios from "../../Services/axios-instance";
 import Image from 'react-bootstrap/Image'
 import { Modal, Button, Card, Table, Form, Row, Col, Badge } from 'react-bootstrap';
 //Datatable Modules
@@ -20,6 +20,7 @@ class UserManagement extends Component {
             email: "",
             status: "",
             address: "",
+            profilePict: "",
 
             data: [
                 { "id": "1", "username": "Yosan27", "fullname": "Yosan Fandi", "email": "yosan27@gmail.com", "status": "Active", "card": "https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg" },
@@ -58,20 +59,22 @@ class UserManagement extends Component {
                     swal('User will be suspended!', {
                         icon: "success",
                     })
-                    this.setState({
-                        data: [
-                            { "id": "1", "username": "Yosan27", "fullname": "Yosan Fandi", "email": "yosan27@gmail.com", "status": "Suspended", "card": "https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg" },
-                            { "id": "2", "username": "Cleo", "fullname": "Cleoputra", "email": "cleo@gmail.com", "status": "Active", "card": "https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg" },
-                            { "id": "3", "username": "Todi", "fullname": "Todi Dewaranto", "email": "todi@gmail.com", "status": "Active", "card": "https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg" },
-                        ],
-                        showSuspend: false
-                    })
                 } else {
                     swal('User will not be suspended!');
                 }
             })
 
     };
+
+    alertEdit = () => {
+        swal("Success!", "User has been suspended", "success").then(() => {
+            window.location.reload()
+        })
+    }
+
+    changeStatusHandler = (e) => {
+        this.setState({status: e.target.value})
+    }
 
     componentDidMount() {
         $('.img-card').hover(makeBigger, returnToOriginalSize);
@@ -82,7 +85,7 @@ class UserManagement extends Component {
             $(this).css({ width: "-=30%" });
         }
 
-        axios.get("http://localhost:8500/api/user").then((e) => {
+        axios.get('user').then((e) => {
             this.setState({ userList: e.data });
 
             $(function () {
@@ -94,14 +97,25 @@ class UserManagement extends Component {
     }
 
     getById(id) {
-        axios.get(`http://localhost:8500/api/user-by-id/${id}`).then((res) => {
+        axios.get(`user/id-all/${id}`).then((res) => {
             this.setState({
+                id: res.data.id,
                 userName: res.data.userName,
                 fullName: res.data.fullName,
                 address: res.data.address,
                 phone: res.data.phone,
-                status: res.data.status
-            })
+                status: res.data.status,
+                profilePict: res.data.profilePict,
+            });
+        })
+    }
+
+    updateSuspend = (e) => {
+        let status = {
+            status: this.state.status
+        }
+        axios.put(`user/suspendate/${this.state.id}`, status).then((e) => {
+            this.alertEdit()
         })
     }
 
@@ -144,23 +158,23 @@ class UserManagement extends Component {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {
-                                                    this.state.userList.map((user) => {
-                                                        return (
-                                                            <tr>
-                                                                <td>{user.id}</td>
-                                                                <td>
-                                                                    <span className="d-flex justify-content-center" data-toggle="tooltip" title="suspend">
-                                                                        <Button variant="danger" size="sm" data-toggle="modal" data-target="#detail" onClick={this.handleShowSuspend}>
-                                                                            <i className="fa fa-gavel"></i>
-                                                                        </Button>
-                                                                    </span>
-                                                                </td>
-                                                                <td>{user.userName}</td>
-                                                                <td>{user.fullName}</td>
-                                                                <td>{user.email}</td>
-                                                                <td>{this.setStatus(user.status)}</td>
-                                                                <td className="text-center">
+                                                    {
+                                                        this.state.userList.map((user) => {
+                                                            return (
+                                                                <tr>
+                                                                    <td>{user.id}</td>
+                                                                    <td>
+                                                                        <span className="d-flex justify-content-center" data-toggle="tooltip" title="suspend">
+                                                                        <button className="btn btn-danger btn-sm rounded-sm w-30 mr-1" data-toggle="modal" data-target="#suspend" onClick={() => this.getById(user.id)}>
+                                                                        <i className="fa fa-gavel"></i>
+                                                                        </button>
+                                                                        </span>
+                                                                    </td>
+                                                                    <td>{user.userName}</td>
+                                                                    <td>{user.fullName}</td>
+                                                                    <td>{user.email}</td>
+                                                                    <td>{this.setStatus(user.status)}</td>
+                                                                    <td className="text-center">
                                                                     <span className="d-flex justify-content-center" data-toggle="tooltip" title="card">
                                                                         <Button variant="primary" size="sm" data-toggle="modal" data-target="#card" onClick={() => this.getById(user.id)}>
                                                                             <i className="fa fa-credit-card"></i>
@@ -179,86 +193,43 @@ class UserManagement extends Component {
                         </div>
                     </div >
                 </section >
-                {/* modal suspend */}
-                <Modal size="lg" show={showSuspend} onHide={this.handleCloseSuspend}>
-                    <Modal.Header closeButton>
-                        <Modal.Title> User Suspend </Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <div className='container'>
-                            <div className='modal-body'>
+    
+            {/* modal suspend */}                                        
+            <div className="modal fade" id="suspend" tabIndex="-1" aria-labelledby="addLabel" aria-hidden="true">
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title" id="addLabel">User Suspend</h5>
+                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true" className="modal-clear">&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <form>
+                                <input type="hidden" readOnly className="form-control-plaintext" value={this.state.id} />      
                                 <p>Are you sure this person will get suspend ?</p>
                                 <div class="form-group">
-                                    <label for="exampleFormControlSelect1">How many weeks ?</label>
-                                    <select class="form-control" id="exampleFormControlSelect1">
-                                        <option>1</option>
-                                        <option>2</option>
-                                        <option>3</option>
-                                        <option>4</option>
-                                        <option>5</option>
-                                    </select>
-                                </div>
+                                <label for="exampleFormControlSelect1">How many weeks ?</label>
+                                <select class="form-control" name="suspend" id="" value={this.state.status} onChange={this.changeStatusHandler}>
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                </select>
+                                </div>   
+                                </form>
+                            </div>
+                            <div className="modal-footer">
+                                <button className="btn btn-secondary modal-clear" data-dismiss="modal">Cancel</button>
+                                <button className="btn btn-success" data-dismiss="modal" onClick={this.updateSuspend}>Suspend</button>
                             </div>
                         </div>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button className="btn btn-primary" variant="primary" onClick={this.suspend}>
-                            <i class="fa fa-stopwatch"></i> Save Changes
-                    </Button>
-                        <Button className="btn btn-secondary" variant="secondary" onClick={this.handleCloseSuspend}>
-                            <i class="fa fa-times-circle"></i> Close
-                    </Button>
-                    </Modal.Footer>
-                </Modal>
-                {/* modal suspend */}
-                {/* modal iden card */}
-                <Modal size="lg" show={showCard} onHide={this.handleCloseCard}>
-                    <Modal.Header closeButton>
-                        <Modal.Title> Identification Card </Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <div className='container'>
-                            <div className='modal-body'>
-
-
-                                <div class="card mb-3">
-                                    <div class="row no-gutters">
-                                        <div class="col-md-4">
-                                            <Image className='photoOfOrder text-center img-card card-img-top' src='https://widgetwhats.com/app/uploads/2019/11/free-profile-photo-whatsapp-4.png' wrapped ui={false} style={{ width: '100%', height: 'auto' }} />
-                                        </div>
-                                        <div class="col-md-8">
-                                            {this.state.userList.map((usr) => {
-                                                return (
-                                                    <div class="card-body">
-                                                        <h5 class="card-title">{usr.userName}</h5>
-                                                        <div class="form-group">
-                                                            <div>
-                                                                <p>Full Name: {usr.fullName}</p>
-                                                                <p>Address: {usr.address}</p>
-                                                                <p>Phone: {usr.phone}</p>
-                                                                <p class="card-text"><small class="text-muted">{this.setStatus(usr.status)}</small></p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                )
-                                            })
-                                            }
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button className="btn btn-secondary" variant="secondary" onClick={this.handleCloseCard}>
-                            <i class="fa fa-times-circle"></i> Close
-                    </Button>
-                    </Modal.Footer>
-                </Modal>
-                {/* modal iden card */}
-                {/* MODAL iden */}
-                <div className="modal fade" id="card" tabIndex="-1" aria-labelledby="infoLabel" aria-hidden="true">
+                    </div>
+            </div>
+             {/* modal suspend*/}
+     
+             {/* modal iden */}
+             <div className="modal fade" id="card" tabIndex="-1" aria-labelledby="infoLabel" aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
@@ -271,7 +242,7 @@ class UserManagement extends Component {
                                 <div class="card mb-3">
                                     <div class="row no-gutters">
                                         <div class="col-md-4">
-                                            <Image className='photoOfOrder text-center img-card card-img-top' src='https://widgetwhats.com/app/uploads/2019/11/free-profile-photo-whatsapp-4.png' wrapped ui={false} style={{ width: '100%', height: 'auto' }} />
+                                            <Image className='photoOfOrder text-center img-card card-img-top' src={this.state.profilePict} wrapped ui={false} style={{ width: '100%', height: 'auto' }} />
                                         </div>
                                         <div class="col-md-8">
                                             <div class="card-body">
@@ -299,6 +270,7 @@ class UserManagement extends Component {
                         </div>
                     </div>
                 </div>
+                {/* modal iden */}
             </div >
         )
 

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 
 import HeaderUser from "../components/HeaderUser";
@@ -23,11 +23,14 @@ import UserManagement from "../Screens/UserManagement/usermanagement";
 import ManageDonation from "../Screens/ManageDonation/index";
 import PublisherManagement from "../Screens/PublisherManagement/publishermanagement";
 import BookManagement from "../Screens/BookManagement/bookmanagement";
+import BookDetailManagement from "../Screens/BookDetailManagement/bookdetailmanagement";
 import DetailPage from "../Screens/DetailPage/detailpage";
 import FineManagement from "../Screens/FineManagement/fineManagement";
 import AuthorManagement from "../Screens/AuthorManagement/AuthorManagement";
 import CategoryManagement from "../Screens/CategoryManagement/categoryManagement";
-import AuthService from "../Services/auth.service";
+import SeeMoreBooks from "../Screens/SeeMoreBooks/SeeMoreBooks";
+import AllHistory from "../Screens/Payment/AllHistory";
+import SearchResult from "../Screens/SearchResult/SearchResult";
 
 const authGuard = (Component) => () => {
   return !localStorage.getItem('userFaraday') ? (
@@ -111,10 +114,13 @@ const MainNavigationsUser = (props) => (
         <Route render={authGuard(BookManagement)} path="/page/manageBook">
           {/* <BookManagement /> */}
         </Route>
+        <Route render={authGuard(BookDetailManagement)} path="/page/manageBookDetail">
+          {/* <BookDetailManagement /> */}
+        </Route>
         <Route render={authGuard(UserManagement)} path="/page/manageUser">
           {/* <UserManagement /> */}
         </Route>
-        <Route render={authGuard(DetailPage)} path="/page/detailpage/:id">
+        <Route render={authGuard(DetailPage)} path="/page/detailpage/:bookcode">
           {/* <DetailPage /> */}
         </Route>
         <Route render={authGuard(ManageDonation)} path="/page/manage-donation">
@@ -136,7 +142,15 @@ const MainNavigationsUser = (props) => (
           {/* <CategoryManagement /> */}
         </Route>
         {/* <Route render={authGuard(cartuser)} path=""></Route> */}
-
+        <Route render={authGuard(SeeMoreBooks)} path="/page/more/:title">
+          {/* <SeeMoreBooks /> */}
+        </Route>
+        <Route render={authGuard(SearchResult)} path="/page/result/:search">
+          {/* <SearchResult /> */}
+        </Route>
+        <Route render={authGuard(AllHistory)} path="/page/all-history">
+          {/* <AllHistory /> */}
+        </Route>
 
         <Route render={authGuard(Footer)} path="/page/:id">
           {/* <Footer /> */}

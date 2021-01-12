@@ -14,16 +14,6 @@
   color: black;
 }
 
-.card-title-books{
-  text-align: center;
-  font-size: 15px;
-  height: 25px;
-}
-
-.garis-top{
-  border-top: 1px solid darkgray;
-}
-
 .recommend-img{
   margin-top: -50px;
   margin-left: 10px;
@@ -34,9 +24,17 @@
   font-size: small;
 }
 
+.asian-desc{
+  text-align: justify;
+}
+
 @media only screen and (max-width: 1024px){
   .asian-box{
-    min-height: 320px;
+    min-height: 300px;
+  }
+
+  .asian-desc{
+    font-size: 11px;
   }
 }
 
@@ -48,10 +46,6 @@
   .jumbotron p{
     background-color: white;
   }
-  
-  .card-title{
-    font-size: 16px;
-  }
 
   .recommend-img{
     margin-top: 0px;
@@ -59,14 +53,49 @@
     padding-bottom: 0px;
   }
 
+  .asian-box{
+    margin-top: 10px !important;
+  }
+
   .asian-box-body{
-    min-height: 250px;
-    min-width: 200px;
+    min-height: 170px;
+    min-width: 100px;
+  }
+
+  .asian-desc{
+    font-size: 10.4px;
+  }
+
+  .asian-title{
+    font-size: 16px;
   }
 }
 
 @media only screen and (max-width: 375px){
   .jumbotron p{
     font-size: 15px;
+  }
+
+  .asian-author{
+    font-size: 10px;
+  }
+
+  .asian-box-body{
+    min-height: 150px;
+    min-width: 100px;
+  }
+  
+  .asian-title{
+    font-size: 14px;
+  }
+
+  .asian-desc{
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 320px){
+  .asian-title{
+    font-size: 14px;
   }
 }

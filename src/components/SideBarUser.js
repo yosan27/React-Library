@@ -5,6 +5,8 @@ import { Link, withRouter } from "react-router-dom";
 import NumberFormat from 'react-number-format';
 import AuthService from "../Services/auth.service";
 
+import logo from "./img/1.png"
+
 class SideBarUser extends Component {
   constructor() {
     super();
@@ -59,12 +61,12 @@ class SideBarUser extends Component {
         <div className="left_col scroll-view">
           <div className="navbar nav_title" style={{ border: 0 }}>
             <Link to="/page/indexUser" className="site_title">
-              <img src="assets/images/1.png" alt="" />
+              <img src={logo} alt="" className="logo"/>
               <span>Faraday E-Library</span>
             </Link>
           </div>
 
-          <div className="clearfix"></div>
+          {/* <div className="clearfix"></div> */}
 
           <div className="profile clearfix">
             <div className="profile_pic">
@@ -87,7 +89,7 @@ class SideBarUser extends Component {
 
           <div className="profile_name">
             <img
-              src="assets/images/user.png"
+              src={this.state.profilePict}
               alt="..."
               className="img-circle profile_img"
             />
@@ -223,7 +225,7 @@ class SideBarUser extends Component {
         <div className="left_col scroll-view">
           <div className="navbar nav_title" style={{ border: 0 }}>
             <Link to="/page/indexUser" className="site_title">
-              <img src="assets/images/1.png" alt="" />
+              <img src={logo} alt="" className="logo"/>
               <span>Faraday E-Library</span>
             </Link>
           </div>
@@ -245,7 +247,7 @@ class SideBarUser extends Component {
           </div>
           <div className="profile_name">
             <img
-              src="assets/images/user.png"
+              src={this.state.profilePict}
               alt="..."
               className="img-circle profile_img"
             />
@@ -311,6 +313,11 @@ class SideBarUser extends Component {
                     <li className={pathCurrent[1] === "manageBook" ? "current-page" : ""}>
                       <Link to="/page/manageBook">
                         Book
+                      </Link>
+                    </li>
+                    <li className={pathCurrent[1] === "manageBookDetail" ? "current-page" : ""}>
+                      <Link to="/page/manageBookDetail">
+                        Book Detail
                       </Link>
                     </li>
                     <li
