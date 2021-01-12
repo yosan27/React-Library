@@ -1,19 +1,22 @@
 import React, { Component } from 'react'
 import { Container, Jumbotron, Modal, Button } from 'react-bootstrap'
-import API from "../../api";
+// import API from "../../api";
 import './detailpage.css'
 import swal from 'sweetalert';
 import Moment from 'react-moment';
 import Image from 'react-bootstrap/Image';
 import Box from '@material-ui/core/Box';
 import Rating from '@material-ui/lab/Rating';
-
+import { withRouter } from 'react-router-dom';
+import Axios from "../../Services/axios-instance";
+import AuthService from "../../Services/auth.service";
 
 class DetailPage extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      bookDetailsCode: '',
       heart: '\u2661',
       bookData: '',
       imageAvailable: false,
@@ -28,31 +31,40 @@ class DetailPage extends Component {
       pages: '',
       descriptions: '',
       reviewData: [],
+      bookCode: this.props.match.params.bookcode,
     }
   }
 
   async componentDidMount() {
-
     try {
       const  { bookCode } = this.props.location.state;
-      const res = await API.get(`/api/book/B001`);
+      const res = await Axios.get(`book/` + this.state.bookCode);
       const bookData = res.data.data;
       const bookDataImage = bookData.bookDetailsEntity.cover
+      console.log(bookData)
 
-      if (bookData.id) {
-        this.setState({ bookAvailable: 'Available' });
-      } else {
-        this.setState({ bookAvailable: 'Not Available' });
-      }
-
+    //   if (bookData.id) {
+    //     this.setState({ bookAvailable: 'Available' });
+    //   } else {
+    //     this.setState({ bookAvailable: 'Not Available' });
+    //   }
+      
       if (bookData.bookDetailsEntity.subtitle !== undefined) {
         this.setState({ subtitle: bookData.bookDetailsEntity.subtitle });
       } else {
         this.setState({ subtitle: 'Subtitle not available' });
       }
       this.setState({ bookCode: bookCode})
+      
+    //   if (bookData.bookDetailsEntity.subtitle !== undefined) {
+    //     this.setState({ subtitle: bookData.bookDetailsEntity.subtitle });
+    //   } else {
+    //     this.setState({ subtitle: 'Subtitle not available' });
+    //   }
+      
       this.setState({ bookData: bookData });
       this.setState({ register: bookData.bookCode });
+      this.setState({ bookDetailsCode: bookData.bookDetailsEntity.bookDetailCode });
       this.setState({ title: bookData.bookDetailsEntity.bookTitle });
       this.setState({ category: bookData.categoryEntity.categoryName });
       this.setState({ publishedDate: bookData.publishedDate });
@@ -68,7 +80,26 @@ class DetailPage extends Component {
   }
 
   handleWishlist = () => {
-    
+    const wishdto = {
+      bookDetailsCode: this.state.bookDetailsCode,
+      userCode: AuthService.getUserCode()
+    }
+    console.log(wishdto)
+    Axios.post('wishlist', wishdto)
+      .then((response) => {
+        console.log(response);
+        swal("Success!", "Book Has Been Added To Your Wishlist", "success")
+      }).catch(function (error) {
+        if (error.response) {
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log('Error', error.message);
+        }
+      })
   }
 
   handleClose = () => {
@@ -77,7 +108,27 @@ class DetailPage extends Component {
 
   handleCart = () => {
     this.setState({ show: false })
-    swal("Success!", "Book Has Been Added To Your Cart", "success")
+    const wishdto = {
+      bookDetailsCode: this.state.bookDetailsCode,
+      userCode: AuthService.getUserCode()
+    }
+    console.log(wishdto)
+    Axios.post('cart', wishdto)
+      .then((response) => {
+        console.log(response);
+        swal("Success!", "Book Has Been Added To Your Cart", "success")
+        window.location.reload()
+      }).catch(function (error) {
+        if (error.response) {
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log('Error', error.message);
+        }
+      })
   }
 
   handleShow = () => {
@@ -195,7 +246,7 @@ class DetailPage extends Component {
                             <hr />
                             <div class="row">
                               <div class="col text-right pt-2">
-                                <img rounded height="80" src="https://www.gramedia.com/blog/content/images/2020/05/selena_gramedia.jpg" />
+                                <img rounded height="80" src="https://www.gramedia.com/blog/content/images/2020/05/selena_gramedia.jpg" alt=""/>
                               </div>
                               <div
                                 class="col"
@@ -208,7 +259,7 @@ class DetailPage extends Component {
                             </div>
                             <div class="row">
                               <div class="col text-right pt-2">
-                                <img rounded height="80" src="https://www.gramedia.com/blog/content/images/2020/05/nebula_gramedia.jpg" />
+                                <img rounded height="80" src="https://www.gramedia.com/blog/content/images/2020/05/nebula_gramedia.jpg" alt=""/>
                               </div>
                               <div class="col"
                                 style={{ display: 'flex', flexWrap: 'wrap', alignContent: 'center' }}>
@@ -220,7 +271,7 @@ class DetailPage extends Component {
                             </div>
                             <div class="row">
                               <div class="col text-right pt-2">
-                                <img rounded height="80" src="https://www.gramedia.com/blog/content/images/2020/05/misteri-terakhir_gramedia.jpg" />
+                                <img rounded height="80" src="https://www.gramedia.com/blog/content/images/2020/05/misteri-terakhir_gramedia.jpg" alt=""/>
                               </div>
                               <div class="col "
                                 style={{ display: 'flex', flexWrap: 'wrap', alignContent: 'center' }}>
@@ -258,7 +309,7 @@ class DetailPage extends Component {
                         <div class='container'>
                           <div class="row-lg">
                             <div class="col-6-lg d-flex justify-content-center align-items-center">
-                              <img class="rounded novel" src={bookDataImage ? bookDataImage : 'https://res.cloudinary.com/todidewantoro/image/upload/v1604943658/bootcamp/covernya_ejy4v1.jpg'} />
+                              <img class="rounded novel" src={bookDataImage ? bookDataImage : 'https://res.cloudinary.com/todidewantoro/image/upload/v1604943658/bootcamp/covernya_ejy4v1.jpg'} alt=""/>
                             </div>
                             <div
                               className='container'>
@@ -412,5 +463,4 @@ class DetailPage extends Component {
     );
   }
 }
-
-export default DetailPage;
+export default withRouter(DetailPage)

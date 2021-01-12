@@ -1,23 +1,23 @@
 import React, { Component } from "react";
-import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 
 // css
 import "./booksList.css";
 
-export default class FineManagement extends Component {
+class SeeMoreBooks extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       data: [],
+      title: this.props.match.params.title
     };
   }
 
   componentDidMount() {
-    axios.get("http://localhost:8500/api/books").then((e) => {
-      this.setState({ data: e.data.data });
-    });
+    let books = sessionStorage.getItem('books');
+    this.setState({ data: JSON.parse(books)});
+    sessionStorage.clear()
   }
 
   render() {
@@ -25,7 +25,7 @@ export default class FineManagement extends Component {
       <>
         <div className="right_col" role="main" style={{ minheight: "120vh" }}>
           <section className="mt-5 pt-5 container-fluid mb-4 border-bottom border-secondary">
-            <h3>See More</h3>
+            <h3>{this.state.title.replace("-", " ")}</h3>
           </section>
 
           <main className="main pb-2">
@@ -33,7 +33,7 @@ export default class FineManagement extends Component {
               <ul className="books">
               {this.state.data.map((d) => {
                 return(
-                  <Link to="/page/detailpage">
+                  <Link to={{pathname: `/page/detailpage/${d.bookCode}`}}>
                     <li>
                       <div className="book">
                         <div className="row">
@@ -65,3 +65,5 @@ export default class FineManagement extends Component {
     );
   }
 }
+
+export default withRouter(SeeMoreBooks);
