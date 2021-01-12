@@ -17,7 +17,7 @@ class SideBarUser extends Component {
       userData: [],
       saldo: "0",
       userCode: "",
-      profilePict: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBG685vI07-3MsuqJxjCfzIabfFJJG-8yM-ppvjjNpD5QNtWNE4A",
+      profilePict: "",
     };
   }
 
@@ -32,6 +32,7 @@ class SideBarUser extends Component {
       console.log(resp)
       this.setState({
         saldo: resp.data.balance,
+        profilePict: AuthService.API_URL() + "getFile/" + resp.data.profilePict,
       })
     }).catch(function (error) {
       if (error.response) {
