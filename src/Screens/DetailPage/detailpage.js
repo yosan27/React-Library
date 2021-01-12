@@ -171,14 +171,14 @@ class DetailPage extends Component {
       userCode: AuthService.getUserCode(),
       rate: this.state.rate,
       review: this.state.review,
-      bookDetailsCode: this.state.bookDetailsCode
+      bookDetailCode: this.state.bookDetailsCode
     }
     Axios.post('review', reviewData).then(() => {
       swal("Success!", "Review Data Has Been Added", "success").then(() => {
         window.location.reload()
         
     })
-    })
+    }) 
   }
 
 
