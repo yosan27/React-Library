@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import { Table } from "react-bootstrap";
+import { Table, Modal, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import Select from "react-select";
 
 import axios from "../../Services/axios-instance";
 import swal from "sweetalert";
@@ -10,7 +11,10 @@ import "datatables.net-dt/css/jquery.dataTables.min.css";
 import "datatables.net-responsive-dt/js/responsive.dataTables.js";
 import "datatables.net-responsive-dt/css/responsive.dataTables.css";
 import "jquery/dist/jquery.min.js";
-import $ from "jquery";
+import $, { get } from "jquery";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import 'react-calendar/dist/Calendar.css';
 
 class ManageDonation extends Component {
   constructor(props) {
@@ -23,11 +27,39 @@ class ManageDonation extends Component {
       bookTitle: "",
       author: "",
       year: "",
-      description: "",
       photo: "",
       status: "",
       categoryCode: "",
       button: "Update Data",
+      categoryList: [],
+      categoryName: "",
+      showAdd2: false,
+      showEdit: false,
+      data: [],
+      authorCode: "",
+      bookDetailCode: "",
+      publisherCode: "",
+      urlImage: "",
+      title: "",
+      subtitle: "",
+      publisherName: "",
+      publisherAddress: "",
+      description: "",
+      pages: "",
+      startDate: new Date(),
+      language: "",
+      length: "",
+      isbn: "",
+      weight: "",
+      width: "",
+      numberOfPages: "",
+      category: "",
+      baseImage: "",
+      authorList: "",
+      bookDetailList: "",
+      publisherList: "",
+      donationDate: "",
+      idAcc: ""
     }
     this.donationChange = this.donationChange.bind(this)
   }
@@ -38,10 +70,132 @@ class ManageDonation extends Component {
     });
   }
 
+
+
+  async getAllData() {
+    const res = await axios.get('author')
+    const dataAuthor = res.data
+
+    const options1 = dataAuthor.map(d => ({
+      "value": d.authorCode,
+      "label": d.authorName
+    }))
+    this.setState({ authorList: options1 })
+
+    const res2 = await axios.get('bookdetails')
+    const dataBookDetail = res2.data.data
+
+    const options2 = dataBookDetail.map(d => ({
+      "value": d.bookDetailCode,
+      "label": d.bookTitle
+    }))
+    this.setState({ bookDetailList: options2 })
+
+    const res3 = await axios.get('category')
+    const dataCategory = res3.data
+
+    const options3 = dataCategory.map(d => ({
+      "value": d.categoryCode,
+      "label": d.categoryName
+    }))
+    this.setState({ categoryList: options3 })
+
+    const res4 = await axios.get('publisher')
+    const dataPublisher = res4.data
+
+    const options4 = dataPublisher.map(d => ({
+      "value": d.publisherCode,
+      "label": d.publisherName
+    }))
+    this.setState({ publisherList: options4 })
+  }
+
+
+  handleChangeSelect1 = (e) => {
+    this.setState({ authorCode: e.value });
+  }
+
+  handleChangeSelect2 = (e) => {
+    this.setState({ bookDetailCode: e.value });
+  }
+
+  handleChangeSelect3 = (e) => {
+    this.setState({ categoryCode: e.value });
+  }
+
+  handleChangeSelect4 = (e) => {
+    this.setState({ publisherCode: e.value });
+  }
+
+  handleChangeDate = date => {
+    this.setState({
+      startDate: date
+    });
+  };
+
+
+
+  handleShowAdd2 = (getId) => {
+    this.setState({ showAddExist: false, showAdd2: true, idAcc: getId })
+
+  }
+
+
+  handleAddBook2 = () => {
+
+    if (this.state.startDate && this.state.isbn) {
+      this.setState({ showAdd2: false })
+      axios.post(
+        "book",
+        {
+          authorCode: this.state.authorCode,
+          bookDetailCode: this.state.bookDetailCode,
+          categoryCode: this.state.categoryCode,
+          publisherCode: this.state.publisherCode,
+          publishedDate: this.state.startDate,
+          isbn: this.state.isbn
+        },
+        {
+          headers: {
+            Accept: "*/*",
+            "Content-Type": "application/json",
+          },
+        }
+      )
+        .then(() => {
+          let donationList = {
+            status: this.state.status
+          };
+          axios.put(`acc-donation/${this.state.idAcc}`, donationList)
+            .then(() =>
+              swal("Success!", "Book Has Been Added", "success")
+                .then(window.location.reload()));
+          this.setState({
+            showAdd2: false,
+            editClicked: true
+          })
+
+        })
+        .catch((error) => {
+          swal("Oops!", "Please try again", "error");
+          console.log(error);
+        });
+    } else {
+      swal("Oops!", "Data is not valid", "error");
+    }
+  }
+
+  handleCloseModal = () => {
+    this.setState({
+      showAdd2: false,
+      bookCode: "", authorCode: "", bookDetailCode: "", categoryCode: "", startDate: "", date: "", isbn: "", publisherCode: ""
+    })
+  }
+
   componentDidMount() {
     this.findPerson();
-
-
+    this.getCategory();
+    this.getAllData();
   }
 
   findPerson() {
@@ -65,6 +219,15 @@ class ManageDonation extends Component {
       .then(() => window.location.reload());
   };
 
+  accept = (getId) => {
+    let donationList = {
+      status: this.state.status
+    };
+    axios
+      .put(`acc-donation/${getId}`, donationList)
+      .then(() => window.location.reload());
+  }
+
 
   getDetail = (getId) => {
     this.setState({
@@ -81,7 +244,8 @@ class ManageDonation extends Component {
         description: res.description,
         photo: res.photo,
         status: res.status,
-        categoryCode: res.categoryCode
+        categoryCode: res.categoryEntity.categoryName,
+        donationDate: res.date
       });
     });
   };
@@ -92,6 +256,7 @@ class ManageDonation extends Component {
       bookTitle: this.state.bookTitle,
       year: this.state.year,
       description: this.state.description,
+      categoryCode: this.state.categoryCode
     };
     axios
       .put(`http://localhost:8500/api/donation-detail/${this.state.id}`, donationList)
@@ -99,19 +264,19 @@ class ManageDonation extends Component {
   };
 
 
-  // componentDidMount() {
-  //   axios.get("http://localhost:8500/api/donation").then((e) => {
-  //     this.setState({
-  //       allList: e.data
-  //     });
+  async getCategory() {
+    const res = await axios.get('category')
+    const data = res.data
 
-  //     $(function () {
-  //       $("#donation-list").DataTable({
-  //         responsive: true,
-  //       });
-  //     });
-  //   });
-  // }
+    const options = data.map(d => ({
+      "value": d.categoryCode,
+      "label": d.categoryName
+
+    }))
+
+    this.setState({ categoryList: options })
+
+  }
 
   handleChange = (event) => {
 
@@ -144,6 +309,10 @@ class ManageDonation extends Component {
   };
 
 
+  handleChangeCategory = (e) => {
+    this.setState({ categoryCode: e.value });
+  }
+
 
   submitReject = () => {
     swal("Rejected", "Book Donation Rejected", "warning");
@@ -156,7 +325,7 @@ class ManageDonation extends Component {
 
 
   render() {
-    const { author, bookTitle, year, description, photo, status } = this.state;
+    const { showAdd2 } = this.state;
     return (
       <>
         <div className="right_col" role="main" style={{ minHeight: "100vh" }}>
@@ -203,7 +372,7 @@ class ManageDonation extends Component {
                                     <button
                                       className="btn btn-success"
                                       data-toggle="modal"
-                                      data-target="#delete"
+                                      onClick={() => this.handleShowAdd2(donation.id)}
                                     >
                                       <i className="fa fa-check"></i>
                                     </button>
@@ -237,7 +406,7 @@ class ManageDonation extends Component {
                     </div>
                   </div>
 
-                  {/* MODAL ACC DONATION & UPDATE */}
+                  {/* UPDATE Modal */}
                   <div className="modal fade" tabindex="-1" id="fineModal">
                     <div className="modal-dialog modal-dialog-centered">
                       <div className="modal-content">
@@ -251,16 +420,15 @@ class ManageDonation extends Component {
                           >
                             <span aria-hidden="true" onClick={this.clearModal} className="modal-clear">
                               &times;
-                  </span>
+                            </span>
                           </button>
                         </div>
                         <div className="modal-body">
                           <div class="container">
                             <form className="mb-4">
                               <div className="form-group row">
-                                <label for="fineType" className="col-sm-3">
-                                  Title
-                      </label>
+                                <label for="fineType" className="col-sm-4">
+                                  <b>Title</b></label>
                                 <input
                                   name="bookTitle"
                                   className="col-sm-6"
@@ -274,9 +442,9 @@ class ManageDonation extends Component {
                               </div>
 
                               <div className="form-group row">
-                                <label for="nominal" className="col-sm-3">
-                                  Year
-                      </label>
+                                <label for="nominal" className="col-sm-4">
+                                  <b>Year</b>
+                                </label>
                                 <input
                                   name="year"
                                   className="col-sm-6"
@@ -289,9 +457,9 @@ class ManageDonation extends Component {
                               </div>
 
                               <div className="form-group row">
-                                <label for="validTo" className="col-sm-3">
-                                  Author
-                      </label>
+                                <label for="validTo" className="col-sm-4">
+                                  <b>Author</b>
+                                </label>
                                 <input
                                   name="author"
                                   className="col-sm-6"
@@ -305,25 +473,16 @@ class ManageDonation extends Component {
                               </div>
 
                               <div className="form-group row">
-                                <label for="validTo" className="col-sm-3">
-                                  Category
-                      </label>
-                                <input
-                                  name="category"
-                                  className="col-sm-6"
-                                  placeholder="History"
-                                  id="category"
-                                  autoComplete="off"
-                                  value={this.state.categoryName}
-                                  onChange={(e) => this.handleChange(e, e.target.value)}
-                                // onInput={this.maxLengthCheck}
-                                ></input>
+                                <label for="category" className="col-sm-4">
+                                  <b>Category</b>
+                                </label>
+                                <Select className="col-sm-6" name="category" options={this.state.categoryList} onChange={this.handleChangeCategory} />
                               </div>
 
                               <div className="form-group row">
-                                <label for="validTo" className="col-sm-3">
-                                  Description/Condition
-                      </label>
+                                <label for="description" className="col-sm-4">
+                                  <b>Description/Condition</b>
+                                </label>
                                 <input
                                   name="description"
                                   className="col-sm-6"
@@ -347,7 +506,7 @@ class ManageDonation extends Component {
                             onClick=""
                           >
                             <i class="fa fa-times-circle"></i> Close
-                </button>
+                            </button>
                           <Link
                             className="btn btn-success add-btn"
                             onClick={this.addUpdate}
@@ -359,8 +518,6 @@ class ManageDonation extends Component {
                       </div>
                     </div>
                   </div>
-
-
 
                   {/* MODAL DETAIL DATA */}
 
@@ -463,6 +620,17 @@ class ManageDonation extends Component {
                               <h5 class="col-lg-8 text-center">{this.state.author}</h5>
                             </div>
                             <hr />
+
+                            <div class="row justify-content-md-center">
+                              <label
+                                for="editTitle"
+                                class="col-sm-1 col-form-label"
+                              >
+                                Donation Date
+                            </label>
+                              <h5 class="col-lg-8 text-center">{this.state.donationDate}</h5>
+                            </div>
+                            <hr />
                             <div class="row justify-content-md-center">
                               <label
                                 for="editTitle"
@@ -477,72 +645,116 @@ class ManageDonation extends Component {
                             </div>
                           </div>
                         </div>
-                        <div class="modal-footer">
-
-                          <button
-                            type="button"
-                            class="btn btn-warning"
-                            onClick={() => this.update(this.state.id)}
-                            data-target="#fineModal"
-                            data-toggle="modal"
-                          >
-                            Update
-                        </button>
-                        </div>
                       </div>
                     </div>
                   </div>
 
 
 
-                  {/* MODAL VERIFY */}
-                  <div
-                    class=" modal fade"
-                    id="delete"
-                    tabindex="-1"
-                    aria-labelledby="editLabel"
-                    aria-hidden="true"
-                  >
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h5 class="modal-title" id="deleteLabel">
-                            Veriy The Donation to Faraday E-library
-                        </h5>
-                          <button
-                            type="button"
-                            class="close"
-                            data-dismiss="modal"
-                            aria-label="Close"
-                          >
-                            <span aria-hidden="true">&times;</span>
-                          </button>
-                        </div>
+
+                  {/* modal add data exist*/}
+                  <Modal size="lg" show={showAdd2} onHide={this.handleCloseModal}>
+                    <Modal.Header closeButton>
+                      <Modal.Title>Add Book Data</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                      <div class='container'>
                         <div class="modal-body">
-                          <p>
-                            Are you sure you want to accept the donation to
-                            Faraday E-Library?
-                        </p>
-                        </div>
-                        <div class="modal-footer">
-                          <button
-                            type="button"
-                            class="btn btn-secondary"
-                            data-dismiss="modal"
-                          >
-                            Cancel
-                        </button>
-                          <button
-                            type="button"
-                            class="btn btn-primary"
-                            onClick={() => this.submitAccept()}
-                          >
-                            Accept
-                        </button>
+                          <form>
+                            <div class="form-group row">
+                              <label for="addAuthorCode" class="col-sm-2 col-form-label">Author Name</label>
+                              <div class="col-sm-4 mb-3">
+                                <Select
+                                  className="mb-2"
+                                  options={this.state.authorList}
+                                  onChange={this.handleChangeSelect1}
+                                />
+                                <Link to="/page/manageAuthor" className="btn btn-light">
+                                  <i class="fa fa-plus"></i><small className="text-muted"> Add more author</small>
+                                </Link>
+                              </div>
+                              <label for="addBookDetailCode" class="col-sm-2 col-form-label">Book Details Info</label>
+                              <div class="col-sm-4">
+                                <Select
+                                  className="mb-2"
+                                  options={this.state.bookDetailList}
+                                  onChange={this.handleChangeSelect2}
+                                />
+                                <Link to="/page/manageBookDetail" className="btn btn-light">
+                                  <i class="fa fa-plus"></i><small className="text-muted"> Add more book details</small>
+                                </Link>
+                              </div>
+                            </div>
+
+                            <div class="form-group row">
+                              <label for="addCategoryCode" class="col-sm-2 col-form-label">Category</label>
+                              <div class="col-sm-4 mb-3">
+                                <Select
+                                  className="mb-2"
+                                  options={this.state.categoryList}
+                                  onChange={this.handleChangeSelect3}
+                                />
+                                <Link to="/page/manageCategory" className="btn btn-light">
+                                  <i class="fa fa-plus"></i><small className="text-muted"> Add more category</small>
+                                </Link>
+                              </div>
+                              <label for="addPublisherCode" class="col-sm-2 col-form-label">Publisher</label>
+                              <div class="col-sm-4">
+                                <Select
+                                  className="mb-2"
+                                  options={this.state.publisherList}
+                                  onChange={this.handleChangeSelect4}
+                                />
+                                <Link to="/page/managePublisher" className="btn btn-light">
+                                  <i class="fa fa-plus"></i><small className="text-muted"> Add more publisher</small>
+                                </Link>
+                              </div>
+                            </div>
+
+                            <div class="form-group row">
+                              <label for="addPublishedDate" class="col-sm-2 col-form-label">Published Date</label>
+                              <div class="col-sm-4">
+                                <DatePicker
+                                  selected={this.state.startDate}
+                                  onChange={this.handleChangeDate}
+                                  dateFormat='yyyy-MM-dd'
+                                />
+                                <br />
+                                <small className="text-muted">(yyyy-MM-dd)</small>
+                              </div>
+                              <label for="addIsbn" class="col-sm-2 col-form-label">ISBN</label>
+                              <div class="col-sm-4">
+                                <input
+                                  type="text"
+                                  name="isbn"
+                                  class="form-control"
+                                  id="isbn"
+                                  placeholder="ISBN..."
+                                  onChange={(e) => this.setState({ isbn: e.target.value })}
+                                  value={this.state.isbn}
+                                  data-attribute-name="isbn"
+                                  data-async
+                                />
+                              </div>
+                            </div>
+
+                          </form>
                         </div>
                       </div>
-                    </div>
-                  </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <Button className="btn btn-secondary" variant="secondary" onClick={this.handleCloseModal}>
+                        <i class="fa fa-times-circle"></i> Close
+                        </Button>
+                      <Button id="buttonAddBook" type="submit" className="btn btn-success" variant="primary" onClick={this.handleAddBook2}>
+                        <i class="fa fa-plus"></i> Add
+                        </Button>
+                    </Modal.Footer>
+                  </Modal>
+                  {/* modal add data exist*/}
+
+
+
                 </div>
               </div>
             </div>
