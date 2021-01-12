@@ -8,8 +8,8 @@ body {
   font-size: 17px;
 }
 
-.nav_title a img{
-  width: 40px;
+.logo{
+  width: 40px !important;
 }
 
 .history h3{
@@ -53,10 +53,6 @@ body {
   .profile_name h5{
     padding-top: 10px;
     font-size: 10px;
-  }
-
-  .profile_name .img-circle{
-    margin-top: 30px;
   }
 
   .profile_saldo{

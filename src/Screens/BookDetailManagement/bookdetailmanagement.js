@@ -40,9 +40,13 @@ class BookDetailManagement extends Component {
       }});
       const tabledata = res.data.data;
       this.setState({ tabledata: tabledata });
+      console.log();
     } catch (error) {
       console.log(error);
     }
+
+    const bookCode = this.props.location.state.bookCode;
+    console.log(bookCode);
 
     $(function () {
       $('#publishermanagement').DataTable({
