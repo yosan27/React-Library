@@ -1,19 +1,23 @@
 import React, { Component } from 'react'
 import { Container, Jumbotron, Modal, Button } from 'react-bootstrap'
-import API from "../../api";
+// import API from "../../api";
 import './detailpage.css'
 import swal from 'sweetalert';
 import Moment from 'react-moment';
 import Image from 'react-bootstrap/Image';
 import Box from '@material-ui/core/Box';
 import Rating from '@material-ui/lab/Rating';
-
+import { withRouter } from 'react-router-dom';
+import Axios from "../../Services/axios-instance";
+import AuthService from "../../Services/auth.service";
 
 class DetailPage extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      editClicked: false,
+      bookDetailsCode: '',
       heart: '\u2661',
       bookData: '',
       imageAvailable: false,
@@ -23,52 +27,88 @@ class DetailPage extends Component {
       subtitle: '',
       author: '',
       category: '',
+      categoryCode: '',
       show: false,
       register: '',
       pages: '',
       descriptions: '',
       reviewData: [],
+      bookCode: this.props.match.params.bookcode,
+      popular: []
     }
   }
 
   async componentDidMount() {
-
     try {
-      const  { bookCode } = this.props.location.state;
-      const res = await API.get(`/api/book/B001`);
+      // const  { bookCode } = this.props.location.state;
+      const res = await Axios.get(`book/` + this.state.bookCode);
       const bookData = res.data.data;
       const bookDataImage = bookData.bookDetailsEntity.cover
 
-      if (bookData.id) {
-        this.setState({ bookAvailable: 'Available' });
-      } else {
-        this.setState({ bookAvailable: 'Not Available' });
-      }
-
-      if (bookData.bookDetailsEntity.subtitle !== undefined) {
-        this.setState({ subtitle: bookData.bookDetailsEntity.subtitle });
-      } else {
-        this.setState({ subtitle: 'Subtitle not available' });
-      }
-      this.setState({ bookCode: bookCode})
+    //   if (bookData.id) {
+    //     this.setState({ bookAvailable: 'Available' });
+    //   } else {
+    //     this.setState({ bookAvailable: 'Not Available' });
+    //   }
+      
+      // if (bookData.bookDetailsEntity.subtitle !== undefined) {
+      //   this.setState({ subtitle: bookData.bookDetailsEntity.subtitle });
+      // } else {
+      //   this.setState({ subtitle: 'Subtitle not available' });
+      // }
+      // this.setState({ bookCode: bookCode})
+      
+    //   if (bookData.bookDetailsEntity.subtitle !== undefined) {
+    //     this.setState({ subtitle: bookData.bookDetailsEntity.subtitle });
+    //   } else {
+    //     this.setState({ subtitle: 'Subtitle not available' });
+    //   }
+      
       this.setState({ bookData: bookData });
       this.setState({ register: bookData.bookCode });
+      this.setState({ bookDetailsCode: bookData.bookDetailsEntity.bookDetailCode });
       this.setState({ title: bookData.bookDetailsEntity.bookTitle });
       this.setState({ category: bookData.categoryEntity.categoryName });
+      this.setState({ categoryCode: bookData.categoryEntity.categoryCode });
       this.setState({ publishedDate: bookData.publishedDate });
       this.setState({ author: bookData.authorEntity.authorName });
       this.setState({ pages: bookData.bookDetailsEntity.numberOfPages });
       this.setState({ bookDataImage: bookDataImage })
       this.setState({ descriptions: bookData.bookDetailsEntity.description })
-      console.log(this.state.descriptions)
-      console.log(bookCode)
+      console.log(this.state.categoryCode)
     } catch (error) {
       console.log(error);
     }
+
+    Axios.get(`popular/` + this.state.categoryCode).then((res) => {
+      const popular = res.data.data;
+      const popularWithoutCurrent = popular.filter((word) => word.bookCode !== this.state.bookCode);
+        this.setState({ popular: popularWithoutCurrent })
+    })
+
   }
 
   handleWishlist = () => {
-    
+    const wishdto = {
+      bookDetailsCode: this.state.bookDetailsCode,
+      userCode: AuthService.getUserCode()
+    }
+    console.log(wishdto)
+    Axios.post('wishlist', wishdto)
+      .then((response) => {
+        console.log(response);
+        swal("Success!", "Book Has Been Added To Your Wishlist", "success")
+      }).catch(function (error) {
+        if (error.response) {
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log('Error', error.message);
+        }
+      })
   }
 
   handleClose = () => {
@@ -77,43 +117,99 @@ class DetailPage extends Component {
 
   handleCart = () => {
     this.setState({ show: false })
-    swal("Success!", "Book Has Been Added To Your Cart", "success")
+    const wishdto = {
+      bookDetailsCode: this.state.bookDetailsCode,
+      userCode: AuthService.getUserCode()
+    }
+    console.log(wishdto)
+    Axios.post('cart', wishdto)
+      .then((response) => {
+        console.log(response);
+        swal("Success!", "Book Has Been Added To Your Cart", "success")
+        window.location.reload()
+      }).catch(function (error) {
+        if (error.response) {
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log('Error', error.message);
+        }
+      })
   }
 
   handleShow = () => {
     this.setState({ show: true })
   }
 
+  handlePopClick = (bkcd) => {
+    this.setState({ bookCode: bkcd, editClicked : true })
+  }
+
+  async componentDidUpdate(prevState) {
+    if (this.state.editClicked) {
+      try {
+        const res = await Axios.get(`book/` + this.state.bookCode);
+        const bookData = res.data.data;
+        const bookDataImage = bookData.bookDetailsEntity.cover
+        this.setState({ 
+          bookData: bookData,
+          register: bookData.bookCode,
+          bookDetailsCode: bookData.bookDetailsEntity.bookDetailCode, 
+          title: bookData.bookDetailsEntity.bookTitle,
+          category: bookData.categoryEntity.categoryName,
+          categoryCode: bookData.categoryEntity.categoryCode,
+          publishedDate: bookData.publishedDate,
+          author: bookData.authorEntity.authorName,
+          pages: bookData.bookDetailsEntity.numberOfPages,
+          bookDataImage: bookDataImage,
+          descriptions: bookData.bookDetailsEntity.description
+        });
+
+        Axios.get(`popular/` + this.state.categoryCode).then((res) => {
+          const popular = res.data.data;
+          const popularWithoutCurrent = popular.filter((word) => word.bookCode !== this.state.bookCode);
+            this.setState({ popular: popularWithoutCurrent, editClicked: false })
+        })
+
+      } catch (error) {
+        console.log(error);
+      }; 
+    }
+  }
+    
   setRate(rate) {
-    if(rate == 1) {
+    if(rate === 1) {
         return <div> <span class="fa fa-star checked"></span>
         <span class="fa fa-star"></span>
         <span class="fa fa-star "></span>
         <span class="fa fa-star"></span>
         <span class="fa fa-star"></span>
         </div>
-    } else if(rate == 2) {
+    } else if(rate === 2) {
         return <div> <span class="fa fa-star checked"></span>
         <span class="fa fa-star checked"></span>
         <span class="fa fa-star "></span>
         <span class="fa fa-star"></span>
         <span class="fa fa-star"></span>
         </div>
-    } else if(rate == 3) {
+    } else if(rate === 3) {
         return <div> <span class="fa fa-star checked"></span>
         <span class="fa fa-star checked"></span>
         <span class="fa fa-star checked"></span>
         <span class="fa fa-star"></span>
         <span class="fa fa-star"></span>
         </div>
-    } else if(rate == 4) {
+    } else if(rate === 4) {
         return <div> <span class="fa fa-star checked"></span>
         <span class="fa fa-star checked"></span>
         <span class="fa fa-star checked"></span>
         <span class="fa fa-star checked"></span>
         <span class="fa fa-star "></span>
         </div>
-    } else if(rate == 5) {
+    } else if(rate === 5) {
         return <div> <span class="fa fa-star checked"></span>
         <span class="fa fa-star checked"></span>
         <span class="fa fa-star checked"></span>
@@ -124,7 +220,7 @@ class DetailPage extends Component {
   }
 
   render() {
-    const { bookData, register, bookDataImage, bookAvailable, title, subtitle, author, category, publishedDate, show, pages, descriptions } = this.state;
+    const { popular, bookData, register, bookDataImage, bookAvailable, title, subtitle, author, category, publishedDate, show, pages, descriptions } = this.state;
     return (
       <div className="right_col" role="main" style={{ minHeight: '100vh' }}>
         <section className="mt-5 pt-5">
@@ -191,45 +287,41 @@ class DetailPage extends Component {
 
                           {/* most popular */}
                           <div class="col-lg-3">
-                            <h5 class='pb-2 text-center'>Popular this week</h5>
+                            <h5 class='pb-2 text-center'>Popular {category} books</h5>
                             <hr />
-                            <div class="row">
-                              <div class="col text-right pt-2">
-                                <img rounded height="80" src="https://www.gramedia.com/blog/content/images/2020/05/selena_gramedia.jpg" />
-                              </div>
-                              <div
-                                class="col"
-                                style={{ display: 'flex', flexWrap: 'wrap', alignContent: 'center' }}>
-                                <div>
-                                  <h6 class="mb-0 ">Selena</h6>
-                                  <h6 class="mb-0 ">- Tere Liye</h6>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="row">
-                              <div class="col text-right pt-2">
-                                <img rounded height="80" src="https://www.gramedia.com/blog/content/images/2020/05/nebula_gramedia.jpg" />
-                              </div>
-                              <div class="col"
-                                style={{ display: 'flex', flexWrap: 'wrap', alignContent: 'center' }}>
-                                <div>
-                                  <h6 class="mb-0 ">Nebula</h6>
-                                  <h6 class="mb-0 ">- Tere Liye</h6>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="row">
-                              <div class="col text-right pt-2">
-                                <img rounded height="80" src="https://www.gramedia.com/blog/content/images/2020/05/misteri-terakhir_gramedia.jpg" />
-                              </div>
-                              <div class="col "
-                                style={{ display: 'flex', flexWrap: 'wrap', alignContent: 'center' }}>
-                                <div>
-                                  <h6 class="mb-0 ">Misteri Terakhir#1</h6>
-                                  <h6 class="mb-0 ">- S. Mara Gd</h6>
-                                </div>
-                              </div>
-                            </div>
+
+                            {/* popular */}
+                            {
+                            popular.map((pop, index) => {
+                              return (
+                                  <Button 
+                                    className="ml-4"
+                                    style={{
+                                      backgroundColor: "Transparent",
+                                      color: "#000",
+                                      border: "none",
+                                      cursor: "pointer"}}
+                                    onClick = { ()=> {this.handlePopClick(pop.bookCode)}}
+                                  >
+                                    <div class="row">
+                                      <div class="col text-right pt-2">
+                                        <img rounded height="80" src={pop.bookDetailsEntity.cover} alt=""/>
+                                      </div>
+                                      <div
+                                        class="col"
+                                        style={{ display: 'flex', flexWrap: 'wrap', alignContent: 'center' }}>
+                                        <div>
+                                          <h6 class="mb-0 ">{pop.bookDetailsEntity.bookTitle}</h6>
+                                          <h6 class="mb-0 ">- {pop.authorEntity.authorName}</h6>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </Button>
+                                )
+                              })
+                            } 
+                            {/* popular */}
+
                             {/* button borrow */}
                             <div className="text-center mt-5">
                               <Button className="btn btn-warning borrow" variant="primary" onClick={this.handleShow}>
@@ -258,7 +350,7 @@ class DetailPage extends Component {
                         <div class='container'>
                           <div class="row-lg">
                             <div class="col-6-lg d-flex justify-content-center align-items-center">
-                              <img class="rounded novel" src={bookDataImage ? bookDataImage : 'https://res.cloudinary.com/todidewantoro/image/upload/v1604943658/bootcamp/covernya_ejy4v1.jpg'} />
+                              <img class="rounded novel" src={bookDataImage ? bookDataImage : 'https://res.cloudinary.com/todidewantoro/image/upload/v1604943658/bootcamp/covernya_ejy4v1.jpg'} alt=""/>
                             </div>
                             <div
                               className='container'>
@@ -316,7 +408,7 @@ class DetailPage extends Component {
                                         <form key={index}>
                                                 <div class="form-group row">
                                                 <label for="editImage" class="col-sm-2 col-form-label">By   
-                                                {Object.keys(book.userEntity?book.userEntity:"").map(key => {
+                                                {Object.keys(book.userEntity?book.userEntity:"").forEach(key => {
                                                     if (key === "userName"){
                                                     const name = (book.userEntity[key])
                                                     return name;
@@ -412,5 +504,4 @@ class DetailPage extends Component {
     );
   }
 }
-
-export default DetailPage;
+export default withRouter(DetailPage)
