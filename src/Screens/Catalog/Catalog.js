@@ -272,7 +272,7 @@ class Catalog extends Component {
                                                                                 <i className="fa fa-info-circle"></i>
                                                                             </button>
                                                                             
-                                                                            <Link to={{pathname: "/page/detailPage", state: {bookCode: "string"}}}>
+                                                                            <Link to={{pathname: `/page/detailpage/${user.bookCode}`}}>
                                                                             <button className="btn btn-primary">
                                                                             <i className="fa fa-info-circle"></i>
                                                                             </button>
