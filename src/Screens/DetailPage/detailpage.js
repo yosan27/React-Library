@@ -16,6 +16,7 @@ class DetailPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      editClicked: false,
       bookDetailsCode: '',
       heart: '\u2661',
       bookData: '',
@@ -26,12 +27,14 @@ class DetailPage extends Component {
       subtitle: '',
       author: '',
       category: '',
+      categoryCode: '',
       show: false,
       register: '',
       pages: '',
       descriptions: '',
       reviewData: [],
       bookCode: this.props.match.params.bookcode,
+      popular: []
     }
   }
 
@@ -41,7 +44,6 @@ class DetailPage extends Component {
       const res = await Axios.get(`book/` + this.state.bookCode);
       const bookData = res.data.data;
       const bookDataImage = bookData.bookDetailsEntity.cover
-      console.log(bookData)
 
     //   if (bookData.id) {
     //     this.setState({ bookAvailable: 'Available' });
@@ -67,16 +69,23 @@ class DetailPage extends Component {
       this.setState({ bookDetailsCode: bookData.bookDetailsEntity.bookDetailCode });
       this.setState({ title: bookData.bookDetailsEntity.bookTitle });
       this.setState({ category: bookData.categoryEntity.categoryName });
+      this.setState({ categoryCode: bookData.categoryEntity.categoryCode });
       this.setState({ publishedDate: bookData.publishedDate });
       this.setState({ author: bookData.authorEntity.authorName });
       this.setState({ pages: bookData.bookDetailsEntity.numberOfPages });
       this.setState({ bookDataImage: bookDataImage })
       this.setState({ descriptions: bookData.bookDetailsEntity.description })
-      console.log(this.state.descriptions)
-      console.log(bookCode)
+      console.log(this.state.categoryCode)
     } catch (error) {
       console.log(error);
     }
+
+    Axios.get(`popular/` + this.state.categoryCode).then((res) => {
+      const popular = res.data.data;
+      const popularWithoutCurrent = popular.filter((word) => word.bookCode !== this.state.bookCode);
+        this.setState({ popular: popularWithoutCurrent })
+    })
+
   }
 
   handleWishlist = () => {
@@ -135,6 +144,41 @@ class DetailPage extends Component {
     this.setState({ show: true })
   }
 
+  handlePopClick = (bkcd) => {
+    this.setState({ bookCode: bkcd, editClicked : true })
+  }
+
+  async componentDidUpdate(prevState) {
+    if (this.state.editClicked) {
+      try {
+        const res = await Axios.get(`book/` + this.state.bookCode);
+        const bookData = res.data.data;
+        const bookDataImage = bookData.bookDetailsEntity.cover
+        this.setState({ 
+          bookData: bookData,
+          register: bookData.bookCode,
+          bookDetailsCode: bookData.bookDetailsEntity.bookDetailCode, 
+          title: bookData.bookDetailsEntity.bookTitle,
+          category: bookData.categoryEntity.categoryName,
+          categoryCode: bookData.categoryEntity.categoryCode,
+          publishedDate: bookData.publishedDate,
+          author: bookData.authorEntity.authorName,
+          pages: bookData.bookDetailsEntity.numberOfPages,
+          bookDataImage: bookDataImage,
+          descriptions: bookData.bookDetailsEntity.description
+        });
+
+        Axios.get(`popular/` + this.state.categoryCode).then((res) => {
+          const popular = res.data.data;
+          const popularWithoutCurrent = popular.filter((word) => word.bookCode !== this.state.bookCode);
+            this.setState({ popular: popularWithoutCurrent, editClicked: false })
+        })
+
+      } catch (error) {
+        console.log(error);
+      }; 
+    }
+    
   setRate(rate) {
     if(rate == 1) {
         return <div> <span class="fa fa-star checked"></span>
@@ -175,7 +219,7 @@ class DetailPage extends Component {
   }
 
   render() {
-    const { bookData, register, bookDataImage, bookAvailable, title, subtitle, author, category, publishedDate, show, pages, descriptions } = this.state;
+    const { popular, bookData, register, bookDataImage, bookAvailable, title, subtitle, author, category, publishedDate, show, pages, descriptions } = this.state;
     return (
       <div className="right_col" role="main" style={{ minHeight: '100vh' }}>
         <section className="mt-5 pt-5">
@@ -242,45 +286,41 @@ class DetailPage extends Component {
 
                           {/* most popular */}
                           <div class="col-lg-3">
-                            <h5 class='pb-2 text-center'>Popular this week</h5>
+                            <h5 class='pb-2 text-center'>Popular {category} books</h5>
                             <hr />
-                            <div class="row">
-                              <div class="col text-right pt-2">
-                                <img rounded height="80" src="https://www.gramedia.com/blog/content/images/2020/05/selena_gramedia.jpg" alt=""/>
-                              </div>
-                              <div
-                                class="col"
-                                style={{ display: 'flex', flexWrap: 'wrap', alignContent: 'center' }}>
-                                <div>
-                                  <h6 class="mb-0 ">Selena</h6>
-                                  <h6 class="mb-0 ">- Tere Liye</h6>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="row">
-                              <div class="col text-right pt-2">
-                                <img rounded height="80" src="https://www.gramedia.com/blog/content/images/2020/05/nebula_gramedia.jpg" alt=""/>
-                              </div>
-                              <div class="col"
-                                style={{ display: 'flex', flexWrap: 'wrap', alignContent: 'center' }}>
-                                <div>
-                                  <h6 class="mb-0 ">Nebula</h6>
-                                  <h6 class="mb-0 ">- Tere Liye</h6>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="row">
-                              <div class="col text-right pt-2">
-                                <img rounded height="80" src="https://www.gramedia.com/blog/content/images/2020/05/misteri-terakhir_gramedia.jpg" alt=""/>
-                              </div>
-                              <div class="col "
-                                style={{ display: 'flex', flexWrap: 'wrap', alignContent: 'center' }}>
-                                <div>
-                                  <h6 class="mb-0 ">Misteri Terakhir#1</h6>
-                                  <h6 class="mb-0 ">- S. Mara Gd</h6>
-                                </div>
-                              </div>
-                            </div>
+
+                            {/* popular */}
+                            {
+                            popular.map((pop, index) => {
+                              return (
+                                  <Button 
+                                    className="ml-4"
+                                    style={{
+                                      backgroundColor: "Transparent",
+                                      color: "#000",
+                                      border: "none",
+                                      cursor: "pointer"}}
+                                    onClick = { ()=> {this.handlePopClick(pop.bookCode)}}
+                                  >
+                                    <div class="row">
+                                      <div class="col text-right pt-2">
+                                        <img rounded height="80" src={pop.bookDetailsEntity.cover} alt=""/>
+                                      </div>
+                                      <div
+                                        class="col"
+                                        style={{ display: 'flex', flexWrap: 'wrap', alignContent: 'center' }}>
+                                        <div>
+                                          <h6 class="mb-0 ">{pop.bookDetailsEntity.bookTitle}</h6>
+                                          <h6 class="mb-0 ">- {pop.authorEntity.authorName}</h6>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </Button>
+                                )
+                              })
+                            } 
+                            {/* popular */}
+
                             {/* button borrow */}
                             <div className="text-center mt-5">
                               <Button className="btn btn-warning borrow" variant="primary" onClick={this.handleShow}>

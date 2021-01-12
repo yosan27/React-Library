@@ -93,7 +93,6 @@ class Content extends Component {
         console.log('Error', error.message);
       }
     })
-
   }
   
   sendBooks = () =>{
