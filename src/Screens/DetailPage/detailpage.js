@@ -46,11 +46,11 @@ class DetailPage extends Component {
     //     this.setState({ bookAvailable: 'Not Available' });
     //   }
 
-    //   if (bookData.bookDetailsEntity.subtitle !== undefined) {
-    //     this.setState({ subtitle: bookData.bookDetailsEntity.subtitle });
-    //   } else {
-    //     this.setState({ subtitle: 'Subtitle not available' });
-    //   }
+      if (bookData.bookDetailsEntity.bookSubtitle !== undefined) {
+        this.setState({ subtitle: bookData.bookDetailsEntity.bookSubtitle });
+      } else {
+        this.setState({ subtitle: bookData.bookDetailsEntity.bookTitle });
+      }
 
       this.setState({ bookData: bookData });
       this.setState({ register: bookData.bookCode });
@@ -74,6 +74,12 @@ class DetailPage extends Component {
         this.setState({ popular: popularWithoutCurrent })
     })
 
+      window.focus();
+      window.scrollBy({
+        top: 0,
+        left: 270,
+        behavior: 'smooth'
+      });
   }
 
   handleWishlist = () => {
@@ -133,7 +139,7 @@ class DetailPage extends Component {
   }
 
   handlePopClick = (bkcd) => {
-    this.setState({ bookCode: bkcd, editClicked : true })
+    this.setState({ bookCode: bkcd, editClicked : true });
   }
 
   async componentDidUpdate(prevState) {
@@ -160,7 +166,7 @@ class DetailPage extends Component {
           const popular = res.data.data;
           const popularWithoutCurrent = popular.filter((word) => word.bookCode !== this.state.bookCode);
             this.setState({ popular: popularWithoutCurrent, editClicked: false })
-        })
+        });
 
       } catch (error) {
         console.log(error);
@@ -244,6 +250,7 @@ class DetailPage extends Component {
                             popular.map((pop, index) => {
                               return (
                                   <Button 
+                                    id="pop"
                                     className="ml-4"
                                     style={{
                                       backgroundColor: "Transparent",
