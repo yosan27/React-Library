@@ -33,6 +33,9 @@ class DetailPage extends Component {
       pages: '',
       descriptions: '',
       reviewData: [],
+      rate: '',
+      review: '',
+      date: '',
       bookCode: this.props.match.params.bookcode,
       popular: []
     }
@@ -147,6 +150,37 @@ class DetailPage extends Component {
   handlePopClick = (bkcd) => {
     this.setState({ bookCode: bkcd, editClicked : true })
   }
+
+  review = (bkcd) => {
+    Axios.get(`reviewLook/${bkcd}`).then((res) => {
+      this.setState({ reviewData: res.data });   
+      console.log(res.data)   
+    })
+  }
+
+  changeReviewHandler = (e) => {
+    this.setState({review: e.target.value})
+  }
+
+  changeRateHandler = (e) => {
+    this.setState({rate: e.target.value})
+  }
+
+  handlePostReview = () => {
+    let reviewData = {
+      userCode: AuthService.getUserCode(),
+      rate: this.state.rate,
+      review: this.state.review,
+      bookDetailCode: this.state.bookDetailsCode
+    }
+    Axios.post('review', reviewData).then(() => {
+      swal("Success!", "Review Data Has Been Added", "success").then(() => {
+        window.location.reload()
+        
+    })
+    }) 
+  }
+
 
   async componentDidUpdate(prevState) {
     if (this.state.editClicked) {
@@ -327,7 +361,7 @@ class DetailPage extends Component {
                               <Button className="btn btn-warning borrow" variant="primary" onClick={this.handleShow}>
                                 Borrow
                               </Button>
-                              <button className="btn btn-primary" data-toggle="modal" data-target="#review">
+                              <button className="btn btn-primary" data-toggle="modal" data-target="#review" onClick={() => this.review(this.state.bookDetailsCode)} >
                                    Review
                                 </button>
                             </div>
@@ -407,13 +441,7 @@ class DetailPage extends Component {
                                     return(
                                         <form key={index}>
                                                 <div class="form-group row">
-                                                <label for="editImage" class="col-sm-2 col-form-label">By   
-                                                {Object.keys(book.userEntity?book.userEntity:"").forEach(key => {
-                                                    if (key === "userName"){
-                                                    const name = (book.userEntity[key])
-                                                    return name;
-                                                    }
-                                                })}                       
+                                                <label for="editImage" class="col-sm-2 col-form-label">By {book.userEntity.userName}              
                                                 <br />       
                                                 {this.setRate(book.rate)}         
                                                 </label>
@@ -451,13 +479,13 @@ class DetailPage extends Component {
                                       <form>
                                       <div class="form-group row">
                                           <div class="col-sm-12 text-center">
-                                          <Image className='' src={"https://www.gramedia.com/blog/content/images/2020/05/selena_gramedia.jpg"} wrapped ui={false} style={{width:'20%',height:'auto'}}/>
+                                          <img class="rounded novel" src={bookDataImage ? bookDataImage : 'https://res.cloudinary.com/todidewantoro/image/upload/v1604943658/bootcamp/covernya_ejy4v1.jpg'} alt=""/>
                                           </div>
                                       </div>
                                       <div className="form-group row">
                                           <div className="col-sm-9">
-                                              <input type="hidden" className="form-control input" name="bookCode" readOnly 
-                                              value={this.state.bookCode} />
+                                              <input className="form-control input" name="bookDetailsCode" readOnly
+                                              value={this.state.bookDetailsCode} />
                                           </div>
                                       </div>
                                     <div class="form-group row">
