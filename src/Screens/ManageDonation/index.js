@@ -16,7 +16,6 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import 'react-calendar/dist/Calendar.css';
 
-
 class ManageDonation extends Component {
   constructor(props) {
     super(props);
@@ -200,7 +199,7 @@ class ManageDonation extends Component {
   }
 
   findPerson() {
-    axios.get("donation")
+    axios.get("http://localhost:8500/api/donation")
       .then((response) => {
         console.log(response);
         this.setState({
@@ -216,7 +215,7 @@ class ManageDonation extends Component {
 
   delete = (getId) => {
     axios
-      .delete(`donation/${getId}`)
+      .delete(`http://localhost:8500/api/donation/${getId}`)
       .then(() => window.location.reload());
   };
 
@@ -236,7 +235,7 @@ class ManageDonation extends Component {
 
     });
 
-    axios.get(`donation/id/${getId}`).then((e) => {
+    axios.get(`http://localhost:8500/api/donation/id/${getId}`).then((e) => {
       let res = e.data;
       this.setState({
         author: res.author,
@@ -260,7 +259,7 @@ class ManageDonation extends Component {
       categoryCode: this.state.categoryCode
     };
     axios
-      .put(`donation-detail/${this.state.id}`, donationList)
+      .put(`http://localhost:8500/api/donation-detail/${this.state.id}`, donationList)
       .then(() => window.location.reload());
   };
 

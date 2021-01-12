@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import axios from 'axios'
 import { Link } from 'react-router-dom'
 import swal from 'sweetalert'
+import Axios from '../../Services/axios-instance'
 
 import 'datatables.net-dt/js/dataTables.dataTables'
 import 'datatables.net-dt/css/jquery.dataTables.min.css'
@@ -23,29 +23,32 @@ class History extends Component {
             dueDate: '',
             dateReturn: '',
             status: '',
-            totalFine: ''
+            totalFine: '',
+            hidden: false
         }
     }
 
     componentDidMount() {
         this.getAll()
         document.addEventListener('click', this.clearModal);
+        
     }
 
     getAll() {
-        axios.get('http://localhost:8500/api/rent').then((res) => {
+        Axios.get('rent').then((res) => {
             this.setState({ rent: res.data })
 
             $(function () {
                 $('#history').DataTable({
-                    responsive: true
+                    responsive: true,
+                    order: [[ 4, 'desc' ]]
                 })
             })
         })
     }
 
     getById(id) {
-        axios.get(`http://localhost:8500/api/rent/id/${id}`).then((res) => {
+        Axios.get(`rent/id/${id}`).then((res) => {
             this.setState({
                 rentCode: res.data.rentCode,
                 fullName: res.data.userEntity.fullName,
@@ -56,46 +59,21 @@ class History extends Component {
                 status: res.data.status
             })
 
-            axios.get(`http://localhost:8500/api/transaction-detail/get-by-rent-code/${this.state.rentCode}`).then((res) => {
-                res.data.map((d) => {
-                    this.setState({
-                        fine: [ ...this.state.fine, d ]
-                    })
+            Axios.get(`transaction-detail/rent/${this.state.rentCode}`).then((res) => {
+                res.data.forEach((d) => {
+                    this.setState({ fine: [ ...this.state.fine, d ] })
                 })
             })
         })
     }
 
     getByRentCode(rentcode) {
-        axios.get(`http://localhost:8500/api/transaction-detail/get-by-rent-code/${rentcode}`).then((res) => {
+        Axios.get(`transaction-detail/rent/${rentcode}`).then((res) => {
             this.setState({
                 fineType: res.data.fineType,
                 nominal: res.data.nominal
             })
         })
-    }
-
-    alertTakeBook = () => {
-        swal("Success!", "the book has been taken by the borrower", "success")
-        window.location.reload()
-    }
-
-    setStatusTakeBook = (id) => {
-        axios.put(`http://localhost:8500/api/rent/status/${id}`).then(() => {
-            this.alertTakeBook()
-        })
-    }
-
-    setTakeBook(status, id) {
-        if(status === 1) {
-            return <button className="btn btn-primary btn-sm rounded-sm" data-toggle="modal" data-target="#takeBook" onClick={() => this.setStatusTakeBook(id)}><i className="fa fa-book"></i></button>
-        }
-    }
-
-    setReturn(status) {
-        if(status === 2 || status === 3) {
-            return <button className="btn btn-primary btn-sm rounded-sm"><i className="fa fa-exchange"></i></button>
-        }
     }
 
     setStatus(status) {
@@ -114,6 +92,43 @@ class History extends Component {
         }
     }
 
+    setReturnButton(status) {
+        if(status === 2 || status === 3) {
+            return <button className="btn btn-primary btn-sm rounded-sm"><i className="fa fa-exchange"></i></button>
+        }
+    }
+
+    setTakeButton(status, id) {
+        if(status === 1) {
+            return <button className="btn btn-primary btn-sm rounded-sm" onClick={() => this.updateTakeBook(id)}><i className="fa fa-book"></i></button>
+        }
+    }
+
+    updateTakeBook = (id) => {
+        swal({
+            title: "Did the borrower take the books?",
+            text: "Make sure the borrower takes the book!",
+            icon: "warning",
+            buttons: {
+                cancel: true,
+                confirm: "Confirm",
+            }
+        }).then((ok) => {
+            if (ok) {
+                let take = {
+                    status: 2 // change pending to borrowed
+                }
+                Axios.put(`rent/${id}`, take).then(() => {
+                    swal("Success!", "Borrow Books Successfully", "success").then(() => {
+                        window.location.reload()
+                    })
+                })
+            } else {
+                swal("Cancelled!", "The books are still in the library", "error")
+            }
+        })
+    }
+
     clearModal = (e) => {
         if (e.target.className === "modal fade" || e.target.className === "modal-clear" || e.target.className === "btn btn-secondary modal-clear") {
             this.setState({ dateReturn: '', fine: [] })
@@ -121,7 +136,7 @@ class History extends Component {
     }
 
     render() {
-        const { rent } = this.state;
+        const {rent}  = this.state;
         return (
             <div className="right_col" role="main" style={{ minHeight: '100vh' }}>
                 <section className="mt-5 pt-5">
@@ -157,8 +172,8 @@ class History extends Component {
                                                                     <button className="btn btn-primary btn-sm rounded-sm mr-1" data-toggle="modal" data-target="#info" onClick={() => this.getById(rent.id)}>
                                                                         <i className="fa fa-info-circle"></i>
                                                                     </button>
-                                                                    <span>{this.setTakeBook(rent.status, rent.id)}</span>
-                                                                    <Link to={`/page/return/${rent.id}`}>{this.setReturn(rent.status)}</Link>
+                                                                    <span>{this.setTakeButton(rent.status, rent.id)}</span>
+                                                                    <Link to={`/page/return/${rent.id}`}>{this.setReturnButton(rent.status)}</Link>
                                                                 </div>
                                                             </td>
                                                             <td>{rent.userEntity.fullName}</td>
@@ -181,11 +196,11 @@ class History extends Component {
                 </section >
 
                 {/* MODAL INFO */}
-                <div className="modal fade" id="info" tabIndex="-1" aria-labelledby="infoLabel" aria-hidden="true">
+                <div className="modal fade" id="info" tabIndex="-1">
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h5 className="modal-title" id="infoLabel">Info</h5>
+                                <h5 className="modal-title">Info</h5>
                                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true" className="modal-clear">&times;</span>
                                 </button>
@@ -195,19 +210,19 @@ class History extends Component {
                                     <div className="form-group row">
                                         <label className="col-sm-4 col-form-label">Rent Code</label>
                                         <div className="col-sm-8">
-                                            <input type="text" readOnly className="form-control-plaintext" value={this.state.rentCode} />
+                                            <input type="text" className="form-control-plaintext" value={this.state.rentCode} readOnly />
                                         </div>
                                     </div>
                                     <div className="form-group row">
                                         <label className="col-sm-4 col-form-label">Borrower Name</label>
                                         <div className="col-sm-8">
-                                            <input type="text" readOnly className="form-control-plaintext" value={this.state.fullName} />
+                                            <input type="text" className="form-control-plaintext" value={this.state.fullName} readOnly />
                                         </div>
                                     </div>
                                     <div className="form-group row">
                                         <label className="col-sm-4 col-form-label">Book Title</label>
                                         <div className="col-sm-8">
-                                            <input type="text" readOnly className="form-control-plaintext" value={this.state.bookTitle} />
+                                            <input type="text" className="form-control-plaintext" value={this.state.bookTitle} readOnly />
                                         </div>
                                     </div>
                                     <hr></hr>
@@ -242,7 +257,7 @@ class History extends Component {
                                             {this.setStatus(this.state.status)}
                                         </div>
                                     </div>
-                                    <div className="form-group row">
+                                    <div className="form-group row" hidden={this.state.hidden}>
                                         <label className="col-sm-4 col-form-label"><b>Fine</b></label>
                                         <div className="col-sm-8 ml-0 pl-0">
                                         {
@@ -257,37 +272,10 @@ class History extends Component {
                                         }
                                         </div>
                                     </div>
-                                    {/* <div className="form-group row">
-                                        <label className="col-sm-4 col-form-label"><b>Total Fine</b></label>
-                                        <div className="col-sm-8">
-                                            <input type="text" readOnly className="form-control-plaintext" defaultValue="0" />
-                                        </div>
-                                    </div> */}
                                 </form>
                             </div>
                             <div className="modal-footer">
                                 <button className="btn btn-secondary modal-clear" data-dismiss="modal">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* MODAL TAKE BOOK */}
-                <div className="modal fade" id="takeBook" tabIndex="-1" aria-labelledby="takeBookLabel" aria-hidden="true">
-                    <div className="modal-dialog">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title" id="takeBookLabel">Take Book</h5>
-                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div className="modal-body">
-                                <p>Are you sure the borrower has taken the book?</p>
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                <button type="button" className="btn btn-success" data-dismiss="modal">Submit</button>
                             </div>
                         </div>
                     </div>
