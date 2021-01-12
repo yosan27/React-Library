@@ -30,6 +30,7 @@ import AuthorManagement from "../Screens/AuthorManagement/AuthorManagement";
 import CategoryManagement from "../Screens/CategoryManagement/categoryManagement";
 import SeeMoreBooks from "../Screens/SeeMoreBooks/SeeMoreBooks";
 import AllHistory from "../Screens/Payment/AllHistory";
+import SearchResult from "../Screens/SearchResult/SearchResult";
 
 const authGuard = (Component) => () => {
   return !localStorage.getItem('userFaraday') ? (
@@ -143,6 +144,9 @@ const MainNavigationsUser = (props) => (
         {/* <Route render={authGuard(cartuser)} path=""></Route> */}
         <Route render={authGuard(SeeMoreBooks)} path="/page/more/:title">
           {/* <SeeMoreBooks /> */}
+        </Route>
+        <Route render={authGuard(SearchResult)} path="/page/result/:search">
+          {/* <SearchResult /> */}
         </Route>
         <Route render={authGuard(AllHistory)} path="/page/all-history">
           {/* <AllHistory /> */}
