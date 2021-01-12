@@ -40,7 +40,7 @@ class DetailPage extends Component {
 
   async componentDidMount() {
     try {
-      const  { bookCode } = this.props.location.state;
+      // const  { bookCode } = this.props.location.state;
       const res = await Axios.get(`book/` + this.state.bookCode);
       const bookData = res.data.data;
       const bookDataImage = bookData.bookDetailsEntity.cover
@@ -51,12 +51,12 @@ class DetailPage extends Component {
     //     this.setState({ bookAvailable: 'Not Available' });
     //   }
       
-      if (bookData.bookDetailsEntity.subtitle !== undefined) {
-        this.setState({ subtitle: bookData.bookDetailsEntity.subtitle });
-      } else {
-        this.setState({ subtitle: 'Subtitle not available' });
-      }
-      this.setState({ bookCode: bookCode})
+      // if (bookData.bookDetailsEntity.subtitle !== undefined) {
+      //   this.setState({ subtitle: bookData.bookDetailsEntity.subtitle });
+      // } else {
+      //   this.setState({ subtitle: 'Subtitle not available' });
+      // }
+      // this.setState({ bookCode: bookCode})
       
     //   if (bookData.bookDetailsEntity.subtitle !== undefined) {
     //     this.setState({ subtitle: bookData.bookDetailsEntity.subtitle });
@@ -178,37 +178,38 @@ class DetailPage extends Component {
         console.log(error);
       }; 
     }
+  }
     
   setRate(rate) {
-    if(rate == 1) {
+    if(rate === 1) {
         return <div> <span class="fa fa-star checked"></span>
         <span class="fa fa-star"></span>
         <span class="fa fa-star "></span>
         <span class="fa fa-star"></span>
         <span class="fa fa-star"></span>
         </div>
-    } else if(rate == 2) {
+    } else if(rate === 2) {
         return <div> <span class="fa fa-star checked"></span>
         <span class="fa fa-star checked"></span>
         <span class="fa fa-star "></span>
         <span class="fa fa-star"></span>
         <span class="fa fa-star"></span>
         </div>
-    } else if(rate == 3) {
+    } else if(rate === 3) {
         return <div> <span class="fa fa-star checked"></span>
         <span class="fa fa-star checked"></span>
         <span class="fa fa-star checked"></span>
         <span class="fa fa-star"></span>
         <span class="fa fa-star"></span>
         </div>
-    } else if(rate == 4) {
+    } else if(rate === 4) {
         return <div> <span class="fa fa-star checked"></span>
         <span class="fa fa-star checked"></span>
         <span class="fa fa-star checked"></span>
         <span class="fa fa-star checked"></span>
         <span class="fa fa-star "></span>
         </div>
-    } else if(rate == 5) {
+    } else if(rate === 5) {
         return <div> <span class="fa fa-star checked"></span>
         <span class="fa fa-star checked"></span>
         <span class="fa fa-star checked"></span>
@@ -407,7 +408,7 @@ class DetailPage extends Component {
                                         <form key={index}>
                                                 <div class="form-group row">
                                                 <label for="editImage" class="col-sm-2 col-form-label">By   
-                                                {Object.keys(book.userEntity?book.userEntity:"").map(key => {
+                                                {Object.keys(book.userEntity?book.userEntity:"").forEach(key => {
                                                     if (key === "userName"){
                                                     const name = (book.userEntity[key])
                                                     return name;
