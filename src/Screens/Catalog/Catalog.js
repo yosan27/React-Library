@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
-import axios from "axios";
+import axios from "../../Services/axios-instance";
 import {Card, Table, Modal, Form, Row, Col, Badge, Button } from 'react-bootstrap';
 import swal from "sweetalert";
 import Image from 'react-bootstrap/Image'
 import './Catalog.css'
+import AuthService from "../../Services/auth.service";
 // Rating
 import Rating from '@material-ui/lab/Rating';
 import Typography from '@material-ui/core/Typography';
@@ -15,6 +16,7 @@ import "datatables.net-dt/css/jquery.dataTables.min.css"
 import $ from 'jquery'; 
 import API from "../../api";
 import api from '../../api';
+import { Link } from 'react-router-dom';
 
 class Catalog extends Component {
     constructor(props){
@@ -41,7 +43,6 @@ class Catalog extends Component {
             rate: "",
             userName: "",
             userCode: "",
-            reviewData: [],
             
             data: [
                 {"id": "2017100251", "title":"Selena", "cover":"https://www.gramedia.com/blog/content/images/2020/05/selena_gramedia.jpg", "author":"Tere Liye", "categories":"Young Adult Fiction", "publisher":"Gramedia Pustaka "},
@@ -118,7 +119,7 @@ class Catalog extends Component {
             rate: this.state.rate,
             review: this.state.review
         }
-        axios.post('http://localhost:8500/api/review', reviewData).then(() => {
+        axios.post('review', reviewData).then(() => {
             this.alertAdd();
         })
     }
@@ -140,7 +141,7 @@ class Catalog extends Component {
           $(this).css({width: "-=10%"});
       }
 
-      axios.get("http://localhost:8500/api/catalog").then((e) => {
+      axios.get("catalog").then((e) => {
           this.setState({ catalogData: e.data.data});
           //console.log(e.data.data[0]);
 
@@ -155,7 +156,7 @@ class Catalog extends Component {
     }
 
     getById(id) {
-        axios.get(`http://localhost:8500/api/detailBook/${id}`).then((res) => {
+        axios.get(`detailBook/${id}`).then((res) => {
             this.setState({
                 description: res.data.bookDetailsEntity.description,
                 numberOfPages: res.data.bookDetailsEntity.numberOfPages,
@@ -170,7 +171,7 @@ class Catalog extends Component {
     }
 
     review(bookCode) {
-        axios.get(`http://localhost:8500/api/reviewLook/${bookCode}`).then((e) => {
+        axios.get(`reviewLook/${bookCode}`).then((e) => {
             this.setState({ reviewData: e.data});
             console.log(e.data.data);
         });
@@ -270,6 +271,13 @@ class Catalog extends Component {
                                                                             <button className="btn btn-primary" data-toggle="modal" data-target="#detail" onClick={() => this.getById(user.id)}>
                                                                                 <i className="fa fa-info-circle"></i>
                                                                             </button>
+                                                                            
+                                                                            <Link to={{pathname: "/page/detailPage", state: {bookCode: "string"}}}>
+                                                                            <button className="btn btn-primary">
+                                                                            <i className="fa fa-info-circle"></i>
+                                                                            </button>
+                                                                            </Link>                                                             
+                                                                            
                                                                             <button className="btn btn-warning" data-toggle="modal" data-target="#">
                                                                                 <i className="fa fa-shopping-cart"></i>
                                                                             </button>
@@ -281,7 +289,8 @@ class Catalog extends Component {
                                                                     <td>{Object.keys(user.bookDetailsEntity?user.bookDetailsEntity:"").map(key => {
                                                                         if (key === "cover"){
                                                                             const cover = (user.bookDetailsEntity[key])
-                                                                            return cover;
+                                                                            return <Image className='photoOfOrder text-center img-book card-img-top' src={cover} wrapped ui={false} style={{ width: '20%', height: 'auto', marginLeft: '40%' }} />
+                                                                                 
                                                                         }
                                                                         })}   
                                                                     </td>
@@ -449,7 +458,7 @@ class Catalog extends Component {
                                 </div>
                                 <div className="form-group row">
                                     <div className="col-sm-9">
-                                        <input type="hidden" className="form-control input" name="bookCode" readOnly disabled
+                                        <input type="hidden" className="form-control input" name="bookCode" readOnly 
                                          value={this.state.bookCode} />
                                     </div>
                                 </div>
@@ -483,7 +492,7 @@ class Catalog extends Component {
                         </div>
                     </div>
                 </div>
-
+                {/* modal create review */}
             </div >                
         )
     }
