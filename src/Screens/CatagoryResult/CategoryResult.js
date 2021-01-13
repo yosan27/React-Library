@@ -21,47 +21,19 @@ class SearchResult extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.location !== this.props.location) {
-      this.setState({ category: this.props.match.params.search });
-    }
-  }
-
-  componentDidUpdate(nextProps) {
-    if (nextProps.location !== this.props.location) {
-      this.setState({ category: this.props.match.params.search });
-      axios
-        .get(`category/id/${this.props.match.params.search}`)
-        .then((e) => {
-          this.setState({
-            categoryName: e.data.categoryName,
-            categoryCode: e.data.categoryCode,
-            data: [],
-          });
-          axios
-            .get(`books`)
-            .then((b) => {
-              b.data.data.forEach((book) => {
-                if (
-                  book.categoryEntity.categoryCode === this.state.categoryCode
-                ) {
-                  this.setState({ data: [...this.state.data, book] });
-                  if (this.state.data.length === 0) {
-                    document
-                      .querySelector(".no-result-search")
-                      .classList.remove("hide");
-                  }
-                }
-              });
-            })
-            .catch(function (error) {
-              swal("Failed", error.response.data.message, "error");
-            });
+  review(e,i){
+    let allRate = 0;
+    axios.get(`review/rate-by/${e}`).then((rev)=>{
+      if(rev.data.length !==0){
+        rev.data.forEach((r)=>{
+          allRate += parseFloat(r.rate);
         })
-        .catch(function (error) {
-          swal("Failed", error.response.data.message, "error");
-        });
-    }
+        let rate = allRate/parseFloat(rev.data.length);
+        document.querySelector("#bookRate"+i).textContent = " " + rate;
+      }else{
+        document.querySelector("#bookRate"+i).textContent = " No Rating";
+      }
+    });
   }
 
   componentDidMount() {
@@ -128,7 +100,7 @@ class SearchResult extends Component {
           <main className="main pb-2">
             <div className="content">
               <ul className="books">
-                {this.state.data.map((d) => {
+                {this.state.data.map((d,i) => {
                   return (
                     <Link to={{ pathname: `/page/detailpage/${d.bookCode}` }}>
                       <li>
@@ -153,10 +125,12 @@ class SearchResult extends Component {
                                 </div>
                               </div>
                               <div className="row">
-                                <div className="book-rating text-muted">
-                                  <i className="fa fa-star star-rate pr-1"></i>5
-                                </div>
+                              <div className="row">
+                              <div className="book-rating text-muted">
+                                <i class="fa fa-star star-rate pr-1"><span className="text-muted" id={"bookRate" + i}></span></i>{this.review(d.bookDetailsEntity.bookDetailCode,i)}
                               </div>
+                            </div>
+                          </div>
                             </div>
                           </div>
                         </div>
