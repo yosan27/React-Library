@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import axios from "axios";
+import axios from "../../Services/axios-instance";
 import "datatables.net-dt/js/dataTables.dataTables";
 import "datatables.net-dt/css/jquery.dataTables.min.css";
 import "datatables.net-responsive-dt/js/responsive.dataTables.js";
@@ -34,7 +34,7 @@ export default class CategoryManagement extends Component {
   }
 
   findCategory() {
-    axios.get("http://localhost:8500/api/category").then((response) => {
+    axios.get("category").then((response) => {
       console.log(response.data);
       this.setState({
         categoryList: response.data,
@@ -48,7 +48,7 @@ export default class CategoryManagement extends Component {
   }
 
   getCode = () => {
-    axios.get("http://localhost:8500/api/category").then((e) => {
+    axios.get("category").then((e) => {
       this.setState({
         allList: e.data,
       });
@@ -116,19 +116,19 @@ export default class CategoryManagement extends Component {
   };
 
   handleChange = (event, value) => {
-    let {button} = this.state;
+    let { button } = this.state;
 
     if (button !== "Add Category") {
-        document.querySelector(".add-btn").classList.remove("disabled");
+      document.querySelector(".add-btn").classList.remove("disabled");
     }
 
     if (value !== "" || value !== " ") {
-        this.setState({
-            [event.target.name]: event.target.value,
-        });
-        document.querySelector(".add-btn").classList.remove("disabled");
-    }else {
-        document.querySelector(".add-btn").classList.add("disabled");
+      this.setState({
+        [event.target.name]: event.target.value,
+      });
+      document.querySelector(".add-btn").classList.remove("disabled");
+    } else {
+      document.querySelector(".add-btn").classList.add("disabled");
     }
   };
 
@@ -140,7 +140,7 @@ export default class CategoryManagement extends Component {
         categoryName: this.state.categoryName,
       };
       axios
-        .post("http://localhost:8500/api/category", categoryList)
+        .post("category", categoryList)
         .then(() => window.location.reload());
     } else {
       // Button name : Update
@@ -150,7 +150,7 @@ export default class CategoryManagement extends Component {
       };
       axios
         .put(
-          `http://localhost:8500/api/update-category/${this.state.id}`,
+          `update-category/${this.state.id}`,
           categoryList
         )
         .then(() => window.location.reload());
@@ -165,7 +165,7 @@ export default class CategoryManagement extends Component {
     });
 
     // Get data by id and fill form
-    axios.get(`http://localhost:8500/api/category/id/${getId}`).then((e) => {
+    axios.get(`category/id/${getId}`).then((e) => {
       let res = e.data;
       this.setState({
         categoryCode: res.categoryCode,
@@ -176,7 +176,7 @@ export default class CategoryManagement extends Component {
 
   delete = (getId) => {
     axios
-      .delete(`http://localhost:8500/api/delete-category/${getId}`)
+      .delete(`delete-category/${getId}`)
       .then(() => window.location.reload());
   };
 
