@@ -60,7 +60,7 @@ class HeaderUser extends Component {
 
   handleSubmit = () => {
     if (window.location.pathname.includes("result")) {
-      this.props.history.push(`${this.state.searchInput}`);
+      window.open(`/page/result/${this.state.searchInput}`, "_self");
     }
     else if (window.location.pathname.includes("category")) {
       window.open(`/page/result/${this.state.searchInput}`, "_self");
@@ -72,7 +72,7 @@ class HeaderUser extends Component {
 
   handleClick(e){
     if (window.location.pathname.includes("category")) {
-      this.props.history.push(`${e}`);
+      window.open(`/page/category/${e}`, "_self")
     }
     else if (window.location.pathname.includes("result")) {
       window.open(`/page/category/${e}`, "_self")
