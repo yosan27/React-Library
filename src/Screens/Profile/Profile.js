@@ -12,7 +12,7 @@ export default class Profile extends Component {
             fullName: "James Rodriguez",
             email: "james@gmail.com",
             profilePict: AuthService.API_URL() + "getFile/user.png",
-            nameFileImage : "",
+            nameFileImage: "",
             balance: "5000",
             address: "",
             username: "",
@@ -38,7 +38,7 @@ export default class Profile extends Component {
                 address: resp.data.address,
                 id: resp.data.id,
                 profilePict: AuthService.API_URL() + "getFile/" + resp.data.profilePict,
-                nameFileImage : resp.data.profilePict
+                nameFileImage: resp.data.profilePict
             })
         }).catch(function (error) {
             if (error.response) {
@@ -89,8 +89,7 @@ export default class Profile extends Component {
             console.log(response)
             console.log(response.data.message)
             console.log(this.state.nameFileImage)
-            Axios.delete("deleteFile/" + this.state.nameFileImage).then((resp) => {
-                console.log(resp)
+            if (this.state.nameFileImage === "user.png") {
                 this.setState({
                     profilePict: AuthService.API_URL() + "getFile/" + newFileName + currentFile.name,
                     nameFileImage: newFileName + currentFile.name
@@ -110,17 +109,40 @@ export default class Profile extends Component {
                     swal("Successfully", "Changed profile", "success");
                     window.location.reload()
                 }
-            }).catch(function (error) {
-                if (error.response) {
-                    console.log(error.response.data);
-                    console.log(error.response.status);
-                    console.log(error.response.headers);
-                } else if (error.request) {
-                    console.log(error.request);
-                } else {
-                    console.log('Error', error.message);
-                }
-            })
+            } else {
+                Axios.delete("deleteFile/" + this.state.nameFileImage).then((resp) => {
+                    console.log(resp)
+                    this.setState({
+                        profilePict: AuthService.API_URL() + "getFile/" + newFileName + currentFile.name,
+                        nameFileImage: newFileName + currentFile.name
+                    })
+                    const userDto = {
+                        phone: this.state.phone,
+                        address: this.state.address,
+                        profilePict: newFileName + currentFile.name,
+                    }
+                    if (!this.state.phone || !this.state.address) {
+                        swal("Failed", "Changed profile", "failed");
+                    } else {
+                        Axios.put('user/profile/' + id, userDto)
+                            .then((response) => {
+                                console.log(response);
+                            })
+                        swal("Successfully", "Changed profile", "success");
+                        window.location.reload()
+                    }
+                }).catch(function (error) {
+                    if (error.response) {
+                        console.log(error.response.data);
+                        console.log(error.response.status);
+                        console.log(error.response.headers);
+                    } else if (error.request) {
+                        console.log(error.request);
+                    } else {
+                        console.log('Error', error.message);
+                    }
+                })
+            }
         }).catch(function (error) {
             if (error.response) {
                 console.log(error.response.data);
