@@ -17,7 +17,7 @@ class SideBarUser extends Component {
       userData: [],
       saldo: "0",
       userCode: "",
-      profilePict: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBG685vI07-3MsuqJxjCfzIabfFJJG-8yM-ppvjjNpD5QNtWNE4A",
+      profilePict: "",
     };
   }
 
@@ -32,6 +32,7 @@ class SideBarUser extends Component {
       console.log(resp)
       this.setState({
         saldo: resp.data.balance,
+        profilePict: AuthService.API_URL() + "getFile/" + resp.data.profilePict,
       })
     }).catch(function (error) {
       if (error.response) {
@@ -65,7 +66,7 @@ class SideBarUser extends Component {
             </Link>
           </div>
 
-          {/* <div className="clearfix"></div> */}
+          <div className="clearfix"></div>
 
           <div className="profile clearfix">
             <div className="profile_pic">
@@ -92,16 +93,8 @@ class SideBarUser extends Component {
               alt="..."
               className="img-circle profile_img"
             />
-            <div className="text-center">
-              <h5>{this.state.username}</h5>
-              <div>
-                <Link to="/page/payment">
-                  <h5 className="profile_saldo pt-2">Rp <NumberFormat value={this.state.saldo} displayType={'text'} thousandSeparator="&#8228;" className="profile_saldo" /></h5>
-                </Link>
-              </div>
-            </div>
           </div>
-
+          <div className="clearfix"></div>
           <div
             id="sidebar-menu"
             className="main_menu_side hidden-print main_menu"
@@ -251,10 +244,10 @@ class SideBarUser extends Component {
               className="img-circle profile_img"
             />
             <div className="text-center">
-              <h5>{this.state.username}</h5>
+              <h2>{this.state.username}</h2>
             </div>
           </div>
-
+          <div className="clearfix"></div>
           <div
             id="sidebar-menu"
             className="main_menu_side hidden-print main_menu"

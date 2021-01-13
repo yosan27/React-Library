@@ -2,11 +2,8 @@ import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
 import "./Login-style.css";
 import { FormErrors } from './FormErrors';
-// import axios from "axios";
 import axios from "../../Services/axios-instance";
 import swal from "sweetalert";
-import AuthService from "../../Services/auth.service";
-// const API_URL = AuthService.api_Url();
 
 class Login extends Component {
   constructor(props) {
@@ -94,7 +91,7 @@ class Login extends Component {
           if (response.data.token) {
             localStorage.setItem("userFaraday", JSON.stringify(response.data));
           }
-          this.props.history.push("/index")
+          this.props.history.push("/page/indexUser")
           window.location.reload();
         }).catch(function (error) {
           if (error.response) {

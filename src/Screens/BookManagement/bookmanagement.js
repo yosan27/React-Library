@@ -21,7 +21,21 @@ class BookManagement extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [],
+      title: "",
+      subtitle: "",
+      author: "",
+      publisherName: "",
+      publisherAddress: "",
+      urlImage: "",
+      description: "",
+      category: "",
+      numberOfPages: "",
+      startDate: new Date(),
+      isbn: "",
+      language: "",
+
+      data:[],
+      errors: [],
       editClicked: false,
       bookCode: "",
       showAddExist: false,
@@ -33,22 +47,6 @@ class BookManagement extends Component {
       bookDetailCode: "",
       categoryCode: "",
       publisherCode: "",
-      urlImage: "",
-      title: "",
-      subtitle: "",
-      author: "",
-      publisherName: "",
-      publisherAddress: "",
-      description: "",
-      pages: "",
-      startDate: new Date(),
-      language: "",
-      length: "",
-      isbn: "",
-      weight: "",
-      width: "",
-      numberOfPages: "",
-      category: "",
       baseImage: "",
       authorList: "",
       bookDetailList: "",
@@ -102,35 +100,63 @@ class BookManagement extends Component {
   }
 
   handleAddBook = () => {
-    this.setState({ showAdd2: false })
-    Axios.post(
-      `newbooks`,
-      {
-        publisherName: this.state.publisherName,
-        address: this.state.publisherAddress,
-        bookTitle: this.state.title,
-        bookSubtitle: this.state.subtitle,
-        authorName: this.state.author,
-        cover: this.state.urlImage,
-        description: this.state.description,
-        categoryName: this.state.category,
-        numberOfPages: this.state.numberOfPages,
-        publishedDate: this.state.startDate,
-        isbn: this.state.isbn,
-        language: this.state.language
-      })
-      .then(() => {
-        this.setState({
-          showAdd1: false,
-          editClicked: true
+    this.setState({ showAdd2: false });
+
+    const { 
+      title,
+      author,
+      publisherName,
+      publisherAddress,
+      category,
+      numberOfPages,
+      isbn,
+      language
+     } = this.state;
+
+    const errors = this.validateForm(
+      title,
+      author,
+      publisherName,
+      publisherAddress,
+      category,
+      numberOfPages,
+      isbn,
+      language);
+
+    if (errors.length > 0) {
+      this.setState({ errors });
+      return;
+    }
+
+      Axios.post(
+        `newbooks`,
+        {
+          publisherName: this.state.publisherName,
+          address: this.state.publisherAddress,
+          bookTitle: this.state.title,
+          bookSubtitle: this.state.subtitle,
+          authorName: this.state.author,
+          cover: this.state.urlImage,
+          description: this.state.description,
+          categoryName: this.state.category,
+          numberOfPages: this.state.numberOfPages,
+          publishedDate: this.state.startDate,
+          isbn: this.state.isbn,
+          language: this.state.language
         })
-        swal("Success!", "Book Has Been Added", "success");
-      })
-      .catch((error) => {
-        swal("Oops!", "Please try again", "error");
-        console.log(error);
-      });
-  }
+        .then(() => {
+          this.setState({ 
+            showAdd1: false,
+            editClicked: true
+           })
+          swal("Success!", "Book Has Been Added", "success");
+        })
+        .catch((error) => {
+          swal("Oops!", "Please try again", "error");
+          console.log(error);
+        });
+        this.setState({editClicked:true, showAdd1: false})
+    }
 
   handleShowAdd2 = () => {
     this.setState({ showAddExist: false, showAdd2: true })
@@ -197,7 +223,7 @@ class BookManagement extends Component {
         bookCode: this.state.bookCode
       })
       .then(() => {
-        this.setState({ editClicked: true, bookCode: "", authorCode: "", bookDetailCode: "", categoryCode: "", publisherCode: "", publishedDate: "", isbn: "" })
+        this.setState({ editClicked: true })
         swal("Great!", "Book Has Been edited", "success");
       })
       .catch((error) => {
@@ -215,15 +241,13 @@ class BookManagement extends Component {
     Axios.delete(`book/${this.state.bookCode}`)
       .then(()=>window.location.reload())
     // swal("Deleted!", "Book Is Successfully Deleted", "success");
-    this.setState({ showDelete: false })
+    // this.setState({showDelete: false})
   }
 
   // utils
   handleCloseModal = () => {
-    this.setState({
-      showAddExist: false, showAdd1: false, showEdit: false, showDelete: false, showAdd2: false,
-      bookCode: "", authorCode: "", bookDetailCode: "", categoryCode: "", startDate: "", date: "", isbn: ""
-    })
+    this.setState({ showAddExist: false, showAdd1: false, showEdit: false, showDelete: false, showAdd2: false,
+      editClicked: true })
   }
 
   async getCategory() {
@@ -300,35 +324,73 @@ class BookManagement extends Component {
         this.setState({
           data: tabledata,
           editClicked: false,
-          // publisherName: "",
-          // address: "",
-          // bookTitle: "",
-          // bookSubtitle: "",
-          // authorName: "",
-          // cover: "",
-          // description: "",
-          // categoryName: "",
-          // numberOfPages: "",
-          startDate: "",
-          isbn: "",
-          // language: "",
-          // authorCode: "",
-          // bookDetailCode: "",
-          // categoryCode: "",
-          // publisherCode: "",
-          // publishedDate: "",
-          // isbn: ""
+          authorCode: "",
+          bookDetailCode: "",
+          categoryCode: "",
+          publisherCode: "",
+          publishedDate: "",
 
-        });
+          title: "",
+          subtitle: "",
+          author: "",
+          publisherName: "",
+          publisherAddress: "",
+          urlImage: "",
+          description: "",
+          category: "",
+          numberOfPages: "",
+          startDate: new Date(),
+          isbn: "",
+          language: "",
+          errors: [],
+         });
       } catch (error) {
         console.log(error);
       };
     }
   }
 
+  validateForm = () => {
+      const errors = [];
+    
+      if (this.state.title.length === 0) {
+        errors.push("title can't be empty");
+      }
+    
+      if (this.state.author.length === 0) {
+        errors.push("author can't be empty");
+      }
+
+      if (this.state.publisherName.length === 0) {
+        errors.push("publisher name can't be empty");
+      }
+
+      if (this.state.publisherAddress.length === 0) {
+        errors.push("publisher address can't be empty");
+      }
+
+      if (this.state.category.length === 0) {
+        errors.push("category can't be empty");
+      }
+
+      if (this.state.numberOfPages.length === 0) {
+        errors.push("pages can't be empty");
+      }
+
+      if (this.state.isbn.length != 13) {
+        errors.push("isbn 13 invalid");
+      }
+
+      if (this.state.language.length === 0) {
+        errors.push("isbn can't be empty");
+      }
+    
+      return errors;
+  }
+  
 
   render() {
-    const { data, showAdd1, showAdd2, showAddExist, showEdit, showDelete, baseImage } = this.state;
+    const { data, showAdd1, showAdd2, showAddExist, showEdit, showDelete, baseImage, errors } = this.state;
 
     return (
       // page content
@@ -473,7 +535,13 @@ class BookManagement extends Component {
                       <Modal.Body>
                         <div class='container'>
                           <div class="modal-body">
-                            <form>
+                          <form>
+                          {errors.map(error => (
+                            <div>
+                            <label key={error} style={{color:"red"}} for="titleErr">Error: {error}</label>
+                            <br/>
+                            </div>
+                          ))}
                             </form>
                             <form>
                               <div class="form-group row">
@@ -608,30 +676,30 @@ class BookManagement extends Component {
                               <div class="form-group row">
                                 <label for="addPages" class="col-sm-2 col-form-label">Number of Pages</label>
                                 <div class="col-sm-4">
-                                  <input
-                                    type="text"
-                                    name="numberOfPages"
-                                    class="form-control"
-                                    id="addNumberOfPages"
-                                    placeholder="Number of Pages..."
-                                    onChange={(e) => this.setState({ numberOfPages: e.target.value })}
-                                    value={this.state.numberOfPages}
-                                    data-attribute-name="numberOfPages"
-                                    data-async
+                                <input 
+                                  type="text" 
+                                  name="numberOfPages"
+                                  class="form-control" 
+                                  id="addNumberOfPages" 
+                                  placeholder="Number of Pages..." 
+                                  onChange={(e) => this.setState({numberOfPages : e.target.value.replace(/\D/,'')})}
+                                  value={this.state.numberOfPages} 
+                                  data-attribute-name="numberOfPages"
+                                  data-async
                                   />
                                 </div>
                                 <label for="addIsbn" class="col-sm-2 col-form-label">ISBN</label>
                                 <div class="col-sm-4">
-                                  <input
-                                    type="text"
-                                    name="isbn"
-                                    class="form-control"
-                                    id="isbn"
-                                    placeholder="ISBN..."
-                                    onChange={(e) => this.setState({ isbn: e.target.value })}
-                                    value={this.state.isbn}
-                                    data-attribute-name="isbn"
-                                    data-async
+                                <input 
+                                  type="text" 
+                                  name="isbn"
+                                  class="form-control" 
+                                  id="isbn" 
+                                  placeholder="ISBN..." 
+                                  onChange={(e) => this.setState({isbn : e.target.value.replace(/\D/,'')})}
+                                  value={this.state.isbn} 
+                                  data-attribute-name="isbn"
+                                  data-async
                                   />
                                 </div>
                               </div>

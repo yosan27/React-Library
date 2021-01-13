@@ -32,6 +32,7 @@ import SeeMoreBooks from "../Screens/SeeMoreBooks/SeeMoreBooks";
 import AllHistory from "../Screens/Payment/AllHistory";
 import SearchResult from "../Screens/SearchResult/SearchResult";
 import RegisterAdmin from "../Screens/Register/registerAdmin";
+import CategoryResult from "../Screens/CatagoryResult/CategoryResult";
 
 const authGuard = (Component) => () => {
   return !localStorage.getItem('userFaraday') ? (
@@ -45,7 +46,7 @@ const rememberMe = (Component) => () => {
   return !localStorage.getItem('userFaraday') ? (
     <Component />
   ) : (
-      <Redirect to="/index" />
+      <Redirect to="/page/indexUser" />
     );
 };
 
@@ -151,6 +152,9 @@ const MainNavigationsUser = (props) => (
         </Route>
         <Route render={authGuard(SearchResult)} path="/page/result/:search">
           {/* <SearchResult /> */}
+        </Route>
+        <Route render={authGuard(CategoryResult)} path="/page/category/:search">
+          {/* <CategoryResult/> */}
         </Route>
         <Route render={authGuard(AllHistory)} path="/page/all-history">
           {/* <AllHistory /> */}
