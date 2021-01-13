@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 export default class HistoryPayment extends Component {
   render() {
-    if(this.props.paymentRecord.length > 1){
+    if(this.props.paymentRecord.length > 20){
       document.querySelector("#next-history").classList.remove("hide");
     }
     return (
@@ -14,7 +14,7 @@ export default class HistoryPayment extends Component {
             <b className="history-payment-title">Payment History</b>
           </div>
         </div>
-        {this.props.paymentRecord.reverse().slice(0,10).map((rec, i) => {
+        {this.props.paymentRecord.reverse().slice(0,20).map((rec, i) => {
           return (
             <div className="row" key={i}>
               <div className="col">
