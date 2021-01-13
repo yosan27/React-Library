@@ -421,7 +421,7 @@ export default class Payment extends Component {
                           <div className="col">
                             <p>Or enter the top-up amount here</p>
                             <input
-                              className="pl-3 pt-2 pb-2 minimum-input-box"
+                              className="pl-3 pt-2 pb-2"
                               type="text"
                               value={this.state.inputNominal}
                               placeholder="Minimun Rp 10.000"
