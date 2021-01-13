@@ -206,7 +206,7 @@ export default class DebitModal extends Component {
                     <input
                       className="long-input"
                       maxLength="16"
-                      placeholder="Minimum 16 Digit"
+                      placeholder="16 Digit"
                       type="text"
                       name="cardNumber"
                       autocomplete="off"
