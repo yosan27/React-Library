@@ -31,6 +31,7 @@ import CategoryManagement from "../Screens/CategoryManagement/categoryManagement
 import SeeMoreBooks from "../Screens/SeeMoreBooks/SeeMoreBooks";
 import AllHistory from "../Screens/Payment/AllHistory";
 import SearchResult from "../Screens/SearchResult/SearchResult";
+import RegisterAdmin from "../Screens/Register/registerAdmin";
 
 const authGuard = (Component) => () => {
   return !localStorage.getItem('userFaraday') ? (
@@ -54,6 +55,9 @@ const MainNavigationsUser = (props) => (
     <Switch>
       <Route render={rememberMe(Login)} path="/" exact>
         {/* <Login /> */}
+      </Route>
+      <Route render={rememberMe(RegisterAdmin)} path="/faraday-register" exact>
+        {/* <Login Admin/> */}
       </Route>
       <Route render={rememberMe(Register)} path="/register" exact>
         {/* <Register /> */}
@@ -152,11 +156,12 @@ const MainNavigationsUser = (props) => (
           {/* <AllHistory /> */}
         </Route>
 
+
         <Route render={authGuard(Footer)} path="/page/:id">
           {/* <Footer /> */}
         </Route>
       </div>
     </Switch>
-  </Router>
+  </Router >
 );
 export default MainNavigationsUser;
