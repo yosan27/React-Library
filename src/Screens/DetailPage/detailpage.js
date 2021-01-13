@@ -29,6 +29,7 @@ class DetailPage extends Component {
       pages: '',
       descriptions: '',
       bookCode: this.props.match.params.bookcode,
+      popular: []
     }
   }
 
@@ -340,7 +341,7 @@ class DetailPage extends Component {
 
                             {/* popular */}
                             {
-                            popular.map((pop, index) => {
+                            this.state.popular.map((pop, index) => {
                               return (
                                   <Button 
                                     id="pop"
