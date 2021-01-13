@@ -3,6 +3,7 @@ import "./Slidertop.style.css";
 import Slider from "react-slick";
 import { Link, withRouter } from "react-router-dom";
 import Axios from "../Services/axios-instance";
+import AuthService from "../Services/auth.service";
 import swal from "sweetalert";
 
 // css
