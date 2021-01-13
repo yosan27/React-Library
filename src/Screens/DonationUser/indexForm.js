@@ -2,8 +2,7 @@ import React, { Component } from 'react'
 import { withRouter, Link } from 'react-router-dom'
 import swal from 'sweetalert'
 import './donation-styles.css'
-import { FormErrors } from '../Login/FormErrors';
-import axios from "axios";
+import axios from "../../Services/axios-instance";
 import Select from 'react-select';
 
 class DonationForm extends Component {
@@ -19,27 +18,12 @@ class DonationForm extends Component {
             photo: '',
             categoryName: '',
             categoryCode: '',
-            button: 'Submit',
-
-            formErrors: {
-                title: '',
-                author: '',
-                category: '',
-                year: '',
-                description: '',
-                photo: '',
-            },
-            titleValid: false,
-            authorValid: false,
-            categoryValid: false,
-            yearValid: false,
-            descriptionValid: false,
-            photoValid: false
+            button: 'Submit'
         }
     }
 
     async getCategory() {
-        const res = await axios.get('http://localhost:8500/api/category')
+        const res = await axios.get('category')
         const data = res.data
 
         const options = data.map(d => ({
@@ -100,66 +84,11 @@ class DonationForm extends Component {
             categoryCode: this.state.categoryCode
         };
 
-        axios.post("http://localhost:8500/api/donation", donation)
-            .then(() => window.location.reload());
-    }
+        axios.post("donation", donation)
+            .then(() =>
+                swal("Success!", "Donation Form Has Been Added", "success")
+                    .then(window.location.reload()));
 
-    validateField(fieldName, value) {
-        let fieldValidationErrors = this.state.formErrors;
-        let titleValid = this.state.titleValid;
-        let authorValid = this.state.authorValid;
-        let categoryValid = this.state.categoryValid;
-        let yearValid = this.state.yearValid;
-        let descriptionValid = this.state.descriptionValid;
-        let photoValid = this.state.photoValid;
-
-
-        switch (fieldName) {
-            case 'bookTitle':
-                titleValid = value.length >= 1;
-                fieldValidationErrors.title = titleValid ? '' : ' should not be empty!';
-                break;
-            case 'author':
-                authorValid = value.length >= 6;
-                fieldValidationErrors.author = authorValid ? '' : ' should not be empty!';
-                break;
-            case 'category':
-                categoryValid = value.length >= 2;
-                fieldValidationErrors.category = categoryValid ? '' : ' should not be empty!';
-                break;
-            case 'year':
-                yearValid = value.length >= 4;
-                fieldValidationErrors.year = yearValid ? '' : ' should not be empty!';
-                break;
-            case 'description':
-                descriptionValid = value.length >= 6;
-                fieldValidationErrors.description = descriptionValid ? '' : ' should not be empty!';
-                break;
-
-            case 'photo':
-                photoValid = value.length >= 1;
-                fieldValidationErrors.photo = photoValid ? '' : ' should not be empty!';
-                break;
-            default:
-                break;
-        }
-        this.setState({
-            formErrors: fieldValidationErrors,
-            titleValid: titleValid,
-            authorValid: authorValid,
-            categoryValid: categoryValid,
-            yearValid: yearValid,
-            descriptionValid: descriptionValid,
-            photoValid: photoValid
-        }, this.validateForm);
-    }
-
-    validateForm() {
-        this.setState({ formValid: this.state.nameValid && this.state.emailValid && this.state.passwordValid });
-    }
-
-    errorClass(error) {
-        return (error.length === 0 ? '' : 'has-error');
     }
 
     submitClick = () => {
@@ -187,42 +116,54 @@ class DonationForm extends Component {
                                 <label for="exampleFormControlInput1">Title Book</label>
                                 <input type="text" class="form-control" name="bookTitle" value={this.state.bookTitle} onChange={(e) => this.handleChange(e, e.target.value)}
                                     placeholder="Bumi Manusia" />
+                                <small className="text-danger">
+                                    {this.state.bookTitle.length < 1 ? '- Please insert the book title -' : ""}
+                                </small>
                             </div>
                             <div className >
                                 <label for="exampleFormControlInput1">Category</label>
                                 <Select name="category" options={this.state.categoryList} onChange={this.handleChangeCategory} />
-
                             </div>
                             <div>
                                 <label for="exampleFormControlInput1">Year</label>
                                 <input type="text" name="year" class="form-control" id="exampleFormControlInput1"
                                     placeholder="2020" value={this.state.year} onChange={(e) => this.handleChange(e, e.target.value)} />
+                                <small className="text-danger">
+                                    {this.state.year.length < 4 ? '- Please insert year of the book -' : ""}
+                                </small>
                             </div>
 
                             <div>
                                 <label for="exampleFormControlInput1">Author</label>
                                 <input type="text" name="author" class="form-control" id="exampleFormControlInput1"
                                     placeholder="Pramodya A. Toer" value={this.state.author} onChange={(e) => this.handleChange(e, e.target.value)} />
+                                <small className="text-danger">
+                                    {this.state.author.length < 1 ? '- Please insert author of this book -' : ""}
+                                </small>
                             </div>
 
                             <div className="form-group">
                                 <label for="exampleFormControlTextarea1">Description</label>
                                 <textarea name="description" class="form-control" id="exampleFormControlTextarea1" rows="3" value={this.state.description} onChange={(e) => this.handleChange(e, e.target.value)}></textarea>
+                                <small className="text-danger">
+                                    {this.state.description.length < 10 ? '- Please insert description and condition of this book -' : ""}
+                                </small>
                             </div>
 
                             <div>
                                 <label for="exampleFormControlInput1">Photo Book</label>
                                 <input class="form-control" type="text" id="avatar" name="photo"
                                     value={this.state.photo} onChange={(e) => this.handleChange(e, e.target.value)} />
+
                             </div>
-                            <i className="wrong-user"><FormErrors formErrors={this.state.formErrors} /></i>
                             <br /><br />
-                            <Link
-                                className="btn btn-success add-btn"
+                            <button
+                                className="btn btn-success btn-block"
                                 onClick={this.addDonation}
+                                disabled={!this.state.bookTitle || !this.state.description || !this.state.year || !this.state.photo}
                             >
                                 {this.state.button}
-                            </Link>
+                            </button>
                         </form>
                     </div>
                     <br /><br />

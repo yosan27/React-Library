@@ -176,6 +176,17 @@
   color: grey;
 }
 
+.info-link{
+  color: green;
+  font-weight: bold;
+}
+
+@media only screen and (max-width: 1024px) {
+  .header-logo-bar .logo-title h4{
+    font-size: 18px;
+  }
+}
+
 @media only screen and (max-width: 768px) {
   .header-logo-bar .logo h4{
     font-size: 20px;

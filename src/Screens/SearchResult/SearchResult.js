@@ -1,29 +1,27 @@
 import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
-import Axios from "../../Services/axios-instance";
+import axios from "../../Services/axios-instance";
+import swal from "sweetalert";
+import noresult from "../../components/img/noresult.png";
 
 // css
-import "./booksList.css";
+import "../SeeMoreBooks/booksList.css";
+import "./SearchResult.css"
 
-class SeeMoreBooks extends Component {
+class SearchResult extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       data: [],
-      title: this.props.match.params.title
+      filtered: [],
+      title: this.props.match.params.search
     };
   }
 
-  componentDidMount() {
-    let books = sessionStorage.getItem('books');
-    this.setState({ data: JSON.parse(books)});
-    sessionStorage.clear()
-  }
-  
   review(e,i){
     let allRate = 0;
-    Axios.get(`review/rate-by/${e}`).then((rev)=>{
+    axios.get(`review/rate-by/${e}`).then((rev)=>{
       if(rev.data.length !==0){
         rev.data.forEach((r)=>{
           allRate += parseFloat(r.rate);
@@ -36,13 +34,38 @@ class SeeMoreBooks extends Component {
     });
   }
 
+  componentDidMount() {
+    axios.get(`books`).then((e)=>{
+      const filterData = e.data.data.filter((d) => d.bookDetailsEntity.bookTitle.toLowerCase().includes(this.state.title.toLowerCase()));
+      this.setState({data: filterData})
+      if(this.state.data.length === 0){
+        document.querySelector(".no-result-search").classList.remove("hide");
+      }
+    }).catch(function(error){
+      swal("Failed", error.response.data.message, "error");
+    })
+  }
+
   render() {
     return (
       <>
         <div className="right_col" role="main" style={{ minheight: "120vh" }}>
           <section className="mt-5 pt-5 container-fluid mb-4 border-bottom border-secondary">
-            <h3>{this.state.title.replace("-", " ")}</h3>
+            <h3>Result</h3>
           </section>
+
+          <div className="container no-result-search hide">
+            <div className="row">
+              <div className="col d-flex justify-content-center">
+                <img className="no-result-img" alt="No Result" src={noresult}/>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col d-flex justify-content-center">
+                <span className="no-result-text">Hmmm, we're not getting any result. Our bad - try another search.</span>
+              </div>
+            </div>
+          </div>
 
           <main className="main pb-2">
             <div className="content">
@@ -84,4 +107,4 @@ class SeeMoreBooks extends Component {
   }
 }
 
-export default withRouter(SeeMoreBooks);
+export default withRouter(SearchResult);

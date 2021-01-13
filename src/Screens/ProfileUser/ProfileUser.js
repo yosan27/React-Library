@@ -12,8 +12,8 @@ export default class ProfileUser extends Component {
             userCode: "UU001",
             fullName: "James Rodriguez",
             email: "james@gmail.com",
-            profilePict: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBG685vI07-3MsuqJxjCfzIabfFJJG-8yM-ppvjjNpD5QNtWNE4A",
-            phone: "0812388291",
+            profilePict: AuthService.API_URL() + "getFile/user.png",
+            nameFileImage: "",
             balance: "5000",
             address: "",
             username: "",
@@ -22,6 +22,8 @@ export default class ProfileUser extends Component {
             password: "",
             password2: "",
             notNullPhone: "",
+            selectedFiles: undefined,
+            currentFile: undefined,
         }
         this.userChange = this.userChange.bind(this)
     }
@@ -35,7 +37,9 @@ export default class ProfileUser extends Component {
                 email: resp.data.email,
                 phone: resp.data.phone,
                 address: resp.data.address,
-                id: resp.data.id
+                id: resp.data.id,
+                profilePict: AuthService.API_URL() + "getFile/" + resp.data.profilePict,
+                nameFileImage: resp.data.profilePict
             })
         }).catch(function (error) {
             if (error.response) {
@@ -49,24 +53,106 @@ export default class ProfileUser extends Component {
             }
         })
     }
+    selectFile = (event) => {
+        this.setState({
+            selectedFiles: event.target.files,
+        });
+        var sampul = document.querySelector("#foto"); //input type file
+        var sampulLabel = document.querySelector(".custom-file-label");
+        var imgPreview = document.querySelector(".img-preview");
 
+        sampulLabel.textContent = sampul.files[0].name;
+
+        var fileSampul = new FileReader();
+        fileSampul.readAsDataURL(sampul.files[0]);
+
+        fileSampul.onload = function (e) {
+            imgPreview.src = e.target.result;
+        };
+    }
     updateBtn = (id) => {
-        const userDto = {
-            phone: this.state.phone,
-            address: this.state.address,
-            profilePict: this.state.profilePict,
-        }
-
-        console.log(this.state.phone)
-        if (!this.state.phone || !this.state.address) {
-            swal("Failed", "Changed profile", "failed");
-        } else {
-            Axios.put('user/profile/' + id, userDto)
-                .then((response) => {
-                    console.log(response);
+        let currentFile = this.state.selectedFiles[0];
+        // console.log(this.state.selectedFiles)
+        console.log(currentFile);
+        this.setState({
+            currentFile: currentFile,
+        });
+        let formData = new FormData();
+        formData.append("file", currentFile);
+        var newFileName = AuthService.getUserCode() + "_profilePict_";
+        Axios.post("uploadFile/" + newFileName, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            }
+        }).then((response) => {
+            console.log(response)
+            console.log(response.data.message)
+            console.log(this.state.nameFileImage)
+            if (this.state.nameFileImage === "user.png") {
+                this.setState({
+                    profilePict: AuthService.API_URL() + "getFile/" + newFileName + currentFile.name,
+                    nameFileImage: newFileName + currentFile.name
                 })
-            swal("Successfully", "Changed profile", "success");
-        }
+                const userDto = {
+                    phone: this.state.phone,
+                    address: this.state.address,
+                    profilePict: newFileName + currentFile.name,
+                }
+                if (!this.state.phone || !this.state.address) {
+                    swal("Failed", "Changed profile", "failed");
+                } else {
+                    Axios.put('user/profile/' + id, userDto)
+                        .then((response) => {
+                            console.log(response);
+                        })
+                    swal("Successfully", "Changed profile", "success");
+                    window.location.reload()
+                }
+            } else {
+                Axios.delete("deleteFile/" + this.state.nameFileImage).then((resp) => {
+                    console.log(resp)
+                    this.setState({
+                        profilePict: AuthService.API_URL() + "getFile/" + newFileName + currentFile.name,
+                        nameFileImage: newFileName + currentFile.name
+                    })
+                    const userDto = {
+                        phone: this.state.phone,
+                        address: this.state.address,
+                        profilePict: newFileName + currentFile.name,
+                    }
+                    if (!this.state.phone || !this.state.address) {
+                        swal("Failed", "Changed profile", "failed");
+                    } else {
+                        Axios.put('user/profile/' + id, userDto)
+                            .then((response) => {
+                                console.log(response);
+                            })
+                        swal("Successfully", "Changed profile", "success");
+                        window.location.reload()
+                    }
+                }).catch(function (error) {
+                    if (error.response) {
+                        console.log(error.response.data);
+                        console.log(error.response.status);
+                        console.log(error.response.headers);
+                    } else if (error.request) {
+                        console.log(error.request);
+                    } else {
+                        console.log('Error', error.message);
+                    }
+                })
+            }
+        }).catch(function (error) {
+            if (error.response) {
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                console.log(error.request);
+            } else {
+                console.log('Error', error.message);
+            }
+        })
     };
 
     updatePassword = (id) => {
@@ -132,21 +218,6 @@ export default class ProfileUser extends Component {
         this.setState({
             password2: e,
         });
-    };
-
-    previewImg = () => {
-        var sampul = document.querySelector("#foto"); //input type file
-        var sampulLabel = document.querySelector(".custom-file-label");
-        var imgPreview = document.querySelector(".img-preview");
-
-        sampulLabel.textContent = sampul.files[0].name;
-
-        var fileSampul = new FileReader();
-        fileSampul.readAsDataURL(sampul.files[0]);
-
-        fileSampul.onload = function (e) {
-            imgPreview.src = e.target.result;
-        };
     };
 
     render() {
@@ -242,13 +313,11 @@ export default class ProfileUser extends Component {
                                                                 className="col-sm-2 col-form-label">Profile
                                                                     Picture</label>
                                                             <div className="col-sm-2">
-                                                                <img src={this.state.profilePict}
-                                                                    className="img-thumbnail img-preview" />
+                                                                <img src={this.state.profilePict} className="img-thumbnail img-preview" />
                                                             </div>
                                                             <div className="col-sm-8">
                                                                 <div className="custom-file">
-                                                                    <input id="foto" name="foto" onChange={(e) => this.previewImg(e.target.value)} type="file"
-                                                                        className="custom-file-input" />
+                                                                    <input id="foto" name="foto" onChange={this.selectFile} type="file" className="custom-file-input" />
                                                                     <label className="custom-file-label"
                                                                         htmlFor="foto">Choose file</label>
                                                                 </div>
