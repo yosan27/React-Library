@@ -57,20 +57,11 @@ class DetailPage extends Component {
     //   } else {
     //     this.setState({ bookAvailable: 'Not Available' });
     //   }
-      
-      // if (bookData.bookDetailsEntity.subtitle !== undefined) {
-      //   this.setState({ subtitle: bookData.bookDetailsEntity.subtitle });
-      // } else {
-      //   this.setState({ subtitle: 'Subtitle not available' });
-      // }
-      // this.setState({ bookCode: bookCode})
-      
-    //   if (bookData.bookDetailsEntity.subtitle !== undefined) {
-    //     this.setState({ subtitle: bookData.bookDetailsEntity.subtitle });
-    //   } else {
-    //     this.setState({ subtitle: 'Subtitle not available' });
-    //   }
-      
+
+      if (bookData.bookDetailsEntity.bookSubtitle !== undefined) {
+        this.setState({ subtitle: bookData.bookDetailsEntity.bookSubtitle });
+      }
+
       this.setState({ bookData: bookData });
       this.setState({ register: bookData.bookCode });
       this.setState({ bookDetailsCode: bookData.bookDetailsEntity.bookDetailCode });
@@ -93,6 +84,12 @@ class DetailPage extends Component {
         this.setState({ popular: popularWithoutCurrent })
     })
 
+      window.focus();
+      window.scrollBy({
+        top: 0,
+        left: 270,
+        behavior: 'smooth'
+      });
   }
 
   handleWishlist = () => {
@@ -152,7 +149,7 @@ class DetailPage extends Component {
   }
 
   handlePopClick = (bkcd) => {
-    this.setState({ bookCode: bkcd, editClicked : true })
+    this.setState({ bookCode: bkcd, editClicked : true });
   }
 
   review = (bkcd) => {
@@ -223,6 +220,7 @@ class DetailPage extends Component {
           register: bookData.bookCode,
           bookDetailsCode: bookData.bookDetailsEntity.bookDetailCode, 
           title: bookData.bookDetailsEntity.bookTitle,
+          subtitle: bookData.bookDetailsEntity.bookSubtitle,
           category: bookData.categoryEntity.categoryName,
           categoryCode: bookData.categoryEntity.categoryCode,
           publishedDate: bookData.publishedDate,
@@ -236,7 +234,7 @@ class DetailPage extends Component {
           const popular = res.data.data;
           const popularWithoutCurrent = popular.filter((word) => word.bookCode !== this.state.bookCode);
             this.setState({ popular: popularWithoutCurrent, editClicked: false })
-        })
+        });
 
       } catch (error) {
         console.log(error);
@@ -340,7 +338,7 @@ class DetailPage extends Component {
                           <div class="col-lg-8">
                             <h5 class='pb-2'>Descriptions</h5>
                             <hr style={{ border: "5% solid  #f1f1f1" }}></hr>
-                            <h5><b id='bookSubtitle'>{subtitle}</b></h5>
+                            <h5><b id='bookSubtitle'>{subtitle?subtitle:title}</b></h5>
                             <p>- {author}</p>
                             <div class=" mb-5 text-justify">
                               <p id='bookDescriptionHead'>
@@ -360,6 +358,7 @@ class DetailPage extends Component {
                             popular.map((pop, index) => {
                               return (
                                   <Button 
+                                    id="pop"
                                     className="ml-4"
                                     style={{
                                       backgroundColor: "Transparent",

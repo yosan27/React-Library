@@ -8,15 +8,21 @@ export default class Profile extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            userCode: "UA001",
-            fullName: "Admin",
-            email: "admin@gmail.com",
-            profilePict: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBG685vI07-3MsuqJxjCfzIabfFJJG-8yM-ppvjjNpD5QNtWNE4A",
-            phone: "0812388291",
+            userCode: "UU001",
+            fullName: "James Rodriguez",
+            email: "james@gmail.com",
+            profilePict: AuthService.API_URL() + "getFile/user.png",
+            nameFileImage: "",
+            balance: "5000",
+            address: "",
             username: "",
+            userData: [],
+            id: "",
             password: "",
             password2: "",
-            id: ""
+            notNullPhone: "",
+            selectedFiles: undefined,
+            currentFile: undefined,
         }
         this.userChange = this.userChange.bind(this)
     }
@@ -28,9 +34,11 @@ export default class Profile extends Component {
                 userCode: resp.data.userCode,
                 fullName: resp.data.fullName,
                 email: resp.data.email,
-                // phone: resp.data.phone,
-                // address: resp.data.address,
-                id: resp.data.id
+                phone: resp.data.phone,
+                address: resp.data.address,
+                id: resp.data.id,
+                profilePict: AuthService.API_URL() + "getFile/" + resp.data.profilePict,
+                nameFileImage: resp.data.profilePict
             })
         }).catch(function (error) {
             if (error.response) {
@@ -45,8 +53,107 @@ export default class Profile extends Component {
         })
     }
 
-    updateBtn = () => {
-        swal("Successfully", "Changed profile", "success");
+    selectFile = (event) => {
+        this.setState({
+            selectedFiles: event.target.files,
+        });
+        var sampul = document.querySelector("#foto"); //input type file
+        var sampulLabel = document.querySelector(".custom-file-label");
+        var imgPreview = document.querySelector(".img-preview");
+
+        sampulLabel.textContent = sampul.files[0].name;
+
+        var fileSampul = new FileReader();
+        fileSampul.readAsDataURL(sampul.files[0]);
+
+        fileSampul.onload = function (e) {
+            imgPreview.src = e.target.result;
+        };
+    }
+
+    updateBtn = (id) => {
+        let currentFile = this.state.selectedFiles[0];
+        // console.log(this.state.selectedFiles)
+        console.log(currentFile);
+        this.setState({
+            currentFile: currentFile,
+        });
+        let formData = new FormData();
+        formData.append("file", currentFile);
+        var newFileName = AuthService.getUserCode() + "_profilePict_";
+        Axios.post("uploadFile/" + newFileName, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            }
+        }).then((response) => {
+            console.log(response)
+            console.log(response.data.message)
+            console.log(this.state.nameFileImage)
+            if (this.state.nameFileImage === "user.png") {
+                this.setState({
+                    profilePict: AuthService.API_URL() + "getFile/" + newFileName + currentFile.name,
+                    nameFileImage: newFileName + currentFile.name
+                })
+                const userDto = {
+                    phone: this.state.phone,
+                    address: this.state.address,
+                    profilePict: newFileName + currentFile.name,
+                }
+                if (!this.state.phone || !this.state.address) {
+                    swal("Failed", "Changed profile", "failed");
+                } else {
+                    Axios.put('user/profile/' + id, userDto)
+                        .then((response) => {
+                            console.log(response);
+                        })
+                    swal("Successfully", "Changed profile", "success");
+                    window.location.reload()
+                }
+            } else {
+                Axios.delete("deleteFile/" + this.state.nameFileImage).then((resp) => {
+                    console.log(resp)
+                    this.setState({
+                        profilePict: AuthService.API_URL() + "getFile/" + newFileName + currentFile.name,
+                        nameFileImage: newFileName + currentFile.name
+                    })
+                    const userDto = {
+                        phone: this.state.phone,
+                        address: this.state.address,
+                        profilePict: newFileName + currentFile.name,
+                    }
+                    if (!this.state.phone || !this.state.address) {
+                        swal("Failed", "Changed profile", "failed");
+                    } else {
+                        Axios.put('user/profile/' + id, userDto)
+                            .then((response) => {
+                                console.log(response);
+                            })
+                        swal("Successfully", "Changed profile", "success");
+                        window.location.reload()
+                    }
+                }).catch(function (error) {
+                    if (error.response) {
+                        console.log(error.response.data);
+                        console.log(error.response.status);
+                        console.log(error.response.headers);
+                    } else if (error.request) {
+                        console.log(error.request);
+                    } else {
+                        console.log('Error', error.message);
+                    }
+                })
+            }
+        }).catch(function (error) {
+            if (error.response) {
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                console.log(error.request);
+            } else {
+                console.log('Error', error.message);
+            }
+        })
     };
 
     updatePassword = (id) => {
@@ -147,68 +254,63 @@ export default class Profile extends Component {
                                                 <div className="tab-content" id="vert-tabs-tabContent">
                                                     <div className="tab-pane text-left fade active show" id="vert-tabs-home"
                                                         role="tabpanel" aria-labelledby="vert-tabs-home-tab">
-                                                        <form className="form-horizontal" action="" method="post"
-                                                            encType="multipart/form-data">
-                                                            <div className="form-group row">
-                                                                <label htmlFor="id"
-                                                                    className="col-sm-2 col-form-label">User ID</label>
-                                                                <div className="col-sm-10">
-                                                                    <input type="text" name="id" className="form-control"
-                                                                        id="id" placeholder="masukan id..." value={this.state.userCode}
-                                                                        readOnly />
-                                                                </div>
+                                                        {/* <form className="form-horizontal" action="" method="post" encType="multipart/form-data"> */}
+                                                        <div className="form-group row">
+                                                            <label htmlFor="id"
+                                                                className="col-sm-2 col-form-label">User ID</label>
+                                                            <div className="col-sm-10">
+                                                                <input type="text" name="id" className="form-control"
+                                                                    id="id" placeholder="masukan id..." value={this.state.userCode}
+                                                                    readOnly />
                                                             </div>
-                                                            <div className="form-group row">
-                                                                <label htmlFor="nama"
-                                                                    className="col-sm-2 col-form-label">Name</label>
-                                                                <div className="col-sm-10">
-                                                                    <input type="text" className="form-control" id="nama"
-                                                                        name="nama" value={this.state.fullName} readOnly />
-                                                                </div>
+                                                        </div>
+                                                        <div className="form-group row">
+                                                            <label htmlFor="nama"
+                                                                className="col-sm-2 col-form-label">Name</label>
+                                                            <div className="col-sm-10">
+                                                                <input type="text" className="form-control" id="nama"
+                                                                    name="nama" value={this.state.fullName} readOnly />
                                                             </div>
-                                                            <div className="form-group row">
-                                                                <label htmlFor="email"
-                                                                    className="col-sm-2 col-form-label">Email</label>
-                                                                <div className="col-sm-10">
-                                                                    <input type="text" name="email" className="form-control"
-                                                                        id="email" placeholder="masukan email..."
-                                                                        value={this.state.email} readOnly />
-                                                                </div>
+                                                        </div>
+                                                        <div className="form-group row">
+                                                            <label htmlFor="email"
+                                                                className="col-sm-2 col-form-label">Email</label>
+                                                            <div className="col-sm-10">
+                                                                <input type="text" name="email" className="form-control"
+                                                                    id="email" placeholder="masukan email..."
+                                                                    value={this.state.email} readOnly />
                                                             </div>
-                                                            <div className="form-group row">
-                                                                <label htmlFor="username"
-                                                                    className="col-sm-2 col-form-label">Username</label>
-                                                                <div className="col-sm-10">
-                                                                    <input type="text" name="username"
-                                                                        className="form-control" id="username"
-                                                                        placeholder="masukan username..." value={this.state.username} readOnly />
-                                                                </div>
+                                                        </div>
+                                                        <div className="form-group row">
+                                                            <label htmlFor="username"
+                                                                className="col-sm-2 col-form-label">Username</label>
+                                                            <div className="col-sm-10">
+                                                                <input type="text" name="username"
+                                                                    className="form-control" id="username"
+                                                                    placeholder="masukan username..." value={this.state.username} readOnly />
                                                             </div>
-                                                            <div className="form-group row">
-                                                                <label htmlFor="inputEmail3"
-                                                                    className="col-sm-2 col-form-label">Profile
-                                                                        Picture</label>
-                                                                <div className="col-sm-2">
-                                                                    <img src={this.state.profilePict}
-                                                                        className="img-thumbnail img-preview" />
-                                                                </div>
-                                                                <div className="col-sm-8">
-                                                                    <div className="custom-file">
-                                                                        <input id="foto" name="foto" onChange={(e) => this.previewImg(e.target.value)} type="file"
-                                                                            className="custom-file-input" />
-                                                                        <label className="custom-file-label"
-                                                                            htmlFor="foto">Choose file</label>
-                                                                    </div>
-                                                                    <small>*format gambar berupa .jpg dengan ukuran
-                                                                            maksimal 1MB</small>
-                                                                </div>
+                                                        </div>
+                                                        <div className="form-group row">
+                                                            <label htmlFor="inputEmail3"
+                                                                className="col-sm-2 col-form-label">Profile
+                                                                    Picture</label>
+                                                            <div className="col-sm-2">
+                                                                <img src={this.state.profilePict} className="img-thumbnail img-preview" />
                                                             </div>
-                                                            <br />
-                                                            <div className="form-group">
-                                                                <button type="submit"
-                                                                    className="btn btn-primary btn-block">Update</button>
+                                                            <div className="col-sm-8">
+                                                                <div className="custom-file">
+                                                                    <input id="foto" name="foto" onChange={this.selectFile} type="file" className="custom-file-input" />
+                                                                    <label className="custom-file-label"
+                                                                        htmlFor="foto">Choose file</label>
+                                                                </div>
+                                                                <small>*format gambar berupa .jpg dengan ukuran maksimal 1MB</small>
                                                             </div>
-                                                        </form>
+                                                        </div>
+                                                        <br />
+                                                        <div className="form-group">
+                                                            <button type="submit" className="btn btn-primary btn-block" onClick={() => this.updateBtn(this.state.id)}>Update</button>
+                                                        </div>
+                                                        {/* </form> */}
                                                     </div>
 
                                                     <div className="tab-pane fade" id="vert-tabs-password" role="tabpanel"

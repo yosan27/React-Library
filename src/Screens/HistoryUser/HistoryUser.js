@@ -97,7 +97,7 @@ class HistoryUser extends Component {
     }
 
     goToPayment = () => {
-        window.open("http://localhost:3000/page/payment", "_self")
+        window.open("payment", "_self")
     }
 
     clearModal = (e) => {
