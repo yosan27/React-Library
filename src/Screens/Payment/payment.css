@@ -4,12 +4,12 @@
   min-height: 100vh;
 }
 
-.header-logo-bar .logo-title{
+.header-logo-bar .logo{
   justify-content: center;
   align-items: center;
 }
 
-.header-logo-bar .logo-title h4{
+.header-logo-bar .logo h4{
   color: black;
 }
 
@@ -175,50 +175,25 @@
 .payment-arrow{
   color: grey;
 }
-@media only screen and (max-width: 1024px) {
-  .header-logo-bar .logo-title h4{
-    font-size: 18px;
-  }
-}
 
 @media only screen and (max-width: 768px) {
-  .header-logo-bar .logo-title h4{
+  .header-logo-bar .logo h4{
     font-size: 20px;
   }
 }
 
 @media only screen and (max-width: 425px) {
-  .header-logo-bar .grid-container{
-    display: grid !important;
-    grid-template-areas: 
-    "logo"
-    "top-up";
+  .header-logo-bar .logo h4{
+    font-size: 23px;
   }
 
-  .header-logo-bar .logo-title{
-    grid-area: logo;
-    padding-bottom: 10px;
-  }
-
-  .header-logo-bar .logo-title h4{
-    font-size: 19px !important;
-  }
-
-  .header-logo-bar .top-up{
-    grid-area: top-up;
-  }
-  
-  .saldo-text{
-    font-size: 12px;
+  .header-logo-bar .logo{
+    padding-bottom: 30px;
   }
 
   .header-logo-bar .top-up span{
     font-size: 16px;
     padding-right: 8px;
-  }
-
-  .header-logo-bar .top-up-btn{
-    font-size: 12px;
   }
 
   .list-box{
@@ -264,51 +239,54 @@
 }
 
 @media only screen and (max-width: 375px) {
-  .header-logo-bar .logo-title h4{
-    font-size: 16px !important;
+  .header-logo-bar .logo h4{
+    font-size: 18px;
   }
-  .saldo-text{
-    font-size: 10px;
+
+  .top-up-btn{
+    font-size: 11px;
   }
+
   .header-logo-bar .top-up span{
     font-size: 14px;
+    color: green;
+    text-align: center;
     padding-right: 5px;
   }
-  .header-logo-bar .top-up-btn{
-    font-size: 10px;
-    width: 60px;
+  
+  .header-logo-bar .top-up p{
+    color: green;
+    font-size: 0.8em;
   }
+
+  .header-logo-bar .top-up i{
+    color: green;
+    font-size: 1.3em;
+  }
+
   .history-icon{
     padding-right: 10px;
-  }
-  .payment-method-btn{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  .minimum-input-box{
-    width: 100%;
-    font-size: smaller;
   }
 }
 
 @media only screen and (max-width: 320px) {
-  .header-logo-bar .top-up-btn{
+  .header-logo-bar .logo h4{
+    font-size: 16px;
+  }
+
+  .top-up-btn{
     font-size: 9px;
-    width: 55px;
   }
-  .header-logo-bar .logo-title{
-    padding-bottom: 5px;
-  }
-  .header-logo-bar .logo-title h4{
-    font-size: 14px !important;
-  }
-  .saldo-text{
-    font-size: 10px;
-  }
+
   .header-logo-bar .top-up span{
-    font-size: 12px;
-    padding-right: 5px;
+    font-size: 10px;
+    color: green;
+    text-align: center;
+  }
+  
+  .header-logo-bar .top-up p{
+    color: green;
+    font-size: 0.7em;
   }
 
   .history-icon{
@@ -347,6 +325,11 @@
     font-size: 16px;
   }
 
+  .payment-method-btn{
+    display: flex;
+    justify-content: center;
+  }
+
   .atm-box ul{
     margin-left: -15px;
     font-size: 12px;
@@ -358,9 +341,5 @@
   }
   .mbank-box{
     font-size: 12px;
-  }
-  .minimum-input-box{
-    width: 100%;
-    font-size: smaller;
   }
 }
