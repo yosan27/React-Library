@@ -51,7 +51,7 @@ class Content extends Component {
       dataBookSlider: [],
       asianBooks: [],
       newBooks: [],
-      rate: "",
+      rateLength: "",
     }
   }
 
@@ -94,18 +94,16 @@ class Content extends Component {
     Axios.get(`review/rate-by/${e}`).then((rev)=>{
       if(rev.data.length !==0){
         rev.data.forEach((r)=>{
+          // allRate = [...allRate, r.rate]
           allRate += parseFloat(r.rate);
         })
         let rate = allRate/parseFloat(rev.data.length);
+        console.log(rate);
         document.querySelector("#bookRate"+i).textContent = " " + rate;
       }else{
         document.querySelector("#bookRate"+i).textContent = " No Rating";
       }
     });
-
-    // return(
-    //   <span>5</span>
-    // )
   }
 
   getBooks = () =>{

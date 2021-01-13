@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
-import Axios from "../../Services/axios-instance";
 
 // css
 import "./booksList.css";
@@ -20,21 +19,6 @@ class SeeMoreBooks extends Component {
     this.setState({ data: JSON.parse(books)});
     sessionStorage.clear()
   }
-  
-  review(e,i){
-    let allRate = 0;
-    Axios.get(`review/rate-by/${e}`).then((rev)=>{
-      if(rev.data.length !==0){
-        rev.data.forEach((r)=>{
-          allRate += parseFloat(r.rate);
-        })
-        let rate = allRate/parseFloat(rev.data.length);
-        document.querySelector("#bookRate"+i).textContent = " " + rate;
-      }else{
-        document.querySelector("#bookRate"+i).textContent = " No Rating";
-      }
-    });
-  }
 
   render() {
     return (
@@ -47,7 +31,7 @@ class SeeMoreBooks extends Component {
           <main className="main pb-2">
             <div className="content">
               <ul className="books">
-              {this.state.data.map((d,i) => {
+              {this.state.data.map((d) => {
                 return(
                   <Link to={{pathname: `/page/detailpage/${d.bookCode}`}}>
                     <li>
@@ -64,9 +48,7 @@ class SeeMoreBooks extends Component {
                               <div className="book-author">{d.authorEntity.authorName}</div>
                             </div>
                             <div className="row">
-                              <div className="book-rating text-muted">
-                                <i class="fa fa-star star-rate pr-1"><span className="text-muted" id={"bookRate" + i}></span></i>{this.review(d.bookDetailsEntity.bookDetailCode,i)}
-                              </div>
+                              <div className="book-rating text-muted"><i className="fa fa-star star-rate pr-1"></i>5</div>
                             </div>
                           </div>
                         </div>
