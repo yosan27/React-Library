@@ -8,8 +8,8 @@ export default class TopUpBar extends Component {
     return (
       <div>
         <div className="header-logo-bar shadow p-3 bg-white">
-          <div className="row">
-            <div className="col logo d-flex justify-content-start">
+          <div className="row grid-container">
+            <div className="col logo-title d-flex justify-content-start">
               <h4>
                 <b>Farday E-Library | Payment</b>
               </h4>
