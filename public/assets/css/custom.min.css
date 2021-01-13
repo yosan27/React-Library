@@ -1183,6 +1183,10 @@
 	display: none
 }
 
+.nav-sm .profile_name {
+	display: inline
+}
+
 .menu_section {
 	margin-bottom: 35px
 }
@@ -1237,6 +1241,7 @@
 	width: 65%;
 	float: left
 }
+
 
 .profile_info span {
 	font-size: 13px;
