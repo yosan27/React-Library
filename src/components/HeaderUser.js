@@ -62,6 +62,9 @@ class HeaderUser extends Component {
     if (window.location.pathname.includes("result")) {
       this.props.history.push(`${this.state.searchInput}`);
     }
+    // if (window.location.pathname.includes("category")) {
+    //   window.open(`/page/result/${this.state.searchInput}`, "_self")
+    // }
     else {
       this.props.history.push(`result/${this.state.searchInput}`);
     }
@@ -73,7 +76,8 @@ class HeaderUser extends Component {
     }
     if (window.location.pathname.includes("result")) {
         window.open(`/page/category/${e}`, "_self")
-    } else {
+    } 
+    else {
         this.props.history.push(`category/${e}`);
       }
   }
