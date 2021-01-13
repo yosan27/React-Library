@@ -7,6 +7,7 @@ import "datatables.net-dt/js/dataTables.dataTables"
 import "datatables.net-dt/css/jquery.dataTables.min.css"
 import $ from 'jquery';
 import swal from 'sweetalert';
+import Moment from 'react-moment';
 
 
 class UserManagement extends Component {
@@ -21,6 +22,7 @@ class UserManagement extends Component {
             status: "",
             address: "",
             profilePict: "",
+            unsuspenDate: "",
 
             data: [
                 { "id": "1", "username": "Yosan27", "fullname": "Yosan Fandi", "email": "yosan27@gmail.com", "status": "Active", "card": "https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg" },
@@ -119,6 +121,15 @@ class UserManagement extends Component {
         })
     }
 
+    updateUnsuspend = (e) => {
+        let status = {}
+        axios.put(`user/unsuspendate/${this.state.id}`, status).then((e) => {
+            swal("Success!", "User has been unsuspended", "success").then(() => {
+                window.location.reload()
+            })
+        })
+    }
+
 
     setStatus(status) {
         if (status === 1) {
@@ -153,6 +164,7 @@ class UserManagement extends Component {
                                                     <th>Name</th>
                                                     <th>Email Addres</th>
                                                     <th>Status</th>
+                                                    <th>Unsuspend Date</th>
                                                     <th>Identification Card</th>
 
                                                 </tr>
@@ -168,12 +180,20 @@ class UserManagement extends Component {
                                                                         <button className="btn btn-danger btn-sm rounded-sm w-30 mr-1" data-toggle="modal" data-target="#suspend" onClick={() => this.getById(user.id)}>
                                                                         <i className="fa fa-gavel"></i>
                                                                         </button>
+                                                                        <button className="btn btn-success btn-sm rounded-sm w-30 mr-1" data-toggle="modal" data-target="#unsuspend" onClick={() => this.getById(user.id)}>
+                                                                        <i className="fa fa-check"></i>
+                                                                        </button>
                                                                         </span>
                                                                     </td>
                                                                     <td>{user.userName}</td>
                                                                     <td>{user.fullName}</td>
                                                                     <td>{user.email}</td>
                                                                     <td>{this.setStatus(user.status)}</td>
+                                                                    <td>
+                                                                    <Moment format="DD/MM/YYYY">
+                                                                    {user.unsuspendDate}
+                                                                    </Moment>
+                                                                    </td>
                                                                     <td className="text-center">
                                                                     <span className="d-flex justify-content-center" data-toggle="tooltip" title="card">
                                                                         <Button variant="primary" size="sm" data-toggle="modal" data-target="#card" onClick={() => this.getById(user.id)}>
@@ -227,7 +247,30 @@ class UserManagement extends Component {
                     </div>
             </div>
              {/* modal suspend*/}
-     
+            {/* modal unsuspend */}                                        
+                <div className="modal fade" id="unsuspend" tabIndex="-1" aria-labelledby="addLabel" aria-hidden="true">
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title" id="addLabel">User Suspend</h5>
+                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">                                        <span aria-hidden="true" className="modal-clear">&times;</span>
+                                    </button>
+                                </div>
+                                <div className="modal-body">
+                                    <form>
+                                    <input type="hidden" readOnly className="form-control-plaintext" value={this.state.id} />      
+                                    <p>Are you sure this person will get unsuspend ?</p>
+                                    </form>
+                                </div>
+                                <div className="modal-footer">
+                                    <button className="btn btn-secondary modal-clear" data-dismiss="modal">Cancel</button>
+                                    <button className="btn btn-success" data-dismiss="modal" onClick={this.updateUnsuspend}>Suspend</button>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            {/* modal unsuspend*/}                                  
+
              {/* modal iden */}
              <div className="modal fade" id="card" tabIndex="-1" aria-labelledby="infoLabel" aria-hidden="true">
                     <div className="modal-dialog">
