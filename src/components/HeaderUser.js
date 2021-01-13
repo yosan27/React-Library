@@ -62,9 +62,9 @@ class HeaderUser extends Component {
     if (window.location.pathname.includes("result")) {
       this.props.history.push(`${this.state.searchInput}`);
     }
-    // if (window.location.pathname.includes("category")) {
-    //   window.open(`/page/result/${this.state.searchInput}`, "_self")
-    // }
+    else if (window.location.pathname.includes("category")) {
+      window.open(`/page/result/${this.state.searchInput}`, "_self");
+    }
     else {
       this.props.history.push(`result/${this.state.searchInput}`);
     }
@@ -72,14 +72,20 @@ class HeaderUser extends Component {
 
   handleClick(e){
     if (window.location.pathname.includes("category")) {
-        window.open(`/page/category/${e}`, "_self")
+      this.props.history.push(`${e}`);
     }
-    if (window.location.pathname.includes("result")) {
-        window.open(`/page/category/${e}`, "_self")
+    else if (window.location.pathname.includes("result")) {
+      window.open(`/page/category/${e}`, "_self")
+    } 
+    else if (window.location.pathname.includes("detailpage")) {
+      window.open(`/page/category/${e}`, "_self")
+    } 
+    else if (window.location.pathname.includes("return")) {
+      window.open(`/page/category/${e}`, "_self")
     } 
     else {
-        this.props.history.push(`category/${e}`);
-      }
+      this.props.history.push(`category/${e}`);
+    }
   }
 
   render() {
@@ -161,8 +167,7 @@ class HeaderUser extends Component {
               className="nav-item"
               style={{ paddingLeft: "15px" }}
             >
-              <form className="form-inline pt-2">
-                <div className="input-group input-group-sm">
+                <div className="input-group input-group-sm pt-2">
                   <input
                     className="form-control form-control-navbar"
                     type="search"
@@ -180,7 +185,7 @@ class HeaderUser extends Component {
                   <div className="input-group-append">
                     <button
                       className="btn btn-navbar m-0"
-                      type="submit"
+                      type="button"
                       style={{
                         backgroundColor: "white",
                         border: 0,
@@ -193,7 +198,6 @@ class HeaderUser extends Component {
                     </button>
                   </div>
                 </div>
-              </form>
             </li>
           </ul>
         </nav>
@@ -241,8 +245,7 @@ class HeaderUser extends Component {
               className="nav-item"
               style={{ paddingLeft: "15px" }}
             >
-              <form className="form-inline pt-2">
-                <div className="input-group input-group-sm">
+                <div className="input-group input-group-sm pt-2">
                   <input
                     className="form-control form-control-navbar"
                     type="search"
@@ -260,7 +263,7 @@ class HeaderUser extends Component {
                   <div className="input-group-append">
                     <button
                       className="btn btn-navbar m-0"
-                      type="submit"
+                      type="button"
                       style={{
                         backgroundColor: "white",
                         border: 0,
@@ -273,7 +276,6 @@ class HeaderUser extends Component {
                     </button>
                   </div>
                 </div>
-              </form>
             </li>
           </ul>
         </nav>
