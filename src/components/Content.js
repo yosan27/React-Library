@@ -50,15 +50,26 @@ class Content extends Component {
       sliderNew: [],
       dataBookSlider: [],
       asianBooks: [],
-      newBooks: [],
-      rateLength: "",
+      getRate: [],
     }
   }
 
   componentDidMount() {
-    this.getBooks();
-    this.getNewBooks();
+    Axios.get("books").then((e) => {
+      this.setState({ data: e.data.data });
+      e.data.data.forEach((book) => {
+        if (book.categoryEntity.categoryCode === "BC003") {
+          this.setState({ asianBooks: [...this.state.asianBooks, book] });
+        }
+      });
+    }).catch(function(error){
+      swal("Failed", error.response.data.message, "error");
+    });
 
+    Axios.get("review").then((e)=>{
+      this.setState({getRate:e.data})
+    })
+      
     Axios.get("bookdetails").then((resp) => {
       // console.log(resp)
       this.setState({ sliderNew: resp.data.data });
@@ -88,44 +99,6 @@ class Content extends Component {
       }
     });
   }
-
-  review(e,i){
-    let allRate = 0;
-    Axios.get(`review/rate-by/${e}`).then((rev)=>{
-      if(rev.data.length !==0){
-        rev.data.forEach((r)=>{
-          // allRate = [...allRate, r.rate]
-          allRate += parseFloat(r.rate);
-        })
-        let rate = allRate/parseFloat(rev.data.length);
-        console.log(rate);
-        document.querySelector("#bookRate"+i).textContent = " " + rate;
-      }else{
-        document.querySelector("#bookRate"+i).textContent = " No Rating";
-      }
-    });
-  }
-
-  getBooks = () =>{
-    Axios.get("books").then((e) => {
-      this.setState({ data: e.data.data});
-      e.data.data.forEach((book) => {
-        if (book.categoryEntity.categoryCode === "BC003") {
-          this.setState({ asianBooks: [...this.state.asianBooks, book] });
-        }
-      });
-    }).catch(function(error){
-      swal("Failed", error.response.data.message, "error");
-    });
-  }
-
-  getNewBooks = () =>{
-    Axios.get("books/new").then((e) => {
-      this.setState({ newBooks: e.data});
-    }).catch(function(error){
-      swal("Failed", error.response.data.message, "error");
-    });
-  }
   
   sendBooks = () =>{
     sessionStorage.setItem('books', JSON.stringify(this.state.data));
@@ -133,10 +106,6 @@ class Content extends Component {
 
   sendAsianBooks = () =>{
     sessionStorage.setItem('books', JSON.stringify(this.state.asianBooks));
-  }
-
-  sendNewBooks = () =>{
-    sessionStorage.setItem('books', JSON.stringify(this.state.newBooks));
   }
 
   render() {
@@ -222,27 +191,27 @@ class Content extends Component {
           </Slider>
         </section>
 
-        {/* New Book Releases */}
+        {/* Best Seller */}
         <main className="main pt-5">
           <div className="content">
             <div className="row">
               <div className="col">
-                <h3>New Book Releases</h3>
+                <h3>Best Seller</h3>
               </div>
             </div>
             <div className="row">
               <div className="col">
-                <p>Find your new favorite book</p>
+                <p>New Releases</p>
               </div>
               <div className="col d-flex justify-content-end">
-                <Link to="/page/more/New-Books" onClick={this.sendNewBooks}>
+                <Link to="/page/more/Best-Seller" onClick={this.sendBooks}>
                   <span>See More</span>
                 </Link>
               </div>
             </div>
 
             <ul className="books">
-              {this.state.newBooks.slice(0, 6).map((d,i) => {
+              {this.state.data.slice(0, 6).map((d) => {
                 return (
                   <Link to={{pathname: `/page/detailpage/${d.bookCode}`}}>
                     <li>
@@ -268,7 +237,7 @@ class Content extends Component {
                             </div>
                             <div className="row">
                               <div className="book-rating text-muted">
-                                <i class="fa fa-star star-rate pr-1"><span className="text-muted" id={"bookRate" + i}></span></i>{this.review(d.bookDetailsEntity.bookDetailCode,i)}
+                                <i class="fa fa-star star-rate pr-1"></i>5
                               </div>
                             </div>
                           </div>
@@ -281,7 +250,7 @@ class Content extends Component {
             </ul>
           </div>
         </main>
-        {/* New Book Releases */}
+        {/* Best Seller */}
 
         {/* Asian */}
         <section className="pt-3">
