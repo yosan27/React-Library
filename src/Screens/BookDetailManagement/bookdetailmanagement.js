@@ -7,7 +7,6 @@ import 'datatables.net-dt/css/jquery.dataTables.min.css'
 import 'datatables.net-responsive-dt/js/responsive.dataTables.js'
 import 'datatables.net-responsive-dt/css/responsive.dataTables.css'
 import $ from 'jquery'; 
-import Axios from "../../Services/axios-instance";
 import API from "../../api";
  
 class BookDetailManagement extends Component {
@@ -30,41 +29,28 @@ class BookDetailManagement extends Component {
     };
   }
 
-  componentDidMount() {
-    Axios.get('bookdetails').then((res) => {
-      const tabledata = res.data.data
-        this.setState({ tabledata: tabledata })
-
-        $(function () {
-            $('#bookdetailmanagement').DataTable({
-                responsive: true
-            })
-        })
-    })
-}
-
-  // async componentDidMount() {
+  async componentDidMount() {
     // DATA TABEL
-    // try {
-    //   const res = await 
-    //   axios.get(`bookdetails`,
-    //   {
-    //       headers: {
-    //       Accept: "*/*",
-    //       "Content-Type": "application/json",
-    //   }});
-    //   const tabledata = res.data.data;
-    //   this.setState({ tabledata: tabledata });
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    try {
+      const res = await API.get(`/api/bookdetails`,
+      {
+          headers: {
+          Accept: "*/*",
+          "Content-Type": "application/json",
+      }});
+      const tabledata = res.data.data;
+      this.setState({ tabledata: tabledata });
+    } catch (error) {
+      console.log(error);
+    }
 
-    // $(function () {
-    //   $('#publishermanagement').DataTable({
-    //       responsive: true
-    //   });
-    // });
-  // }development
+    $(function () {
+      $('#publishermanagement').DataTable({
+          responsive: true
+      });
+    });
+    
+  }
 
   //modal add
   handleShowAdd = () => {
@@ -72,7 +58,8 @@ class BookDetailManagement extends Component {
   }
 
   handleAddBookDetail = (e) => {
-    Axios.post(`bookdetails`,
+    API.post(
+      `api/bookdetails`,
       {
         bookTitle: this.state.bookTitle,
         bookSubtitle: this.state.bookSubtitle,
@@ -101,7 +88,7 @@ class BookDetailManagement extends Component {
   //button edit
   handleShowEdit = (bdcd) => {
     this.setState({showEdit: true, bookDetailCode : bdcd})
-    Axios.get(`bookdetails/${bdcd}`).then((res) => {
+    API.get(`/api/bookdetails/${bdcd}`).then((res) => {
       let response = res.data.data;
       this.setState({
         bookTitle: response.bookTitle,
@@ -116,8 +103,8 @@ class BookDetailManagement extends Component {
 
   handleSaveEdit = () => {
     this.setState({ showEdit: false })
-    Axios.put(
-      `bookdetails/${this.state.bookDetailCode}`,
+    API.put(
+      `api/bookdetails/${this.state.bookDetailCode}`,
       {
         bookTitle: this.state.bookTitle,
         bookSubtitle: this.state.bookSubtitle,
@@ -150,7 +137,7 @@ class BookDetailManagement extends Component {
   }
 
   handleDelete = () => {
-    Axios.delete(`bookdetails/${this.state.bookDetailCode}`)
+    API.delete(`/api/bookdetails/${this.state.bookDetailCode}`)
       .then(()=>window.location.reload())
     this.setState({showDelete: false,})
     // swal("Deleted!", "Book Is Successfully Deleted", "success");
@@ -173,7 +160,7 @@ class BookDetailManagement extends Component {
     console.log(prevState);
     if (this.state.editClicked) {
       try {
-        const res = await Axios.get(`bookdetails`,
+        const res = await API.get(`/api/bookdetails`,
         {
             headers: {
             Accept: "*/*",
@@ -211,7 +198,7 @@ class BookDetailManagement extends Component {
                     {/* title */}
 
                     {/* publisher management table */}
-                    <Table responsive striped id="bookdetailmanagement" style={{ width: '100%' }}>
+                    <Table responsive striped id="publishermanagement" style={{ width: '100%' }}>
                       <thead>
                           <tr>
                             <th>Book Detail Code</th>
