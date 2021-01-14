@@ -207,18 +207,22 @@ class BookManagement extends Component {
       return;
     }
 
+    let data ={
+      authorCode: this.state.authorCode,
+      bookDetailCode: this.state.bookDetailCode,
+      categoryCode: this.state.categoryCode,
+      publisherCode: this.state.publisherCode,
+      publishedDate: this.state.startDate,
+      isbn: this.state.isbn,
+      status: 1,
+      bookCode: "B"
+    }
+
+    console.log(data);
+
     if (this.state.startDate && this.state.isbn) {
       this.setState({ showAdd2: false })
-      Axios.post(
-      `book`,
-      {
-        authorCode: this.state.authorCode,
-        bookDetailCode: this.state.bookDetailCode,
-        categoryCode: this.state.categoryCode,
-        publisherCode: this.state.publisherCode,
-        publishedDate: this.state.startDate,
-        isbn: this.state.isbn
-      })
+      Axios.post(`book`, data)
       .then(() => {
         this.setState({ 
           showAdd2: false,
@@ -227,7 +231,7 @@ class BookManagement extends Component {
         swal("Success!", "Book Has Been Added", "success");
       })
       .catch((error) => {
-        swal("Oops!", "Please try again", "error");
+        swal("Oops!", error.response.data.message, "error");
         console.log(error);
       });
     } else {

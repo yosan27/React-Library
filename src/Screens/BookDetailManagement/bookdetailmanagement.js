@@ -107,29 +107,26 @@ class BookDetailManagement extends Component {
         nameFileImage : newFileName + currentFile.name
     });
 
+    let datass = {
+      bookTitle: this.state.bookTitle,
+      bookSubtitle: this.state.bookSubtitle,
+      cover: this.state.nameFileImage,
+      description: this.state.description,
+      language: this.state.language,
+      numberOfPages: this.state.numberOfPages,
+      bookDetailCode: "BD",
+      isActive: 1
+    }
+    console.log(datass);
+
     //save filename to db
-    Axios.post(`bookdetails`,
-      {
-        bookTitle: this.state.bookTitle,
-        bookSubtitle: this.state.bookSubtitle,
-        cover: this.state.nameFileImage,
-        description: this.state.description,
-        language: this.state.language,
-        numberOfPages: this.state.numberOfPages
-      },
-        {
-          headers: {
-            Accept: "*/*",
-            "Content-Type": "application/json",
-          },
-        }
-      )
+    Axios.post(`bookdetails`, datass)
       .then(() => {
         swal("Success!", "Book details Has Been Added", "success");
         this.setState({ showAdd: false, editClicked: true })
       })
       .catch((error) => {
-        swal("Oops!", "Please try again", "error");
+        swal("Oops!", error.response.data.message, "error");
         console.log(error);
       });
     }).catch(function (error) {
@@ -429,7 +426,7 @@ validateForm2 = () => {
                       <Modal.Body>
                         <div class='container'>
                           <div class="modal-body">
-                            <form>
+                            {/* <form> */}
                               {errors.map(error => (
                                 <div>
                                   <label key={error} style={{color:"red"}} for="titleErr">Error: {error}</label>
@@ -530,7 +527,7 @@ validateForm2 = () => {
                                   />
                                 </div>
                               </div>
-                            </form>
+                            {/* </form> */}
                           </div>
                         </div>
                       </Modal.Body>
@@ -538,7 +535,7 @@ validateForm2 = () => {
                         <Button className="btn btn-secondary" variant="secondary" onClick={this.handleCloseModal}>
                           <i class="fa fa-times-circle"></i> Close
                         </Button>
-                        <Button id="buttonAddBook" disabled={disableSubmitting} type="submit" className="btn btn-success" variant="primary" onClick={this.handleAddBookDetail}>
+                        <Button id="buttonAddBook" disabled={disableSubmitting} type="button" className="btn btn-success" variant="primary" onClick={this.handleAddBookDetail}>
                           <i class="fa fa-plus"></i> Add
                         </Button>
                       </Modal.Footer>
@@ -553,7 +550,7 @@ validateForm2 = () => {
                       <Modal.Body>
                         <div class='container'>
                           <div class="modal-body">
-                          <form>
+                          {/* <form> */}
                             {errors.map(error => (
                                   <div>
                                     <label key={error} style={{color:"red"}} for="titleErr">Error: {error}</label>
@@ -652,7 +649,7 @@ validateForm2 = () => {
                                   />
                                 </div>
                               </div>
-                            </form>
+                            {/* </form> */}
                           </div>
                         </div>
                       </Modal.Body>

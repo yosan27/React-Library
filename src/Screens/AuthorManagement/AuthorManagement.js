@@ -72,7 +72,9 @@ class AuthorManagement extends Component {
 
     addOrEdit = (e) => {
         e.preventDefault();
-        let author = { authorName: this.state.authorName }
+        let author = {
+            authorName: this.state.authorName,
+        }
 
         if (this.state.button === 'Add') {
             Axios.post('author', author).then((response) => {
