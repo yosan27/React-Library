@@ -186,6 +186,27 @@ class BookManagement extends Component {
   }
 
   handleAddBook2 = () => {
+
+    const { 
+      authorCode,
+      bookDetailCode,
+      categoryCode,
+      publisherCode,
+      isbn
+     } = this.state;
+
+    const errors = this.validateForm2(
+      authorCode,
+      bookDetailCode,
+      categoryCode,
+      publisherCode,
+      isbn);
+
+    if (errors.length > 0) {
+      this.setState({ errors });
+      return;
+    }
+
     if (this.state.startDate && this.state.isbn) {
       this.setState({ showAdd2: false })
       Axios.post(
@@ -233,6 +254,27 @@ class BookManagement extends Component {
   };
 
   handleSaveEdit = () => {
+
+    const { 
+      authorCode,
+      bookDetailCode,
+      categoryCode,
+      publisherCode,
+      isbn
+     } = this.state;
+
+    const errors = this.validateForm2(
+      authorCode,
+      bookDetailCode,
+      categoryCode,
+      publisherCode,
+      isbn);
+
+    if (errors.length > 0) {
+      this.setState({ errors });
+      return;
+    }
+
     this.setState({ showEdit: false, })
 
     Axios.put(
@@ -411,6 +453,32 @@ class BookManagement extends Component {
     
       return errors;
   }
+
+  validateForm2 = () => {
+    const errors = [];
+  
+    if (this.state.authorCode.length === 0) {
+      errors.push("author can't be empty");
+    }
+  
+    if (this.state.bookDetailCode.length === 0) {
+      errors.push("book details can't be empty");
+    }
+
+    if (this.state.publisherCode.length === 0) {
+      errors.push("publisher can't be empty");
+    }
+
+    if (this.state.categoryCode.length === 0) {
+      errors.push("category can't be empty");
+    }
+
+    if (this.state.isbn.length !== 13) {
+      errors.push("isbn 13 invalid");
+    }
+  
+    return errors;
+}
   
 
   render() {
@@ -516,7 +584,13 @@ class BookManagement extends Component {
                                       if (key === "cover") {
                                         const cover = (book.bookDetailsEntity[key])
                                         return <img height="80"
+
+
+                                          // JANGAN LUPA DIHAPUS
                                           src={AuthService.API_URL() + "getFile/" + cover}
+                                          // src={cover}
+
+
                                           alt="bookimage" />
                                       }
                                     })
@@ -774,6 +848,12 @@ class BookManagement extends Component {
                         <div class='container'>
                           <div class="modal-body">
                             <form>
+                            {errors.map(error => (
+                              <div>
+                                <label key={error} style={{color:"red"}} for="titleErr">Error: {error}</label>
+                                <br/>
+                              </div>
+                            ))}
                               <div class="form-group row">
                                 <label for="addAuthorCode" class="col-sm-2 col-form-label">Author Name</label>
                                 <div class="col-sm-4 mb-3">
@@ -843,7 +923,7 @@ class BookManagement extends Component {
                                     class="form-control"
                                     id="isbn"
                                     placeholder="ISBN..."
-                                    onChange={(e) => this.setState({ isbn: e.target.value })}
+                                    onChange={(e) => this.setState({ isbn: e.target.value.replace(/\D/,'')})}
                                     value={this.state.isbn}
                                     data-attribute-name="isbn"
                                     data-async
@@ -876,6 +956,12 @@ class BookManagement extends Component {
                         <div class='container'>
                           <div class="modal-body">
                             <form>
+                              {errors.map(error => (
+                                <div>
+                                  <label key={error} style={{color:"red"}} for="titleErr">Error: {error}</label>
+                                  <br/>
+                                </div>
+                              ))}
                               <div class="form-group row">
                                 <label for="addAuthorCode" class="col-sm-2 col-form-label">Author Name</label>
                                 <div class="col-sm-4">
@@ -945,7 +1031,7 @@ class BookManagement extends Component {
                                     class="form-control"
                                     id="isbn"
                                     placeholder="ISBN..."
-                                    onChange={(e) => this.setState({ isbn: e.target.value })}
+                                    onChange={(e) => this.setState({ isbn: e.target.value.replace(/\D/,'') })}
                                     value={this.state.isbn}
                                     data-attribute-name="isbn"
                                     data-async
