@@ -35,7 +35,6 @@ export default class CategoryManagement extends Component {
 
   findCategory() {
     axios.get("category").then((response) => {
-      console.log(response.data);
       this.setState({
         categoryList: response.data,
       });
@@ -57,6 +56,7 @@ export default class CategoryManagement extends Component {
         let lastDigit = this.state.allList[
           this.state.allList.length - 1
         ].categoryCode.substr(4);
+        
         let secondDigit = this.state.allList[
           this.state.allList.length - 1
         ].categoryCode.substr(3, 1);
@@ -138,6 +138,7 @@ export default class CategoryManagement extends Component {
       let categoryList = {
         categoryCode: this.state.categoryCode,
         categoryName: this.state.categoryName,
+        status:1,
       };
       axios
         .post("category", categoryList)
@@ -147,6 +148,7 @@ export default class CategoryManagement extends Component {
       let categoryList = {
         categoryCode: this.state.categoryCode,
         categoryName: this.state.categoryName,
+        status:1,
       };
       axios
         .put(

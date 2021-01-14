@@ -72,19 +72,12 @@ class PublisherManagement extends Component {
       return;
     }
 
-    axios.post(
-      `publisher`,
-      {
-        publisherName: this.state.publisherName,
-        address: this.state.address,
-      },
-      {
-        headers: {
-          Accept: "*/*",
-          "Content-Type": "application/json",
-        },
-      }
-    )
+    let data ={
+      publisherName: this.state.publisherName,
+      address: this.state.address,
+    }
+
+    axios.post(`publisher`, data)
       .then(() => {
         swal("Success!", "Publisher Has Been Added", "success");
         this.setState({ showAdd: false, editClicked: true })

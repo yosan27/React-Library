@@ -201,7 +201,7 @@ class ManageDonation extends Component {
   }
 
   findPerson() {
-    axios.get("http://localhost:8500/api/donation")
+    axios.get("donation")
       .then((response) => {
         console.log(response);
         this.setState({
@@ -217,7 +217,7 @@ class ManageDonation extends Component {
 
   delete = (getId) => {
     axios
-      .delete(`http://localhost:8500/api/donation/${getId}`)
+      .delete(`donation/${getId}`)
       .then(() => window.location.reload());
   };
 
@@ -237,7 +237,7 @@ class ManageDonation extends Component {
 
     });
 
-    axios.get(`http://localhost:8500/api/donation/id/${getId}`).then((e) => {
+    axios.get(`donation/id/${getId}`).then((e) => {
       let res = e.data;
       this.setState({
         author: res.author,
@@ -261,7 +261,7 @@ class ManageDonation extends Component {
       categoryCode: this.state.categoryCode
     };
     axios
-      .put(`http://localhost:8500/api/donation-detail/${this.state.id}`, donationList)
+      .put(`donation-detail/${this.state.id}`, donationList)
       .then(() => window.location.reload());
   };
 

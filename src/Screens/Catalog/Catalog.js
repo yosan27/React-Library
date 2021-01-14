@@ -215,16 +215,19 @@ class Catalog extends Component {
                                                             })}
                                                             </td>
                                                             <td>
-                                                                <span className="d-flex justify-content-center" data-toggle="tooltip" title="detail">
+                                                                <span className="d-flex justify-content-center" data-toggle="tooltip" title="Book Detail">
                                                                     <Link to={{ pathname: `/page/detailpage/${user.bookCode}` }}>
                                                                         <button className="btn btn-primary">
                                                                             <i className="fa fa-info-circle"></i>
                                                                         </button>
                                                                     </Link>
-
+                                                                </span>
+                                                                <span className="d-flex justify-content-center" data-toggle="tooltip" title="Book Cart">
                                                                     <button type="button" className="btn btn-warning" onClick={() => this.handleCart(user.bookDetailsEntity.bookDetailCode)}>
                                                                         <i className="fa fa-shopping-cart text-white"></i>
                                                                     </button>
+                                                                </span>
+                                                                <span className="d-flex justify-content-center" data-toggle="tooltip" title="Book Wishlist">
                                                                     <button type="button" className="btn btn-info" onClick={() => this.handleWishlist(user.bookDetailsEntity.bookDetailCode)}>
                                                                         <i className="fa fa-heart"></i>
                                                                     </button>
@@ -233,7 +236,7 @@ class Catalog extends Component {
                                                             <td>{Object.keys(user.bookDetailsEntity ? user.bookDetailsEntity : "").map(key => {
                                                                 if (key === "cover") {
                                                                     const cover = (user.bookDetailsEntity[key])
-                                                                    return <img className='photoOfOrder text-center card-img-top img-book' src={AuthService.API_URL() + "getFile/" + user.bookDetailsEntity.cover} wrapped ui={false} style={{ width: '50%', height: 'auto', marginLeft: '20%' }} />
+                                                                    return <img className='photoOfOrder text-center card-img-top img-book' src={AuthService.API_URL() + "getFile/" + user.bookDetailsEntity.cover} wrapped ui={false} style={{ width: '100%', height: 'auto'}} />
 
                                                                 }
                                                             })}
