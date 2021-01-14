@@ -61,7 +61,7 @@ class SideBarUser extends Component {
         <div className="left_col scroll-view">
           <div className="navbar nav_title" style={{ border: 0 }}>
             <Link to="/page/indexUser" className="site_title">
-              <img src={logo} alt="" className="logo"/>
+              <img src={logo} alt="" className="logo" />
               <span>Faraday E-Library</span>
             </Link>
           </div>
@@ -140,45 +140,24 @@ class SideBarUser extends Component {
                   </Link>
                 </li>
                 <li
-                  onClick={() => this.setState({ condition: !condition })}
                   className={
-                    this.state.condition ||
-                      pathCurrent[1] === "cart" ||
-                      pathCurrent[1] === "wishlist"
-                      ? "active"
-                      : ""
+                    pathCurrent[1] === "cart" ? "current-page" : ""
                   }
                 >
-                  <Link>
-                    <i className="fa fa-edit"></i> Rent{" "}
-                    <span className="fa fa-chevron-down"></span>
+                  <Link to="/page/cart">
+                    <i className="fa fa-shopping-cart"></i>
+                    Cart
                   </Link>
-                  <ul
-                    className="nav child_menu"
-                    style={{
-                      display:
-                        this.state.condition ||
-                          pathCurrent[1] === "cart" ||
-                          pathCurrent[1] === "wishlist"
-                          ? "block"
-                          : "none",
-                    }}
-                  >
-                    <li
-                      className={
-                        pathCurrent[1] === "cart" ? "current-page" : ""
-                      }
-                    >
-                      <Link to="/page/cart">Cart</Link>
-                    </li>
-                    <li
-                      className={
-                        pathCurrent[1] === "wishlist" ? "current-page" : ""
-                      }
-                    >
-                      <Link to="/page/wishlist">Wishlist</Link>
-                    </li>
-                  </ul>
+                </li>
+                <li
+                  className={
+                    pathCurrent[1] === "wishlist" ? "current-page" : ""
+                  }
+                >
+                  <Link to="/page/wishlist">
+                    <i className="fa fa-heart"></i>
+                    Wishlist
+                  </Link>
                 </li>
                 <li
                   className={pathCurrent[1] === "payment" ? "current-page" : ""}
@@ -217,7 +196,7 @@ class SideBarUser extends Component {
         <div className="left_col scroll-view">
           <div className="navbar nav_title" style={{ border: 0 }}>
             <Link to="/page/indexUser" className="site_title">
-              <img src={logo} alt="" className="logo"/>
+              <img src={logo} alt="" className="logo" />
               <span>Faraday E-Library</span>
             </Link>
           </div>
