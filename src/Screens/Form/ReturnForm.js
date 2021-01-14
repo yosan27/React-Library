@@ -242,7 +242,7 @@ class ReturnForm extends Component {
                         nominal: this.state.lostNominal,
                         fineCode: this.state.fineLostCode,
                     };
-                    this.setState({ fineChecked: [totalLost] });
+                    this.setState({ fineChecked: [...this.state.fineChecked, totalLost] });
                 } else {
                     this.setState({ fineChecked: [...this.state.fineChecked] });
                 }
