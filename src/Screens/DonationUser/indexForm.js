@@ -130,6 +130,9 @@ class DonationForm extends Component {
             axios.post("donation", donation)
                 .then(() =>
                     swal("Success!", "Donation Form Has Been Added", "success")
+                        .then(() => {
+                            window.location.reload();
+                        })
                 );
         }).catch(function (error) {
             if (error.response) {
