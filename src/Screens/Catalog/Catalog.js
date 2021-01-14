@@ -218,51 +218,51 @@ class Catalog extends Component {
                                                                     <Link to={{ pathname: `/page/detailpage/${user.bookCode}` }}>
                                                                         <button className="btn btn-primary">
                                                                             <i className="fa fa-info-circle"></i>
-                                                                        </button>
-                                                                    </Link>
+                                                                            </button>
+                                                                            </Link>                                                             
+                                                                            
+                                                                            <button className="btn btn-warning" data-toggle="modal" data-target="#">
+                                                                                <i className="fa fa-shopping-cart"></i>
+                                                                            </button>
+                                                                            <button className="btn btn-info" data-toggle="modal" data-target="#">
+                                                                                <i className="fa fa-bookmark"></i>
+                                                                            </button>
+                                                                        </span>
+                                                                    </td>
+                                                                    <td>{Object.keys(user.bookDetailsEntity?user.bookDetailsEntity:"").map(key => {
+                                                                        if (key === "cover"){
+                                                                            const cover = (user.bookDetailsEntity[key])
+                                                                            return <img className='photoOfOrder text-center card-img-top img-book' src={cover} wrapped ui={false} style={{ width: '20%', height: 'auto', marginLeft: '40%' }} />
+                                                                                 
+                                                                        }
+                                                                        })}   
+                                                                    </td>
+                                                                    <td>{Object.keys(user.authorEntity?user.authorEntity:"").map(key => {
+                                                                        if (key === "authorName"){
+                                                                            const author = (user.authorEntity[key])
+                                                                            return author;
+                                                                        }
+                                                                        })}   
+                                                                    </td>
+                                                                    <td>{Object.keys(user.categoryEntity?user.categoryEntity:"").map(key => {
+                                                                        if (key === "categoryName"){
+                                                                            const category = (user.categoryEntity[key])
+                                                                            return category;
+                                                                        }
+                                                                        })}   
+                                                                    </td>
+                                                                    <td>{Object.keys(user.publisherEntity?user.publisherEntity:"").map(key => {
+                                                                        if (key === "publisherName"){
+                                                                            const publisher = (user.publisherEntity[key])
+                                                                            return publisher;
+                                                                        }
+                                                                        })}   
+                                                                    </td>
+                                                                </tr>
+                                                            );
+                                                        })}
 
-                                                                    <button className="btn btn-warning" type="button" onClick={() => this.handleCart(user.bookDetailsEntity.bookDetailCode)}>
-                                                                        <i className="fa fa-shopping-cart text-white"></i>
-                                                                    </button>
-                                                                    <button className="btn btn-info" type="button" onClick={() => this.handleWishlist(user.bookDetailsEntity.bookDetailCode)}>
-                                                                        <i className="fa fa-heart"></i>
-                                                                    </button>
-                                                                </span>
-                                                            </td>
-                                                            <td>{Object.keys(user.bookDetailsEntity ? user.bookDetailsEntity : "").map(key => {
-                                                                if (key === "cover") {
-                                                                    const cover = (user.bookDetailsEntity[key])
-                                                                    return <img class="img-book" className='photoOfOrder text-center card-img-top' src={cover} wrapped ui={false} style={{ width: '20%', height: 'auto', marginLeft: '40%' }} />
-
-                                                                }
-                                                            })}
-                                                            </td>
-                                                            <td>{Object.keys(user.authorEntity ? user.authorEntity : "").map(key => {
-                                                                if (key === "authorName") {
-                                                                    const author = (user.authorEntity[key])
-                                                                    return author;
-                                                                }
-                                                            })}
-                                                            </td>
-                                                            <td>{Object.keys(user.categoryEntity ? user.categoryEntity : "").map(key => {
-                                                                if (key === "categoryName") {
-                                                                    const category = (user.categoryEntity[key])
-                                                                    return category;
-                                                                }
-                                                            })}
-                                                            </td>
-                                                            <td>{Object.keys(user.publisherEntity ? user.publisherEntity : "").map(key => {
-                                                                if (key === "publisherName") {
-                                                                    const publisher = (user.publisherEntity[key])
-                                                                    return publisher;
-                                                                }
-                                                            })}
-                                                            </td>
-                                                        </tr>
-                                                    );
-                                                })}
-
-                                            </tbody>
+                                                </tbody>
                                         </Table>
                                     </Card.Body>
                                 </Card>
