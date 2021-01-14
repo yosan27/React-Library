@@ -89,6 +89,36 @@ class Content extends Component {
     });
   }
 
+  reviewNewReleases(e,i){
+    let allRate = 0;
+    Axios.get(`review/rate-by/${e}`).then((rev)=>{
+      if(rev.data.length !==0){
+        rev.data.forEach((r)=>{
+          allRate += parseFloat(r.rate);
+        })
+        let rate = allRate/parseFloat(rev.data.length);
+        document.querySelector("#bookNewReleasesRate"+i).textContent = " " + rate;
+      }else{
+        document.querySelector("#bookNewReleasesRate"+i).textContent = " No Rating";
+      }
+    });
+  }
+
+  reviewAsian(e,i){
+    let allRate = 0;
+    Axios.get(`review/rate-by/${e}`).then((rev)=>{
+      if(rev.data.length !==0){
+        rev.data.forEach((r)=>{
+          allRate += parseFloat(r.rate);
+        })
+        let rate = allRate/parseFloat(rev.data.length);
+        document.querySelector("#bookAsianRate"+i).textContent = " " + rate;
+      }else{
+        document.querySelector("#bookAsianRate"+i).textContent = " No Rating";
+      }
+    });
+  }
+
   review(e,i){
     let allRate = 0;
     Axios.get(`review/rate-by/${e}`).then((rev)=>{
@@ -102,11 +132,22 @@ class Content extends Component {
         document.querySelector("#bookRate"+i).textContent = " No Rating";
       }
     });
-
-    // return(
-    //   <span>5</span>
-    // )
   }
+
+  // review(e,i){
+  //   let allRate = 0;
+  //   Axios.get(`review/rate-by/${e}`).then((rev)=>{
+  //     if(rev.data.length !==0){
+  //       rev.data.forEach((r)=>{
+  //         allRate += parseFloat(r.rate);
+  //       })
+  //       let rate = allRate/parseFloat(rev.data.length);
+  //       document.querySelector("#bookRate"+i).textContent = " " + rate;
+  //     }else{
+  //       document.querySelector("#bookRate"+i).textContent = " No Rating";
+  //     }
+  //   });
+  // }
 
   getBooks = () =>{
     Axios.get("books").then((e) => {
@@ -270,7 +311,7 @@ class Content extends Component {
                             </div>
                             <div className="row">
                               <div className="book-rating text-muted">
-                                <i class="fa fa-star star-rate pr-1"><span className="text-muted" id={"bookRate" + i}></span></i>{this.review(d.bookDetailsEntity.bookDetailCode,i)}
+                                <i class="fa fa-star star-rate pr-1"><span className="text-muted" id={"bookNewReleasesRate" + i}></span></i>{this.reviewNewReleases(d.bookDetailsEntity.bookDetailCode,i)}
                               </div>
                             </div>
                           </div>
@@ -304,7 +345,7 @@ class Content extends Component {
           </div>
           <div className="container-fluid">
             <div className="row">
-              {this.state.asianBooks.slice(0, 2).map((d) => {
+              {this.state.asianBooks.slice(0, 2).map((d,i) => {
                 if (d.bookDetailsEntity.description.length > 225) {
                   d.bookDetailsEntity.description =
                     d.bookDetailsEntity.description.substring(0, 100) + "  ...";
@@ -340,8 +381,7 @@ class Content extends Component {
                                 <div className="col d-flex justify-content-end">
                                   <p className="card-text">
                                     <small className="text-muted">
-                                      <i className="fa fa-star star-rate pr-1"></i>
-                                      5
+                                      <i class="fa fa-star star-rate pr-1"><span className="text-muted" id={"bookAsianRate" + i}></span></i>{this.reviewAsian(d.bookDetailsEntity.bookDetailCode,i)}
                                     </small>
                                   </p>
                                 </div>
@@ -379,7 +419,7 @@ class Content extends Component {
             </div>
 
             <ul className="books">
-              {this.state.data.slice(0, 6).map((d) => {
+              {this.state.data.slice(0, 6).map((d,i) => {
                 return (
                   <Link to={{pathname: `/page/detailpage/${d.bookCode}`}}>
                     <li>
@@ -403,12 +443,10 @@ class Content extends Component {
                                 {d.authorEntity.authorName}
                               </div>
                             </div>
-                            <div className="row">
-                              <div className="book-rating text-muted">
-                                <i class="fa fa-star star-rate pr-1"></i>5
+                            <div className="book-rating text-muted">
+                                <i class="fa fa-star star-rate pr-1"><span className="text-muted" id={"bookRate" + i}></span></i>{this.review(d.bookDetailsEntity.bookDetailCode,i)}
                               </div>
                             </div>
-                          </div>
                         </div>
                       </div>
                     </li>

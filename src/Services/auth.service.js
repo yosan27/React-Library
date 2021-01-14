@@ -1,6 +1,7 @@
 class AuthService {
     API_URL(){
         return 'http://localhost:8500/api/'
+        // return 'https://farday-library.herokuapp.com/api/'
     }
     authHeader(){
         const user = JSON.parse(localStorage.getItem('userFaraday'));

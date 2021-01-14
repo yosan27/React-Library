@@ -59,11 +59,8 @@ class HeaderUser extends Component {
   };
 
   handleSubmit = () => {
-    if (window.location.pathname.includes("result")) {
-      window.open(`/page/result/${this.state.searchInput}`, "_self");
-    }
-    else if (window.location.pathname.includes("category")) {
-      window.open(`/page/result/${this.state.searchInput}`, "_self");
+    if (window.location.pathname.includes("category")||window.location.pathname.includes("result")||window.location.pathname.includes("detailpage")||window.location.pathname.includes("return")||window.location.pathname.includes("more")) {
+      window.open(`/page/result/${this.state.searchInput}`, "_self")
     }
     else {
       this.props.history.push(`result/${this.state.searchInput}`);
@@ -71,18 +68,9 @@ class HeaderUser extends Component {
   };
 
   handleClick(e){
-    if (window.location.pathname.includes("category")) {
+    if (window.location.pathname.includes("category")||window.location.pathname.includes("result")||window.location.pathname.includes("detailpage")||window.location.pathname.includes("return")||window.location.pathname.includes("more")) {
       window.open(`/page/category/${e}`, "_self")
     }
-    else if (window.location.pathname.includes("result")) {
-      window.open(`/page/category/${e}`, "_self")
-    } 
-    else if (window.location.pathname.includes("detailpage")) {
-      window.open(`/page/category/${e}`, "_self")
-    } 
-    else if (window.location.pathname.includes("return")) {
-      window.open(`/page/category/${e}`, "_self")
-    } 
     else {
       this.props.history.push(`category/${e}`);
     }
