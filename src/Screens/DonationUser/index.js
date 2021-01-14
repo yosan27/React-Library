@@ -10,6 +10,7 @@ class DonationUser extends Component {
             "Indonesia menempati peringkat 60 dari 61 negara dengan level literasi baca",
         author: "Unesco(2019)",
         image: don1,
+        btn: "Kenali lebih dalam"
     }
 
     handleAjax = () => {
@@ -19,6 +20,7 @@ class DonationUser extends Component {
                 "Kehadiranmu bisa memberi kesempatan semua insan dalam meraih informasi berkualitas",
             author: " #jendeladunia",
             image: don2,
+            btn: false
         })
     }
 
@@ -39,7 +41,7 @@ class DonationUser extends Component {
                     </div>
                     <br /><br />
                     <div class="row justify-content-md-center center">
-                        <button type="button" class="btn btn-info" onClick={this.handleAjax}>Kenali lebih dalam</button>
+                        <button type="button" class="btn btn-info" onClick={this.handleAjax}>{this.state.btn}</button>
                         <Link to="/page/donation-form">
                             <button type="button" class="btn btn-outline-info">Donasi
                                 Sekarang!</button>

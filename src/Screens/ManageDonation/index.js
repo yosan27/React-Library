@@ -6,6 +6,8 @@ import Select from "react-select";
 import axios from "../../Services/axios-instance";
 import swal from "sweetalert";
 
+import AuthService from "../../Services/auth.service";
+
 import "datatables.net-dt/js/dataTables.dataTables";
 import "datatables.net-dt/css/jquery.dataTables.min.css";
 import "datatables.net-responsive-dt/js/responsive.dataTables.js";
@@ -242,7 +244,7 @@ class ManageDonation extends Component {
         bookTitle: res.bookTitle,
         year: res.year,
         description: res.description,
-        photo: res.photo,
+        photo: AuthService.API_URL() + "getFile/" + res.photo,
         status: res.status,
         categoryCode: res.categoryEntity.categoryName,
         donationDate: res.date
@@ -395,9 +397,9 @@ class ManageDonation extends Component {
                                 <td>{donation.bookTitle}</td>
                                 <td>{donation.author}</td>
                                 <td>{donation.categoryEntity.categoryName}</td>
-                                {donation.status === 3 && <td>Rejected</td>}
-                                {donation.status === 2 && <td>Accepted</td>}
-                                {donation.status === 1 && <td>Pending</td>}
+                                {donation.status === 3 && <td><span className="badge badge-danger">Rejected</span></td>}
+                                {donation.status === 2 && <td><span className="badge badge-success">Accepted</span></td>}
+                                {donation.status === 1 && <td><span className="badge badge-secondary">Pending</span></td>}
                               </tr>
                             );
                           })}
@@ -550,6 +552,7 @@ class ManageDonation extends Component {
                             <div class="row justify-content-md-center">
                               <img
                                 src={this.state.photo}
+
                                 height="350"
                                 alt="Donation Book"
                               />
