@@ -4,6 +4,7 @@ import Slider from "react-slick";
 import { Link, withRouter } from "react-router-dom";
 import Axios from "../Services/axios-instance";
 import swal from "sweetalert";
+import AuthService from "../Services/auth.service";
 
 // css
 import "./Content.css";
@@ -59,7 +60,7 @@ class Content extends Component {
 
   componentDidMount() {
     this.getBooks();
-    //this.getNewBooks();
+    this.getNewBooks();
 
     Axios.get("bookdetails").then((resp) => {
       // console.log(resp)
@@ -110,14 +111,13 @@ class Content extends Component {
     });
   }
 
-  /* 
   getNewBooks = () =>{
     Axios.get("books/new").then((e) => {
       this.setState({ newBooks: e.data});
     }).catch(function(error){
       swal("Failed", error.response.data.message, "error");
     });
-  } */
+  }
   
   sendBooks = () =>{
     sessionStorage.setItem('books', JSON.stringify(this.state.data));
@@ -203,7 +203,7 @@ class Content extends Component {
               return (
                 <div className={"item item" + (i + 1)}>
                   <Link to={"/page/detailpage/" + slider.detailbooks.bookCode}>
-                    <div className="item-inner" style={{ backgroundImage: "url(" + slider.sliderNew.cover + ")" }}>
+                    <div className="item-inner" style={{ backgroundImage: "url(" + AuthService.API_URL() + "getFile/" + slider.sliderNew.cover + ")" }}>
                       <div className="text-slide">
                         <span className="title-slide">{slider.sliderNew.bookTitle}</span>
                         <br />
@@ -257,7 +257,7 @@ class Content extends Component {
                       <div className="book">
                         <div className="row">
                           <img
-                            src={d.bookDetailsEntity.cover}
+                            src={AuthService.API_URL() + "getFile/" +d.bookDetailsEntity.cover}
                             alt={d.bookDetailsEntity.bookTitle}
                             className="book-image"
                           />
@@ -317,7 +317,7 @@ class Content extends Component {
                         <Link to={{pathname: `/page/detailpage/${d.bookCode}`}}>
                           <div className="col-md-4">
                             <img
-                              src={d.bookDetailsEntity.cover}
+                              src={AuthService.API_URL() + "getFile/" +d.bookDetailsEntity.cover}
                               className="card-img recommend-img"
                               alt="ibu"
                             />
@@ -387,7 +387,7 @@ class Content extends Component {
                       <div className="book">
                         <div className="row">
                           <img
-                            src={d.bookDetailsEntity.cover}
+                            src={AuthService.API_URL() + "getFile/" +d.bookDetailsEntity.cover}
                             alt={d.bookDetailsEntity.bookTitle}
                             className="book-image"
                           />
@@ -451,7 +451,7 @@ class Content extends Component {
                       <div className="book">
                         <div className="row">
                           <img
-                            src={d.bookDetailsEntity.cover}
+                            src={AuthService.API_URL() + "getFile/" +d.bookDetailsEntity.cover}
                             alt={d.bookDetailsEntity.bookTitle}
                             className="book-image"
                           />
