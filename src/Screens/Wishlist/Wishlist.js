@@ -38,11 +38,14 @@ export default class Wishlist extends Component {
                             'detailbooks': resp.data.data
                         }]
                     })
-                    $(function () {
-                        $('#wishlist_table').DataTable({
-                            responsive: true
+                    if(i === (e.data.data.length-1)){
+                        $(function () {
+                            $('#wishlist_table').DataTable({
+                                responsive: true
+                            });
                         });
-                    });
+                    }
+                   
                 }).catch(function (error) {
                     console.log(error);
                     $(function () {
@@ -52,7 +55,6 @@ export default class Wishlist extends Component {
                     });
                 })
             })
-            
         }).catch(function (error) {
             console.log(error);
             $(function () {

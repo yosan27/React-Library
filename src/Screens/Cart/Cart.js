@@ -50,11 +50,13 @@ export default class Cart extends Component {
                             'detailbooks': resp.data.data
                         }]
                     })
-                    $(function () {
-                        $('#cartlist_table').DataTable({
-                            responsive: true
+                    if(i === (e.data.data.length-1)){
+                        $(function () {
+                            $('#cartlist_table').DataTable({
+                                responsive: true
+                            });
                         });
-                    });
+                    }
                 })
             })
         }).catch(function (error) {
