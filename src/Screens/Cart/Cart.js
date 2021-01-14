@@ -130,7 +130,7 @@ export default class Cart extends Component {
             let countRent = rent.data.length
             let countCart = this.state.dataCart.length
             let total = countRent + countCart
-            
+
             if (total > 3) {
                 swal("Failed!", "You can't borrow more than 3 books", "error")
             } else {
@@ -158,10 +158,10 @@ export default class Cart extends Component {
 
     borrowBook = () => {
         let borrow = this.state.value
-        let due = moment(this.state.value).add(7,'d').format('YYYY-MM-DD')
+        let due = moment(this.state.value).add(7, 'd').format('YYYY-MM-DD')
         let user = this.state.userCode
-        
-        this.setState({ dataCart: [ ...this.state.dataCart ] })
+
+        this.setState({ dataCart: [...this.state.dataCart] })
         this.state.dataCart.forEach((res) => {
             let cartNo = res.id
             let bookDetail = res.bookDetailsEntity.bookDetailCode
@@ -241,7 +241,7 @@ export default class Cart extends Component {
                                                                 <td>{cart.dataCart.bookDetailsEntity.bookTitle}</td>
                                                                 <td>{cart.detailbooks.authorEntity.authorName}</td>
                                                                 <td className="text-center">
-                                                                    <img height="100" src={cart.dataCart.bookDetailsEntity.cover} />
+                                                                    <img height="100" src={AuthService.API_URL() + "getFile/" + cart.dataCart.bookDetailsEntity.cover} />
                                                                 </td>
                                                             </tr>
                                                         )

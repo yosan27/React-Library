@@ -34,6 +34,8 @@ class AuthorManagement extends Component {
                     author: res.data,
                     buttonClick: false
                 })
+            }).catch(function(error){
+                swal("Failed!", error.response.data.message, "error");
             })
         }
     }
@@ -47,6 +49,8 @@ class AuthorManagement extends Component {
                     responsive: true
                 })
             })
+        }).catch(function(error){
+            swal("Failed!", error.response.data.message, "error");
         })
     }
 
@@ -57,6 +61,8 @@ class AuthorManagement extends Component {
                 authorCode: res.data.authorCode,
                 authorName: res.data.authorName
             })
+        }).catch(function(error){
+            swal("Failed!", error.response.data.message, "error");
         })
     }
 
@@ -69,14 +75,20 @@ class AuthorManagement extends Component {
         let author = { authorName: this.state.authorName }
 
         if (this.state.button === 'Add') {
-            Axios.post('author', author)
+            Axios.post('author', author).then((response) => {
+                swal("Success!", response.data.message, "success").then(() => {
+                    window.location.reload()
+                })
+            }).catch(function (error) {
+                swal("Failed!", error.response.data.message, "error")
+            })
         } else {
-            Axios.put(`author/${this.state.id}`, author)
+            Axios.put(`author/${this.state.id}`, author).then((response) => {
+                swal("Success!", response.data.message, "success")
+            }).catch(function (error) {
+                swal("Failed!", error.response.data.message, "error")
+            })
         }
-
-        swal("Success!", "Author Data Is Updated", "success").then(() => {
-            this.setState({ buttonClick: true })
-        })
     }
 
     deleteAuthor = (id) => {
@@ -91,10 +103,13 @@ class AuthorManagement extends Component {
                 if (willDelete) {
                     swal("Deleted!", "Author Data Is Delete", "success").then(() => {
                         this.setState({ buttonClick: true })
+                        window.location.reload()
                     })
                 } else {
                     swal("Canceled!", "Author Data Is Safe", "error")
                 }
+            }).catch(function(error){
+                swal("Failed!", error.response.data.message, "error");
             })
         })
     }
@@ -182,13 +197,6 @@ class AuthorManagement extends Component {
                             </div>
                             <div className="modal-body">
                                 <form>
-                                    <div className="form-group row">
-                                        <label className="col-sm-3 col-form-label">Author Code</label>
-                                        <div className="col-sm-9">
-                                            <input className="form-control" name="authorCode" placeholder="Enter Author Code"
-                                                value={this.state.authorCode} readOnly disabled />
-                                        </div>
-                                    </div>
                                     <div className="form-group row">
                                         <label className="col-sm-3 col-form-label">Author Name</label>
                                         <div className="col-sm-9">

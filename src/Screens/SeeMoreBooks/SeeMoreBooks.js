@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
 import Axios from "../../Services/axios-instance";
+import swal from "sweetalert";
+import AuthService from "../../Services/auth.service";
 
 // css
 import "./booksList.css";
@@ -33,6 +35,8 @@ class SeeMoreBooks extends Component {
       }else{
         document.querySelector("#bookRate"+i).textContent = " No Rating";
       }
+    }).catch(function (error) {
+      swal("Failed", error, "error");
     });
   }
 
@@ -48,12 +52,20 @@ class SeeMoreBooks extends Component {
             <div className="content">
               <ul className="books">
               {this.state.data.map((d,i) => {
+                if (d.bookDetailsEntity.bookTitle.length > 16) {
+                  d.bookDetailsEntity.bookTitle =
+                    d.bookDetailsEntity.bookTitle.substring(0, 16) + "  ...";
+                }
+                if (d.authorEntity.authorName.length > 20) {
+                  d.authorEntity.authorName =
+                    d.authorEntity.authorName.substring(0, 20) + "  ...";
+                }
                 return(
                   <Link to={{pathname: `/page/detailpage/${d.bookCode}`}}>
                     <li>
                       <div className="book">
                         <div className="row">
-                          <img src={d.bookDetailsEntity.cover} alt={d.bookDetailsEntity.bookTitle} className="book-image"/>
+                          <img src={AuthService.API_URL() + "getFile/" +d.bookDetailsEntity.cover} alt={d.bookDetailsEntity.bookTitle} className="book-image"/>
                         </div>
                         <div className="row">
                           <div className="col">

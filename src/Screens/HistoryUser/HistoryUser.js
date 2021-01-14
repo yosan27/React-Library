@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 import Axios from '../../Services/axios-instance'
 import AuthService from '../../Services/auth.service'
 
@@ -17,6 +18,7 @@ class HistoryUser extends Component {
             fine: [],
             userCode: '',
             rentCode: '',
+            bookCode: '',
             bookTitle: '',
             dateBorrow: '',
             dueDate: '',
@@ -53,6 +55,7 @@ class HistoryUser extends Component {
         Axios.get(`rent/id/${id}`).then((res) => {
             this.setState({
                 rentCode: res.data.rentCode,
+                bookCode: res.data.bookEntity.bookCode,
                 bookTitle: res.data.bookEntity.bookDetailsEntity.bookTitle,
                 dateBorrow: res.data.dateBorrow,
                 dueDate: res.data.dueDate,
@@ -72,6 +75,14 @@ class HistoryUser extends Component {
         Axios.get(`transaction-detail/rent/${getRentCode}`).then((res) => {
             this.setState({ fine: res.data })
         })
+    }
+
+    setDateReturn(date) {
+        if(date === null) {
+            return "-"
+        } else {
+            return date
+        }
     }
 
     setStatus(status) {
@@ -138,11 +149,15 @@ class HistoryUser extends Component {
                                                         <tr key={index}>
                                                             <td>{rent.rentCode}</td>
                                                             <td>
-                                                                <button className="btn btn-primary btn-sm rounded-sm mr-1" data-toggle="modal" data-target="#info" onClick={() => this.getById(rent.id)}>
+                                                                <span type="button" className="btn btn-primary btn-sm rounded-sm mr-1" data-toggle="modal" data-target="#info" onClick={() => this.getById(rent.id)}>
                                                                     <i className="fa fa-info-circle"></i>
-                                                                </button>
+                                                                </span>
                                                             </td>
-                                                            <td>{rent.bookEntity.bookDetailsEntity.bookTitle}</td>
+                                                            <td>
+                                                                <b><Link onClick={()=> window.open("http://localhost:3000/page/detailpage/" + rent.bookEntity.bookCode, "_blank")}>
+                                                                    {rent.bookEntity.bookDetailsEntity.bookTitle}
+                                                                </Link></b>
+                                                            </td>
                                                             <td>{rent.dateBorrow}</td>
                                                             <td>{rent.dueDate}</td>
                                                             <td>{rent.dateReturn}</td>
@@ -178,6 +193,13 @@ class HistoryUser extends Component {
                                             <input type="text" className="form-control-plaintext" value={this.state.rentCode} readOnly />
                                         </div>
                                     </div>
+                                    <hr></hr>
+                                    <div className="form-group row">
+                                        <label className="col-sm-4 col-form-label">Book Code</label>
+                                        <div className="col-sm-8">
+                                            <input type="text" className="form-control-plaintext" value={this.state.bookCode} readOnly />
+                                        </div>
+                                    </div>
                                     <div className="form-group row">
                                         <label className="col-sm-4 col-form-label">Book Title</label>
                                         <div className="col-sm-8">
@@ -205,7 +227,7 @@ class HistoryUser extends Component {
                                         <label className="col-sm-4 col-form-label">Date Returned</label>
                                         <div className="col-sm-5">
                                             <div className="input-group date">
-                                                <input type="text" className="form-control" value={this.state.dateReturn} disabled />
+                                                <input type="text" className="form-control" value={this.setDateReturn(this.state.dateReturn)} disabled />
                                             </div>
                                         </div>
                                     </div>
