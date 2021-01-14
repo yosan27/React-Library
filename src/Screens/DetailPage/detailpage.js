@@ -545,9 +545,9 @@ class DetailPage extends Component {
                                                     {book.review}
                                                 </div>
                                                 <div class="col-sm-2" >                                         
-                                                { book.userEntity.userCode == AuthService.getUserCode()? <button type="button" className="btn-sm btn-secondary" data-toggle="modal" data-target="#reviewEdit" onClick={() => this.getById(book.id)}>Edit</button>
+                                                { book.userEntity.userCode == AuthService.getUserCode()? <button type="button" className="btn-sm btn-secondary" data-toggle="modal" data-target="#reviewEdit" onClick={() => this.getById(book.id)}><i className="fa fa-edit"> Edit </i></button>
                                                 : <p></p>}
-                                                { book.userEntity.userCode == AuthService.getUserCode()? <button type="button" className="btn-sm btn-danger"  onClick={() => this.handleDeleteReview(book.id)}>Delete</button>
+                                                { book.userEntity.userCode == AuthService.getUserCode()? <button type="button" className="btn-sm btn-danger"  onClick={() => this.handleDeleteReview(book.id)}><i className="fa fa-trash"> Delete </i></button>
                                                 : <p></p>}
                                                 </div>
                                                 </div>
@@ -561,7 +561,7 @@ class DetailPage extends Component {
                                     <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
                                     
                                     <button className="btn btn-primary rounded-sm w-30 mr-1" data-toggle="modal" data-target="#reviewAdd">
-                                        <i className="fa fa-edit"></i>Add Review
+                                        <i className="fa fa-edit">Add Review</i>
                                     </button>
                                 </div>
                             </div>
@@ -582,7 +582,7 @@ class DetailPage extends Component {
                                       <form>
                                       <div class="form-group row">
                                           <div class="col-sm-12 text-center">
-                                          <img class="rounded novel" src={bookDataImage ? bookDataImage : 'https://res.cloudinary.com/todidewantoro/image/upload/v1604943658/bootcamp/covernya_ejy4v1.jpg'} alt=""/>
+                                          <img class="rounded novel" src={AuthService.API_URL() + "getFile/" + bookDataImage} alt=""/>
                                           </div>
                                       </div>
                                       <div className="form-group row">
