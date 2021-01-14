@@ -129,8 +129,9 @@ class DetailPage extends Component {
     Axios.post('cart', wishdto)
       .then((response) => {
         console.log(response);
-        swal("Success!", "Book Has Been Added To Your Cart", "success")
-        window.location.reload()
+        swal("Success!", "Book Has Been Added To Your Cart", "success").then(function () {
+          window.location.reload()
+        })
       }).catch(function (error) {
         if (error.response) {
           console.log(error.response.data);
