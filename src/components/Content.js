@@ -57,7 +57,7 @@ class Content extends Component {
 
   componentDidMount() {
     this.getBooks();
-    this.getNewBooks();
+    //this.getNewBooks();
 
     Axios.get("bookdetails").then((resp) => {
       // console.log(resp)
@@ -121,13 +121,14 @@ class Content extends Component {
     });
   }
 
+  /* 
   getNewBooks = () =>{
     Axios.get("books/new").then((e) => {
       this.setState({ newBooks: e.data});
     }).catch(function(error){
       swal("Failed", error.response.data.message, "error");
     });
-  }
+  } */
   
   sendBooks = () =>{
     sessionStorage.setItem('books', JSON.stringify(this.state.data));
