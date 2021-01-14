@@ -149,23 +149,23 @@ class BookManagement extends Component {
           nameFileImage : newFileName + currentFile.name
         });
 
+        let data ={
+          publisherName: this.state.publisherName,
+          address: this.state.publisherAddress,
+          bookTitle: this.state.title,
+          bookSubtitle: this.state.subtitle,
+          authorName: this.state.author,
+          cover: this.state.nameFileImage,
+          description: this.state.description,
+          categoryName: this.state.category,
+          numberOfPages: this.state.numberOfPages,
+          publishedDate: this.state.startDate,
+          isbn: this.state.isbn,
+          language: this.state.language
+        }
+
         //save filename to db
-        Axios.post(
-          `newbooks`,
-          {
-            publisherName: this.state.publisherName,
-            address: this.state.publisherAddress,
-            bookTitle: this.state.title,
-            bookSubtitle: this.state.subtitle,
-            authorName: this.state.author,
-            cover: this.state.nameFileImage,
-            description: this.state.description,
-            categoryName: this.state.category,
-            numberOfPages: this.state.numberOfPages,
-            publishedDate: this.state.startDate,
-            isbn: this.state.isbn,
-            language: this.state.language
-          })
+        Axios.post(`newbooks`, data)
           .then(() => {
             this.setState({ 
               showAdd1: false,
@@ -851,7 +851,7 @@ class BookManagement extends Component {
                       <Modal.Body>
                         <div class='container'>
                           <div class="modal-body">
-                            <form>
+                            {/* <form> */}
                             {errors.map(error => (
                               <div>
                                 <label key={error} style={{color:"red"}} for="titleErr">Error: {error}</label>
@@ -935,7 +935,7 @@ class BookManagement extends Component {
                                 </div>
                               </div>
 
-                            </form>
+                            {/* </form> */}
                           </div>
                         </div>
                       </Modal.Body>
@@ -943,7 +943,7 @@ class BookManagement extends Component {
                         <Button className="btn btn-secondary" variant="secondary" onClick={this.handleCloseModal}>
                           <i class="fa fa-times-circle"></i> Close
                         </Button>
-                        <Button id="buttonAddBook" type="submit" className="btn btn-success" variant="primary" onClick={this.handleAddBook2}>
+                        <Button id="buttonAddBook" type="button" className="btn btn-success" variant="primary" onClick={this.handleAddBook2}>
                           <i class="fa fa-plus"></i> Add
                         </Button>
                       </Modal.Footer>
