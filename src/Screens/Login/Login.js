@@ -166,9 +166,6 @@ class Login extends Component {
                 </div>
               </form>
 
-              <Link to="/forgot-password">
-                <a href="forgotPass.html" class="forgot mb-5 grey">Forgot Password?</a>
-              </Link>
 
               <p class="txt-3 mg-0">By signing up, you agree to E-Perpus's</p>
               <p class="txt-3">
