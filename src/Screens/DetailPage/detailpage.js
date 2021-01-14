@@ -90,6 +90,24 @@ class DetailPage extends Component {
         left: 270,
         behavior: 'smooth'
       });
+
+      //check availability
+      try {
+        const res = await Axios.get(`rent`);
+        const rentData = res.data;
+        const currentBookDetailCode = rentData.filter((word) => word.bookEntity.bookDetailsEntity.bookDetailCode === this.state.bookDetailsCode);
+        console.log(currentBookDetailCode)
+
+        if(currentBookDetailCode) {
+          if(currentBookDetailCode.filter((word) => word.status != 2)){
+            this.setState({ bookAvailable: 'Available' });
+          } else {
+            this.setState({ bookAvailable: 'Not Available' });
+          }
+        }
+      } catch (error) {
+        console.log(error)
+      }
   }
 
   handleWishlist = () => {
@@ -297,7 +315,14 @@ class DetailPage extends Component {
                   <div className="card-body">
                     {/* banner */}
                     <Jumbotron className="bannerDetail"
-                      style={{ backgroundImage: `url(${(!!bookData && AuthService.API_URL() + "getFile/" + bookDataImage) ? (AuthService.API_URL() + "getFile/" + bookDataImage) : "/assets/images/cover.png"})` }}
+                      style={{ 
+
+
+                        backgroundImage: `url(${(!!bookData && AuthService.API_URL() + "getFile/" + bookDataImage) ? (AuthService.API_URL() + "getFile/" + bookDataImage) : "/assets/images/cover.png"})` 
+                        // backgroundImage: `url(${(!!bookData && bookDataImage) ? bookDataImage : "/assets/images/cover.png"})` 
+
+
+                      }}
                      
                       fluid>
                       <Container>
@@ -326,7 +351,12 @@ class DetailPage extends Component {
                           </div>
                           <div className="col-lg col-sm-4 text-center align-self-center">
                             <img id='bookCover'
+
+
                               src={(!!bookData && AuthService.API_URL() + "getFile/" + bookDataImage) ? AuthService.API_URL() + "getFile/" + bookDataImage : "/assets/images/cover.png"}
+                              // src={(!!bookData &&  bookDataImage) ?  bookDataImage : "/assets/images/cover.png"}
+
+
                               alt="cover" className="rounded novel" />
                           </div>
                         </div>
@@ -370,14 +400,21 @@ class DetailPage extends Component {
                                   >
                                     <div class="row">
                                       <div class="col text-right pt-2">
-                                        <img rounded height="80" src={(!!bookData && AuthService.API_URL() + "getFile/" + pop.bookDetailsEntity.cover) ? AuthService.API_URL() + "getFile/" + pop.bookDetailsEntity.cover : "/assets/images/cover.png"} alt=""/>
+                                        <img rounded height="80" 
+
+
+                                        // JANGAN LUPA DIHAPUS
+                                        src={(!!bookData && AuthService.API_URL() + "getFile/" + pop.bookDetailsEntity.cover) ? AuthService.API_URL() + "getFile/" + pop.bookDetailsEntity.cover : "/assets/images/cover.png"} alt=""/>
+                                        {/* src={(!!bookData && pop.bookDetailsEntity.cover) ? pop.bookDetailsEntity.cover : "/assets/images/cover.png"} alt=""/> */}
+
+
                                       </div>
                                       <div
                                         class="col"
                                         style={{ display: 'flex', flexWrap: 'wrap', alignContent: 'center' }}>
                                         <div>
-                                          <h6 class="mb-0 ">{pop.bookDetailsEntity.bookTitle}</h6>
-                                          <h6 class="mb-0 ">- {pop.authorEntity.authorName}</h6>
+                                          <small class="mb-0 ">{pop.bookDetailsEntity.bookTitle?pop.bookDetailsEntity.bookTitle:""}</small><br/>
+                                          <small class="mb-0 ">- {pop.authorEntity.authorName?pop.authorEntity.authorName:""}</small>
                                         </div>
                                       </div>
                                     </div>
@@ -415,7 +452,7 @@ class DetailPage extends Component {
                         <div class='container'>
                           <div class="row-lg">
                             <div class="col-6-lg d-flex justify-content-center align-items-center">
-                              <img class="rounded novel" src={bookDataImage ? bookDataImage : 'https://res.cloudinary.com/todidewantoro/image/upload/v1604943658/bootcamp/covernya_ejy4v1.jpg'} alt=""/>
+                              <img class="rounded novel" src={(!!bookData && AuthService.API_URL() + "getFile/" + bookDataImage) ? AuthService.API_URL() + "getFile/" + bookDataImage : "/assets/images/cover.png"}  alt=""/>
                             </div>
                             <div
                               className='container'>
@@ -482,7 +519,7 @@ class DetailPage extends Component {
                                                 </div>
                                                 <div class="col-sm-2" >
                                                
-                                                { book.userEntity.userCode == AuthService.getUserCode()? <button type="button" className="btn-sm btn-secondary" data-toggle="modal" data-target="#reviewEdit" onClick={() => this.getById(book.id)}>Edit</button>
+                                                { book.userEntity.userCode === AuthService.getUserCode()? <button type="button" className="btn-sm btn-secondary" data-toggle="modal" data-target="#reviewEdit" onClick={() => this.getById(book.id)}>Edit</button>
                                                 : <p></p>}
                                             
                                                 </div>

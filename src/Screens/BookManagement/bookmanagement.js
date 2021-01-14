@@ -516,7 +516,13 @@ class BookManagement extends Component {
                                       if (key === "cover") {
                                         const cover = (book.bookDetailsEntity[key])
                                         return <img height="80"
+
+
+                                          // JANGAN LUPA DIHAPUS
                                           src={AuthService.API_URL() + "getFile/" + cover}
+                                          // src={cover}
+
+
                                           alt="bookimage" />
                                       }
                                     })
@@ -843,7 +849,7 @@ class BookManagement extends Component {
                                     class="form-control"
                                     id="isbn"
                                     placeholder="ISBN..."
-                                    onChange={(e) => this.setState({ isbn: e.target.value })}
+                                    onChange={(e) => this.setState({ isbn: e.target.value.replace(/\D/,'')})}
                                     value={this.state.isbn}
                                     data-attribute-name="isbn"
                                     data-async
@@ -945,7 +951,7 @@ class BookManagement extends Component {
                                     class="form-control"
                                     id="isbn"
                                     placeholder="ISBN..."
-                                    onChange={(e) => this.setState({ isbn: e.target.value })}
+                                    onChange={(e) => this.setState({ isbn: e.target.value.replace(/\D/,'') })}
                                     value={this.state.isbn}
                                     data-attribute-name="isbn"
                                     data-async

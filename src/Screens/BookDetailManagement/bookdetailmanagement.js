@@ -362,7 +362,12 @@ class BookDetailManagement extends Component {
                                 <td>{pb.description}</td>
                                 <td>
                                   <img height="80"
+
+                                    // JANGAN LUPA DIHAPUS
                                     src={AuthService.API_URL() + "getFile/" + pb.cover}
+                                    // src={pb.cover}
+
+                                    
                                     alt="bookimage"
                                   />
                                 </td>
@@ -577,7 +582,7 @@ class BookDetailManagement extends Component {
                                   class="form-control" 
                                   id="addBookPages" 
                                   placeholder="Pages..." 
-                                  onChange={(e) => this.setState({numberOfPages : e.target.value})}
+                                  onChange={(e) => this.setState({numberOfPages : e.target.value.replace(/\D/,'')})}
                                   value={numberOfPages} 
                                   data-attribute-name="Pages"
                                   data-async
