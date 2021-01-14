@@ -1,5 +1,7 @@
 class AuthService {
-
+    API_URL(){
+        return 'http://localhost:8500/api/'
+    }
     authHeader(){
         const user = JSON.parse(localStorage.getItem('userFaraday'));
 
