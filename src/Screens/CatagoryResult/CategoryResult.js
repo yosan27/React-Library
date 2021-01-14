@@ -3,6 +3,7 @@ import { Link, withRouter } from "react-router-dom";
 import axios from "../../Services/axios-instance";
 import swal from "sweetalert";
 import noresult from "../../components/img/noresult.png";
+import AuthService from "../../Services/auth.service";
 
 // css
 import "../SeeMoreBooks/booksList.css";
@@ -21,19 +22,24 @@ class SearchResult extends Component {
     };
   }
 
-  review(e,i){
+  review(e, i) {
     let allRate = 0;
-    axios.get(`review/rate-by/${e}`).then((rev)=>{
-      if(rev.data.length !==0){
-        rev.data.forEach((r)=>{
-          allRate += parseFloat(r.rate);
-        })
-        let rate = allRate/parseFloat(rev.data.length);
-        document.querySelector("#bookRate"+i).textContent = " " + rate;
-      }else{
-        document.querySelector("#bookRate"+i).textContent = " No Rating";
-      }
-    });
+    axios
+      .get(`review/rate-by/${e}`)
+      .then((rev) => {
+        if (rev.data.length !== 0) {
+          rev.data.forEach((r) => {
+            allRate += parseFloat(r.rate);
+          });
+          let rate = allRate / parseFloat(rev.data.length);
+          document.querySelector("#bookRate" + i).textContent = " " + rate;
+        } else {
+          document.querySelector("#bookRate" + i).textContent = " No Rating";
+        }
+      })
+      .catch(function (error) {
+        swal("Failed", error, "error");
+      });
   }
 
   componentDidMount() {
@@ -65,7 +71,7 @@ class SearchResult extends Component {
             });
           })
           .catch(function (error) {
-            swal("Failed", error.response.data.message, "error");
+            swal("Failed", error, "error");
           });
       })
       .catch(function (error) {
@@ -100,7 +106,7 @@ class SearchResult extends Component {
           <main className="main pb-2">
             <div className="content">
               <ul className="books">
-                {this.state.data.map((d,i) => {
+                {this.state.data.map((d, i) => {
                   if (d.bookDetailsEntity.bookTitle.length > 16) {
                     d.bookDetailsEntity.bookTitle =
                       d.bookDetailsEntity.bookTitle.substring(0, 16) + "  ...";
@@ -115,7 +121,7 @@ class SearchResult extends Component {
                         <div className="book">
                           <div className="row">
                             <img
-                              src={d.bookDetailsEntity.cover}
+                              src={AuthService.API_URL() + "getFile/" +d.bookDetailsEntity.cover}
                               alt={d.bookDetailsEntity.bookTitle}
                               className="book-image"
                             />
@@ -133,12 +139,21 @@ class SearchResult extends Component {
                                 </div>
                               </div>
                               <div className="row">
-                              <div className="row">
-                              <div className="book-rating text-muted">
-                                <i class="fa fa-star star-rate pr-1"><span className="text-muted" id={"bookRate" + i}></span></i>{this.review(d.bookDetailsEntity.bookDetailCode,i)}
+                                <div className="row">
+                                  <div className="book-rating text-muted">
+                                    <i class="fa fa-star star-rate pr-1">
+                                      <span
+                                        className="text-muted"
+                                        id={"bookRate" + i}
+                                      ></span>
+                                    </i>
+                                    {this.review(
+                                      d.bookDetailsEntity.bookDetailCode,
+                                      i
+                                    )}
+                                  </div>
+                                </div>
                               </div>
-                            </div>
-                          </div>
                             </div>
                           </div>
                         </div>

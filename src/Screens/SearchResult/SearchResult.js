@@ -3,6 +3,7 @@ import { Link, withRouter } from "react-router-dom";
 import axios from "../../Services/axios-instance";
 import swal from "sweetalert";
 import noresult from "../../components/img/noresult.png";
+import AuthService from "../../Services/auth.service";
 
 // css
 import "../SeeMoreBooks/booksList.css";
@@ -31,6 +32,8 @@ class SearchResult extends Component {
       }else{
         document.querySelector("#bookRate"+i).textContent = " No Rating";
       }
+    }).catch(function (error) {
+      swal("Failed", error, "error");
     });
   }
 
@@ -42,7 +45,7 @@ class SearchResult extends Component {
         document.querySelector(".no-result-search").classList.remove("hide");
       }
     }).catch(function(error){
-      swal("Failed", error.response.data.message, "error");
+      swal("Failed", error, "error");
     })
   }
 
@@ -84,7 +87,7 @@ class SearchResult extends Component {
                     <li>
                       <div className="book">
                         <div className="row">
-                          <img src={d.bookDetailsEntity.cover} alt={d.bookDetailsEntity.bookTitle} className="book-image"/>
+                          <img src={AuthService.API_URL() + "getFile/" +d.bookDetailsEntity.cover} alt={d.bookDetailsEntity.bookTitle} className="book-image"/>
                         </div>
                         <div className="row">
                           <div className="col">
