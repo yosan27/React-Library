@@ -79,7 +79,7 @@ class ReturnForm extends Component {
     getFine() {
         Axios.get("fine/active").then((res) => {
             console.log(res.data);
-            res.data.map((e) => {
+            res.data.forEach((e) => {
                 //+
                 if (e.fineType === "Late") {
                     this.setState({ lateNominal: e.nominal, fineLateCode: e.fineCode });
@@ -205,7 +205,7 @@ class ReturnForm extends Component {
                     updateStat
                 ) //+
                 .then(() => {
-                    this.state.fineChecked.map((e, i) => {
+                    this.state.fineChecked.forEach((e, i) => {
                         //+
                         let tempoCode = `${parseInt(this.state.detailCode) + (i + 1)}`;
                         let idCode = this.state.userCode.substring(
@@ -221,6 +221,7 @@ class ReturnForm extends Component {
                             fineCode: e.fineCode,
                             rentCode: this.state.rentCode,
                             userCode: this.state.userCode,
+                            transactionCode: "NULL"
                         };
                         Axios.post("transaction-detail", detail);
                     });
@@ -228,6 +229,54 @@ class ReturnForm extends Component {
                         window.open("http://localhost:3000/page/history", "_self");
                     });
                 });
+        }
+        else if(this.state.late === 0){
+                let updateStat = {
+                    status: 4,
+                    dateReturn: date,
+                };
+    
+                if (this.state.lostChecked === true) {
+                    totalLost = {
+                        fineType: "Lost",
+                        nominal: this.state.lostNominal,
+                        fineCode: this.state.fineLostCode,
+                    };
+                    this.setState({ fineChecked: [totalLost] });
+                } else {
+                    this.setState({ fineChecked: [...this.state.fineChecked] });
+                }
+                
+                Axios
+                    .put(
+                        `rent/code/${this.state.rentCode}`,
+                        updateStat
+                    ) //+
+                    .then(() => {
+                        this.state.fineChecked.forEach((e, i) => {
+                            //+
+                            let tempoCode = `${parseInt(this.state.detailCode) + (i + 1)}`;
+                            let idCode = this.state.userCode.substring(
+                                2,
+                                this.state.userCode.length
+                            );
+                            let fixCode = `TD${idCode}${tempoCode.substring(1)}`;
+                            let detail = {
+                                detailCode: fixCode,
+                                description: e.fineType,
+                                debet: 0,
+                                kredit: e.nominal,
+                                fineCode: e.fineCode,
+                                rentCode: this.state.rentCode,
+                                userCode: this.state.userCode,
+                                transactionCode: "NULL"
+                            };
+                            Axios.post("transaction-detail", detail);
+                        });
+                        swal("Success!", "Book has been returned", "success").then(() => {
+                            window.open("http://localhost:3000/page/history", "_self");
+                        });
+                    });
         }
         // Jika ada denda 
         else {
@@ -258,7 +307,7 @@ class ReturnForm extends Component {
                     updateStat
                 ) //+
                 .then(() => {
-                    this.state.fineChecked.map((e, i) => {
+                    this.state.fineChecked.forEach((e, i) => {
                         //+
                         let tempoCode = `${parseInt(this.state.detailCode) + (i + 1)}`;
                         let idCode = this.state.userCode.substring(
@@ -274,6 +323,7 @@ class ReturnForm extends Component {
                             fineCode: e.fineCode,
                             rentCode: this.state.rentCode,
                             userCode: this.state.userCode,
+                            transactionCode: "NULL"
                         };
                         Axios.post("transaction-detail", detail);
                     });
