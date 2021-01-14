@@ -158,14 +158,18 @@ class UserManagement extends Component {
                                                                 <tr>
                                                                     <td>{user.id}</td>
                                                                     <td>
-                                                                        <span className="d-flex justify-content-center" data-toggle="tooltip" title="suspend">
+                                                                        <span className="d-flex justify-content-center" data-toggle="tooltip" title="Suspend User">
                                                                         <button className="btn btn-danger btn-sm rounded-sm w-30 mr-1" data-toggle="modal" data-target="#suspend" onClick={() => this.getById(user.id)}>
                                                                         <i className="fa fa-gavel"></i>
                                                                         </button>
+                                                                        </span>
+                                                                        <span className="d-flex justify-content-center" data-toggle="tooltip" title="Unsuspend User">
                                                                         <button className="btn btn-success btn-sm rounded-sm w-30 mr-1" data-toggle="modal" data-target="#unsuspend" onClick={() => this.getById(user.id)}>
                                                                         <i className="fa fa-check"></i>
-                                                                        </button>
+                                                                        </button> 
                                                                         </span>
+                                                                        
+                                                                      
                                                                     </td>
                                                                     <td>{user.userName}</td>
                                                                     <td>{user.fullName}</td>
@@ -177,7 +181,7 @@ class UserManagement extends Component {
                                                                     </Moment>
                                                                     </td>
                                                                     <td className="text-center">
-                                                                    <span className="d-flex justify-content-center" data-toggle="tooltip" title="card">
+                                                                    <span className="d-flex justify-content-center" data-toggle="tooltip" title="Identification Card">
                                                                         <Button variant="primary" size="sm" data-toggle="modal" data-target="#card" onClick={() => this.getById(user.id)}>
                                                                             <i className="fa fa-credit-card"></i>
                                                                         </Button>
