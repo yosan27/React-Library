@@ -125,7 +125,7 @@ class Register extends Component {
                     <div class="row no-gutters row-box">
                         <div class="col-lg-6 px-5 pt-3">
                             <img class="img-right img-page" src="assets/images/book.png" alt="" />
-                            <h1 class="font-weight-bold py-2 bl-2">Register</h1>
+                            <h1 class="font-weight-bold py-2 bl-2">Register Admin</h1>
                             <form className="demoForm">
                                 <div class="col-lg-7">
                                     <div className={`form-group ${this.errorClass(this.state.formErrors.fullname)}`}>
