@@ -121,7 +121,7 @@ export default class Wishlist extends Component {
                                                             <tr id={"data" + i}>
                                                                 <td>{wish.datawish.bookDetailsEntity.bookDetailCode}</td>
                                                                 <td>
-                                                                    <Link to="/page/detailPage" className="btn shadow btn-sm btn-light">
+                                                                    <Link to={{ pathname: `/page/detailpage/${wish.detailbooks.bookCode}` }} className="btn shadow btn-sm btn-light">
                                                                         <i className="fa fa-info"></i>
                                                                     </Link>
                                                                     <a id={"btn-data" + i} onClick={() => this.deleteBtn(wish.datawish.id)} style={mystyleBtn}
@@ -134,7 +134,7 @@ export default class Wishlist extends Component {
                                                                 <td>{wish.datawish.bookDetailsEntity.bookTitle}</td>
                                                                 <td>{wish.detailbooks.authorEntity.authorName}</td>
                                                                 <td className="text-center">
-                                                                    <img height="100" src={wish.datawish.bookDetailsEntity.cover} />
+                                                                    <img height="100" src={AuthService.API_URL() + "getFile/" + wish.datawish.bookDetailsEntity.cover} />
                                                                 </td>
                                                             </tr>
                                                         )

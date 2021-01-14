@@ -41,7 +41,9 @@ class DetailPage extends Component {
       id: '',
       bookCode: this.props.match.params.bookcode,
       popular: [],
-      errors: []
+      errors: [],
+      colorh4: '',
+      buttonDisabled: false
     }
   }
 
@@ -96,13 +98,14 @@ class DetailPage extends Component {
         const res = await Axios.get(`rent`);
         const rentData = res.data;
         const currentBookDetailCode = rentData.filter((word) => word.bookEntity.bookDetailsEntity.bookDetailCode === this.state.bookDetailsCode);
+        console.log("testing")
         console.log(currentBookDetailCode)
 
         if(currentBookDetailCode) {
-          if(currentBookDetailCode.filter((word) => word.status != 2)){
-            this.setState({ bookAvailable: 'Available' });
+          if(currentBookDetailCode[0].status === 2){
+            this.setState({ bookAvailable: 'Not Available', colorh4: 'text-danger', buttonDisabled: true });
           } else {
-            this.setState({ bookAvailable: 'Not Available' });
+            this.setState({ bookAvailable: 'Available', colorh4: 'text-success', buttonDisabled: false });
           }
         }
       } catch (error) {
@@ -323,7 +326,7 @@ class DetailPage extends Component {
   }
 
   render() {
-    const { popular, bookData, register, bookDataImage, bookAvailable, title, subtitle, author, category, publishedDate, show, pages, descriptions } = this.state;
+    const { popular, bookData, register, colorh4, buttonDisabled, bookDataImage, bookAvailable, title, subtitle, author, category, publishedDate, show, pages, descriptions } = this.state;
     let edit;
     return (
       <div className="right_col" role="main" style={{ minHeight: '100vh' }}>
@@ -370,7 +373,7 @@ class DetailPage extends Component {
                             </button>
                           </div>
                           <div className="col-lg col-sm-4 text-center align-self-center">
-                            <h4 id='isAvailable' className="text-success">{bookAvailable}</h4>
+                            <h4 id='isAvailable' className={colorh4}>{bookAvailable}</h4>
                           </div>
                           <div className="col-lg col-sm-4 text-center align-self-center">
                             <img id='bookCover'
@@ -449,7 +452,7 @@ class DetailPage extends Component {
 
                             {/* button borrow */}
                             <div className="text-center mt-5">
-                              <Button className="btn btn-warning borrow" variant="primary" onClick={this.handleShow}>
+                              <Button disabled={buttonDisabled} className="btn btn-warning borrow" variant="primary" onClick={this.handleShow}>
                                 Borrow
                               </Button>
                               <button className="btn btn-primary" data-toggle="modal" data-target="#review" onClick={() => this.review(this.state.bookDetailsCode)} >
