@@ -14,13 +14,15 @@ class PublisherManagement extends Component {
     super(props);
     this.state = {
       tabledata: [],
+      editClicked: false,
       showAdd: false,
       showEdit: false,
       showDelete: false,
       publisherId: "",
       publisherName: "",
       publisherCode: "",
-      address: ""
+      address: "",
+      errors: []
     };
   }
 
@@ -55,6 +57,21 @@ class PublisherManagement extends Component {
   }
 
   handleAddPublisher = (e) => {
+
+    const { 
+      publisherName,
+      address
+     } = this.state;
+
+    const errors = this.validateForm(
+      publisherName,
+      address);
+
+    if (errors.length > 0) {
+      this.setState({ errors });
+      return;
+    }
+
     axios.post(
       `publisher`,
       {
@@ -69,8 +86,8 @@ class PublisherManagement extends Component {
       }
     )
       .then(() => {
-        window.location.reload();
         swal("Success!", "Publisher Has Been Added", "success");
+        this.setState({ showAdd: false, editClicked: true })
       })
       .catch((error) => {
         swal("Oops!", "Please try again", "error");
@@ -108,9 +125,8 @@ class PublisherManagement extends Component {
       }
     )
       .then(() => {
-        this.setState({ publisherId: "" })
-        window.location.reload();
         swal("Great!", "Publisher Has Been edited", "success");
+        this.setState({ publisherId: "", editClicked: true })
       })
       .catch((error) => {
         swal("Oops!", "Please try again", "error");
@@ -127,19 +143,57 @@ class PublisherManagement extends Component {
     this.setState({ showDelete: false });
     axios.delete(`publisher/${this.state.publisherId}`)
       .then(() => window.location.reload())
-    swal("Deleted!", "Publisher Is Successfully Deleted", "success");
+    // swal("Deleted!", "Publisher Is Successfully Deleted", "success");
   }
 
   //util
   handleCloseModal = () => {
     this.setState({
-      showAdd: false, showEdit: false, showDelete: false, publisherName: "",
-      publisherCode: "", address: ""
+      showAdd: false, showEdit: false, showDelete: false, editClicked:true
     })
   }
 
+  async componentDidUpdate(prevState) {
+    // Typical usage (don't forget to compare props):
+    console.log(prevState);
+    if (this.state.editClicked) {
+      try {
+        const res = await axios.get(`publisher/active`,
+        {
+            headers: {
+            Accept: "*/*",
+            "Content-Type": "application/json",
+        }});
+        const tabledata = res.data;
+        this.setState({ 
+          tabledata: tabledata, 
+          editClicked: false,
+          publisherName: "",
+          address: "",
+          errors: []
+         });
+      } catch (error) {
+        console.log(error);
+      };
+    }
+  }
+
+  validateForm = () => {
+    const errors = [];
+
+    if (this.state.publisherName.length === 0) {
+      errors.push("publisher name can't be empty");
+    }
+
+    if (this.state.address.length === 0) {
+      errors.push("publisher address can't be empty");
+    }
+
+    return errors;
+}
+
   render() {
-    const { showAdd, showEdit, showDelete, tabledata, disableSubmitting, publisherName, address } = this.state;
+    const { showAdd, showEdit, showDelete, tabledata, disableSubmitting, publisherName, address, errors } = this.state;
 
     return (
       // page content
@@ -205,6 +259,12 @@ class PublisherManagement extends Component {
                         <div class='container'>
                           <div class="modal-body">
                             <form>
+                              {errors.map(error => (
+                                <div>
+                                  <label key={error} style={{color:"red"}} for="titleErr">Error: {error}</label>
+                                  <br/>
+                                </div>
+                              ))}
                               <div class="form-group row">
                                 <label for="addPublisherName" class="col-sm-2 col-form-label">Publisher Name</label>
                                 <div class="col-sm-10">

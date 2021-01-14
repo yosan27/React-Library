@@ -507,13 +507,14 @@ class ManageDonation extends Component {
                           >
                             <i class="fa fa-times-circle"></i> Close
                             </button>
-                          <Link
+                          <button
                             className="btn btn-success add-btn"
                             onClick={this.addUpdate}
+                            disabled={!this.state.bookTitle || !this.state.description || !this.state.year || !this.state.author || !this.state.categoryList}
                           >
                             <i class="fa fa-plus mr-1"></i>
                             {this.state.button}
-                          </Link>
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -548,7 +549,7 @@ class ManageDonation extends Component {
                           <div class="container" id="demo">
                             <div class="row justify-content-md-center">
                               <img
-                                src="https://www.gramedia.com/blog/content/images/2020/05/misteri-terakhir_gramedia.jpg"
+                                src={this.state.photo}
                                 height="350"
                                 alt="Donation Book"
                               />
