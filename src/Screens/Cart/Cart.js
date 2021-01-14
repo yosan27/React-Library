@@ -145,9 +145,6 @@ export default class Cart extends Component {
                 }).then((ok) => {
                     if (ok) {
                         this.borrowBook()
-                        swal("Thank You!", "Please take your books at Faraday Library", "success").then(() => {
-                            window.open("http://localhost:3000/page/historyUser", "_self")
-                        })
                     } else {
                         swal("Cancelled!", "The books are still in your cart", "error")
                     }
@@ -178,7 +175,11 @@ export default class Cart extends Component {
                 }
                 Axios.post('rent', rentData).then(() => {
                     Axios.put('book/status/' + bookData, bookStatus).then(() => {
-                        Axios.delete('cart/' + cartNo)
+                        Axios.delete('cart/' + cartNo).then(() => {
+                            swal("Thank You!", "Please take your books at Faraday Library", "success").then(() => {
+                                window.open("http://localhost:3000/page/historyUser", "_self")
+                            })
+                        })
                     })
                 })
             })
