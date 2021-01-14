@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import axios from "../../Services/axios-instance";
-import {Card, Table, Modal, Form, Row, Col, Badge, Button } from 'react-bootstrap';
+import { Card, Table, Modal, Form, Row, Col, Badge, Button } from 'react-bootstrap';
 import swal from "sweetalert";
 import Image from 'react-bootstrap/Image'
 import './Catalog.css'
@@ -13,13 +13,13 @@ import Box from '@material-ui/core/Box';
 //Datatable Modules
 import "datatables.net-dt/js/dataTables.dataTables"
 import "datatables.net-dt/css/jquery.dataTables.min.css"
-import $ from 'jquery'; 
+import $ from 'jquery';
 import API from "../../api";
 import api from '../../api';
 import { Link } from 'react-router-dom';
 
 class Catalog extends Component {
-    constructor(props){
+    constructor(props) {
         super(props)
         this.state = {
 
@@ -43,30 +43,32 @@ class Catalog extends Component {
             rate: "",
             userName: "",
             userCode: "",
+            bookDetailsCode: '',
+            catalog: ''
         }
-        
+
     };
 
     componentDidMount() {
-       
-    $('.img-book').hover(makeBigger, returnToOriginalSize);
-      function makeBigger() {
-          $(this).css({width: '+=10%'});
-      }
-      function returnToOriginalSize() {
-          $(this).css({width: "-=10%"});
-      }
 
-      axios.get("catalog").then((e) => {
-          this.setState({ catalogData: e.data.data});
-          //console.log(e.data.data[0]);
+        $('.img-book').hover(makeBigger, returnToOriginalSize);
+        function makeBigger() {
+            $(this).css({ width: '+=10%' });
+        }
+        function returnToOriginalSize() {
+            $(this).css({ width: "-=10%" });
+        }
 
-          $(function () {
-            $('#historyUser').DataTable({
-                responsive: true
+        axios.get("catalog").then((e) => {
+            this.setState({ catalogData: e.data.data });
+            console.log(e.data.data[0]);
+
+            $(function () {
+                $('#historyUser').DataTable({
+                    responsive: true
+                });
             });
-          });
-      });
+        });
 
 
     }
@@ -82,52 +84,101 @@ class Catalog extends Component {
                 isbn: res.data.isbn,
                 bookSubtitle: res.data.bookDetailsEntity.bookSubtitle,
                 bookCode: res.data.bookCode,
+                bookDetailsCode: res.data.bookDetailCode,
             });
         })
     }
 
     setRate(rate) {
-        if(rate == 1) {
+        if (rate == 1) {
             return <div> <span class="fa fa-star checked"></span>
-            <span class="fa fa-star"></span>
-            <span class="fa fa-star "></span>
-            <span class="fa fa-star"></span>
-            <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star "></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
             </div>
-        } else if(rate == 2) {
+        } else if (rate == 2) {
             return <div> <span class="fa fa-star checked"></span>
-            <span class="fa fa-star checked"></span>
-            <span class="fa fa-star "></span>
-            <span class="fa fa-star"></span>
-            <span class="fa fa-star"></span>
+                <span class="fa fa-star checked"></span>
+                <span class="fa fa-star "></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
             </div>
-        } else if(rate == 3) {
+        } else if (rate == 3) {
             return <div> <span class="fa fa-star checked"></span>
-            <span class="fa fa-star checked"></span>
-            <span class="fa fa-star checked"></span>
-            <span class="fa fa-star"></span>
-            <span class="fa fa-star"></span>
+                <span class="fa fa-star checked"></span>
+                <span class="fa fa-star checked"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
             </div>
-        } else if(rate == 4) {
+        } else if (rate == 4) {
             return <div> <span class="fa fa-star checked"></span>
-            <span class="fa fa-star checked"></span>
-            <span class="fa fa-star checked"></span>
-            <span class="fa fa-star checked"></span>
-            <span class="fa fa-star "></span>
+                <span class="fa fa-star checked"></span>
+                <span class="fa fa-star checked"></span>
+                <span class="fa fa-star checked"></span>
+                <span class="fa fa-star "></span>
             </div>
-        } else if(rate == 5) {
+        } else if (rate == 5) {
             return <div> <span class="fa fa-star checked"></span>
-            <span class="fa fa-star checked"></span>
-            <span class="fa fa-star checked"></span>
-            <span class="fa fa-star checked"></span>
-            <span class="fa fa-star checked"></span>
+                <span class="fa fa-star checked"></span>
+                <span class="fa fa-star checked"></span>
+                <span class="fa fa-star checked"></span>
+                <span class="fa fa-star checked"></span>
             </div>
-        } 
+        }
     }
 
-    render(){
+    handleCart = (bookDetailCode) => {
+        const wishdto = {
+            bookDetailsCode: bookDetailCode,
+            userCode: AuthService.getUserCode()
+        }
+        console.log(wishdto)
+        axios.post('cart', wishdto)
+            .then((response) => {
+                console.log(response);
+                swal("Success!", "Book Has Been Added To Your Cart", "success").then(function () {
+                    window.location.reload()
+                })
+            }).catch(function (error) {
+                if (error.response) {
+                    console.log(error.response.data);
+                    console.log(error.response.status);
+                    console.log(error.response.headers);
+                } else if (error.request) {
+                    console.log(error.request);
+                } else {
+                    console.log('Error', error.message);
+                }
+            })
+    }
+
+    handleWishlist = (bookDetailCode) => {
+        const wishdto = {
+            bookDetailsCode: bookDetailCode,
+            userCode: AuthService.getUserCode()
+        }
+        console.log(wishdto)
+        axios.post('wishlist', wishdto)
+            .then((response) => {
+                console.log(response);
+                swal("Success!", "Book Has Been Added To Your Wishlist", "success")
+            }).catch(function (error) {
+                if (error.response) {
+                    console.log(error.response.data);
+                    console.log(error.response.status);
+                    console.log(error.response.headers);
+                } else if (error.request) {
+                    console.log(error.request);
+                } else {
+                    console.log('Error', error.message);
+                }
+            })
+    }
+
+    render() {
         const { data } = this.state;
-        return(
+        return (
             <div className="right_col" role="main" style={{ minHeight: '100vh' }}>
                 <section className="mt-5 pt-5">
                     <div className="container-fluid">
@@ -141,32 +192,32 @@ class Catalog extends Component {
                                         <Table responsive striped id="historyUser" style={{ width: '100%' }}>
                                             <thead>
                                                 <tr>
-                                                <th>Book ID</th>
-                                                        <th>Book Title</th>    
-                                                        <th>Action</th>                     
-                                                        <th>Book Cover</th>
-                                                        <th>Author</th>
-                                                        <th>Categories</th>
-                                                        <th>Publisher</th>
-                                                        
+                                                    <th>Book ID</th>
+                                                    <th>Book Title</th>
+                                                    <th>Action</th>
+                                                    <th>Book Cover</th>
+                                                    <th>Author</th>
+                                                    <th>Categories</th>
+                                                    <th>Publisher</th>
+
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                            {this.state.catalogData.map((user, index) => {
-                                                            return (
-                                                                <tr key={index}> 
-                                                                    <td>{user.bookCode}</td>
-                                                                    <td>{Object.keys(user.bookDetailsEntity?user.bookDetailsEntity:"").map(key => {
-                                                                        if (key === "bookTitle"){
-                                                                            const judul = (user.bookDetailsEntity[key])
-                                                                            return judul;
-                                                                        }
-                                                                        })}   
-                                                                    </td>
-                                                                    <td>
-                                                                        <span className="d-flex justify-content-center" data-toggle="tooltip" title="detail">
-                                                                            <Link to={{pathname: `/page/detailpage/${user.bookCode}`}}>
-                                                                            <button className="btn btn-primary">
+                                                {this.state.catalogData.map((user, index) => {
+                                                    return (
+                                                        <tr key={index}>
+                                                            <td>{user.bookCode}</td>
+                                                            <td>{Object.keys(user.bookDetailsEntity ? user.bookDetailsEntity : "").map(key => {
+                                                                if (key === "bookTitle") {
+                                                                    const judul = (user.bookDetailsEntity[key])
+                                                                    return judul;
+                                                                }
+                                                            })}
+                                                            </td>
+                                                            <td>
+                                                                <span className="d-flex justify-content-center" data-toggle="tooltip" title="detail">
+                                                                    <Link to={{ pathname: `/page/detailpage/${user.bookCode}` }}>
+                                                                        <button className="btn btn-primary">
                                                                             <i className="fa fa-info-circle"></i>
                                                                             </button>
                                                                             </Link>                                                             
@@ -182,7 +233,7 @@ class Catalog extends Component {
                                                                     <td>{Object.keys(user.bookDetailsEntity?user.bookDetailsEntity:"").map(key => {
                                                                         if (key === "cover"){
                                                                             const cover = (user.bookDetailsEntity[key])
-                                                                            return <img class="img-book" className='photoOfOrder text-center card-img-top' src={cover} wrapped ui={false} style={{ width: '20%', height: 'auto', marginLeft: '40%' }} />
+                                                                            return <img className='photoOfOrder text-center card-img-top img-book' src={AuthService.API_URL() + "getFile/" + user.bookDetailsEntity.cover} wrapped ui={false} style={{ width: '50%', height: 'auto', marginLeft: '20%' }} />
                                                                                  
                                                                         }
                                                                         })}   
@@ -221,8 +272,8 @@ class Catalog extends Component {
                     </div >
                 </section >
 
-  
-            </div >                
+
+            </div >
         )
     }
 }

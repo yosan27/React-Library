@@ -154,6 +154,25 @@ class BookDetailManagement extends Component {
   };
 
   handleSaveEdit = () => {
+
+    const { 
+      bookTitle,
+      description,
+      numberOfPages,
+      language
+     } = this.state;
+
+    const errors = this.validateForm2(
+      bookTitle,
+      description,
+      numberOfPages,
+      language);
+
+    if (errors.length > 0) {
+      this.setState({ errors });
+      return;
+    }
+
     this.setState({ showEdit: false })
 
     let currentFile = this.state.selectedFiles[0];
@@ -302,6 +321,28 @@ class BookDetailManagement extends Component {
     }
   
     return errors;
+}
+
+validateForm2 = () => {
+  const errors = [];
+
+  if (this.state.bookTitle.length === 0) {
+    errors.push("title can't be empty");
+  }
+
+  if (this.state.description.length === 0) {
+    errors.push("description can't be empty");
+  }
+
+  if (this.state.numberOfPages.length === 0) {
+    errors.push("pages can't be empty");
+  }
+
+  if (this.state.language.length === 0) {
+    errors.push("language can't be empty");
+  }
+
+  return errors;
 }
 
   render() {
@@ -513,6 +554,12 @@ class BookDetailManagement extends Component {
                         <div class='container'>
                           <div class="modal-body">
                           <form>
+                            {errors.map(error => (
+                                  <div>
+                                    <label key={error} style={{color:"red"}} for="titleErr">Error: {error}</label>
+                                    <br/>
+                                  </div>
+                                ))}
                               <div class="form-group row">
                                 <label for="addBookTitle" class="col-sm-2 col-form-label">Book Title</label>
                                 <div class="col-sm-10">

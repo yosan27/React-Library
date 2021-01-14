@@ -8,6 +8,9 @@ import "datatables.net-dt/css/jquery.dataTables.min.css"
 import $ from 'jquery';
 import swal from 'sweetalert';
 import Moment from 'react-moment';
+import AuthService from "../../Services/auth.service";
+//css
+import "./usermanagement.css"
 
 
 class UserManagement extends Component {
@@ -21,31 +24,9 @@ class UserManagement extends Component {
             email: "",
             status: "",
             address: "",
-            profilePict: "",
+            profilePict: AuthService.API_URL() + "getFile/user.png",
             unsuspenDate: "",
-
-            data: [
-                { "id": "1", "username": "Yosan27", "fullname": "Yosan Fandi", "email": "yosan27@gmail.com", "status": "Active", "card": "https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg" },
-                { "id": "2", "username": "Cleo", "fullname": "Cleoputra", "email": "cleo@gmail.com", "status": "Active", "card": "https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg" },
-                { "id": "3", "username": "Todi", "fullname": "Todi Dewaranto", "email": "todi@gmail.com", "status": "Active", "card": "https://img.favpng.com/6/1/21/identity-document-forgery-photo-identification-card-printer-badge-png-favpng-8UsS80yZfinYqa89SWnF75YPb.jpg" },
-            ]
         }
-    }
-
-    handleShowSuspend = () => {
-        this.setState({ showSuspend: true })
-    }
-
-    handleCloseSuspend = () => {
-        this.setState({ showSuspend: false })
-    }
-
-    handleShowCard = () => {
-        this.setState({ showCard: true })
-    }
-
-    handleCloseCard = () => {
-        this.setState({ showCard: false })
     }
 
     suspend = () => {
@@ -81,7 +62,7 @@ class UserManagement extends Component {
     componentDidMount() {
         $('.img-card').hover(makeBigger, returnToOriginalSize);
         function makeBigger() {
-            $(this).css({ width: '+=30%' });
+            $(this).css({ width: '+=30%', paddingRight: '20%'});
         }
         function returnToOriginalSize() {
             $(this).css({ width: "-=30%" });
@@ -105,9 +86,10 @@ class UserManagement extends Component {
                 userName: res.data.userName,
                 fullName: res.data.fullName,
                 address: res.data.address,
+                email: res.data.email,
                 phone: res.data.phone,
                 status: res.data.status,
-                profilePict: res.data.profilePict,
+                profilePict: AuthService.API_URL() + "getFile/" + res.data.profilePict,
             });
         })
     }
@@ -276,7 +258,7 @@ class UserManagement extends Component {
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h5 className="modal-title" id="infoLabel">Info</h5>
+                                <h5 className="modal-title" id="infoLabel">Kartu Identitas Perpus</h5>
                                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -284,26 +266,49 @@ class UserManagement extends Component {
                             <div className="modal-body">
                                 <div class="card mb-3">
                                     <div class="row no-gutters">
-                                        <div class="col-md-4">
-                                            <Image className='photoOfOrder text-center img-card card-img-top' src={this.state.profilePict} wrapped ui={false} style={{ width: '100%', height: 'auto' }} />
-                                        </div>
+                                        <h3 class="judulKartu"> Faraday E-Library </h3>
+                                    </div>
+                                    <div class="row no-gutters">
                                         <div class="col-md-8">
                                             <div class="card-body">
                                                 <h5 class="card-title"><input type="text" readOnly className="form-control-plaintext" value={this.state.userName} />
                                                 </h5>
                                                 <div class="form-group">
-                                                    <div>
-                                                        <input type="text" readOnly className="form-control-plaintext" value={this.state.fullName} />
-                                                        <input type="text" readOnly className="form-control-plaintext" value={this.state.address} />
-                                                        <input type="text" readOnly className="form-control-plaintext" value={this.state.phone} />
-                                                        <input type="text" readOnly className="form-control-plaintext" value={this.state.description} />
-
-
-                                                        <p class="card-text"><small class="text-muted">{this.setStatus(this.state.status)}</small></p>
+                                                    <div class="row">
+                                                        <label for="fullName" class="col-sm-4 col-form-label"> FullName: </label>
+                                                        <div class="col-sm-6">
+                                                        <input type="text" readOnly className="form-control-plaintext" id="fullName" value={this.state.fullName} />
+                                                        </div>
                                                     </div>
+                                                    <div class="row">
+                                                        <label for="fullName" class="col-sm-3 col-form-label"> Email: </label>
+                                                        <div class="col-sm-6">
+                                                        <input type="text" readOnly className="form-control-plaintext" id="email" value={this.state.email} />
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <label for="fullName" class="col-sm-3 col-form-label"> Address: </label>
+                                                        <div class="col-sm-6">
+                                                        <input type="text" readOnly className="form-control-plaintext" id="address" value={this.state.address} />
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <label for="fullName" class="col-sm-3 col-form-label"> Phone: </label>
+                                                        <div class="col-sm-6">
+                                                        <input type="text" readOnly className="form-control-plaintext" id="phone" value={this.state.phone} />
+                                                        </div>
+                                                    </div>
+                                                        
+                                                      
+                                                        <p class="card-text"><small class="text-muted">{this.setStatus(this.state.status)}</small></p>
+                                                 
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="col-md-4">
+                                            <Image className='photoOfOrder text-center img-card card-img-top' src={this.state.profilePict} wrapped ui={false} style={{ width: '100%', height: 'auto', paddingRight: '5%'}} />
+                                        </div>
+                                        
                                     </div>
                                 </div>
                             </div>

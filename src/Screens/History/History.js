@@ -17,21 +17,21 @@ class History extends Component {
             rent: [],
             fine: [],
             rentCode: '',
+            userName: '',
             fullName: '',
+            bookCode: '',
             bookTitle: '',
             dateBorrow: '',
             dueDate: '',
             dateReturn: '',
             status: '',
             totalFine: '',
-            hidden: false
         }
     }
 
     componentDidMount() {
         this.getAll()
         document.addEventListener('click', this.clearModal);
-        
     }
 
     getAll() {
@@ -51,7 +51,9 @@ class History extends Component {
         Axios.get(`rent/id/${id}`).then((res) => {
             this.setState({
                 rentCode: res.data.rentCode,
+                userName: res.data.userEntity.userName,
                 fullName: res.data.userEntity.fullName,
+                bookCode: res.data.bookEntity.bookCode,
                 bookTitle: res.data.bookEntity.bookDetailsEntity.bookTitle,
                 dateBorrow: res.data.dateBorrow,
                 dueDate: res.data.dueDate,
@@ -74,6 +76,14 @@ class History extends Component {
                 nominal: res.data.nominal
             })
         })
+    }
+
+    setDateReturn(date) {
+        if(date === null) {
+            return "-"
+        } else {
+            return date
+        }
     }
 
     setStatus(status) {
@@ -154,7 +164,7 @@ class History extends Component {
                                                     <th>Rent Code</th>
                                                     <th>Action</th>
                                                     <th>Borrower Name</th>
-                                                    <th>Book Title</th>
+                                                    <th>Book</th>
                                                     <th>Date Borrowed</th>
                                                     <th>Due Date</th>
                                                     <th>Date Returned</th>
@@ -169,15 +179,15 @@ class History extends Component {
                                                             <td>{rent.rentCode}</td>
                                                             <td>
                                                                 <div className="btn-group" role="group">
-                                                                    <button className="btn btn-primary btn-sm rounded-sm mr-1" data-toggle="modal" data-target="#info" onClick={() => this.getById(rent.id)}>
+                                                                    <span type="button" className="btn btn-primary btn-sm rounded-sm mr-1" data-toggle="modal" data-target="#info" onClick={() => this.getById(rent.id)}>
                                                                         <i className="fa fa-info-circle"></i>
-                                                                    </button>
+                                                                    </span>
                                                                     <span>{this.setTakeButton(rent.status, rent.id)}</span>
                                                                     <Link to={`/page/return/${rent.id}`}>{this.setReturnButton(rent.status)}</Link>
                                                                 </div>
                                                             </td>
                                                             <td>{rent.userEntity.fullName}</td>
-                                                            <td>{rent.bookEntity.bookDetailsEntity.bookTitle}</td>
+                                                            <td>{rent.bookEntity.bookCode + " - " + rent.bookEntity.bookDetailsEntity.bookTitle}</td>
                                                             <td>{rent.dateBorrow}</td>
                                                             <td>{rent.dueDate}</td>
                                                             <td>{rent.dateReturn}</td>
@@ -213,10 +223,24 @@ class History extends Component {
                                             <input type="text" className="form-control-plaintext" value={this.state.rentCode} readOnly />
                                         </div>
                                     </div>
+                                    <hr></hr>
+                                    <div className="form-group row">
+                                        <label className="col-sm-4 col-form-label">User</label>
+                                        <div className="col-sm-8">
+                                            <input type="text" className="form-control-plaintext" value={this.state.userName} readOnly />
+                                        </div>
+                                    </div>
                                     <div className="form-group row">
                                         <label className="col-sm-4 col-form-label">Borrower Name</label>
                                         <div className="col-sm-8">
                                             <input type="text" className="form-control-plaintext" value={this.state.fullName} readOnly />
+                                        </div>
+                                    </div>
+                                    <hr></hr>
+                                    <div className="form-group row">
+                                        <label className="col-sm-4 col-form-label">Book Code</label>
+                                        <div className="col-sm-8">
+                                            <input type="text" className="form-control-plaintext" value={this.state.bookCode} readOnly />
                                         </div>
                                     </div>
                                     <div className="form-group row">
@@ -246,7 +270,7 @@ class History extends Component {
                                         <label className="col-sm-4 col-form-label">Date Returned</label>
                                         <div className="col-sm-5">
                                             <div className="input-group date">
-                                                <input type="text" className="form-control" value={this.state.dateReturn} disabled />
+                                                <input type="text" className="form-control" value={this.setDateReturn(this.state.dateReturn)} disabled />
                                             </div>
                                         </div>
                                     </div>
@@ -257,7 +281,7 @@ class History extends Component {
                                             {this.setStatus(this.state.status)}
                                         </div>
                                     </div>
-                                    <div className="form-group row" hidden={this.state.hidden}>
+                                    <div className="form-group row">
                                         <label className="col-sm-4 col-form-label"><b>Fine</b></label>
                                         <div className="col-sm-8 ml-0 pl-0">
                                         {
