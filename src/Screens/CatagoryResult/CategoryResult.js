@@ -101,6 +101,14 @@ class SearchResult extends Component {
             <div className="content">
               <ul className="books">
                 {this.state.data.map((d,i) => {
+                  if (d.bookDetailsEntity.bookTitle.length > 16) {
+                    d.bookDetailsEntity.bookTitle =
+                      d.bookDetailsEntity.bookTitle.substring(0, 16) + "  ...";
+                  }
+                  if (d.authorEntity.authorName.length > 20) {
+                    d.authorEntity.authorName =
+                      d.authorEntity.authorName.substring(0, 20) + "  ...";
+                  }
                   return (
                     <Link to={{ pathname: `/page/detailpage/${d.bookCode}` }}>
                       <li>

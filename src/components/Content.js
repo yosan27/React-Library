@@ -49,8 +49,10 @@ class Content extends Component {
       sliderNew: [],
       dataBookSlider: [],
       asianBooks: [],
+      selfDevBooks: [],
       getRate: [],
       newBooks: [],
+      compTechBooks: [],
       rate: "",
     }
   }
@@ -89,31 +91,18 @@ class Content extends Component {
     });
   }
 
-  review(e,i){
-    let allRate = 0;
-    Axios.get(`review/rate-by/${e}`).then((rev)=>{
-      if(rev.data.length !==0){
-        rev.data.forEach((r)=>{
-          allRate += parseFloat(r.rate);
-        })
-        let rate = allRate/parseFloat(rev.data.length);
-        document.querySelector("#bookRate"+i).textContent = " " + rate;
-      }else{
-        document.querySelector("#bookRate"+i).textContent = " No Rating";
-      }
-    });
-
-    // return(
-    //   <span>5</span>
-    // )
-  }
-
   getBooks = () =>{
     Axios.get("books").then((e) => {
       this.setState({ data: e.data.data});
       e.data.data.forEach((book) => {
         if (book.categoryEntity.categoryCode === "BC003") {
           this.setState({ asianBooks: [...this.state.asianBooks, book] });
+        }
+        if (book.categoryEntity.categoryCode === "BC004") {
+          this.setState({ selfDevBooks: [...this.state.selfDevBooks, book] });
+        }
+        if (book.categoryEntity.categoryCode === "BC005") {
+          this.setState({ compTechBooks: [...this.state.compTechBooks, book] });
         }
       });
     }).catch(function(error){
@@ -135,6 +124,14 @@ class Content extends Component {
 
   sendAsianBooks = () =>{
     sessionStorage.setItem('books', JSON.stringify(this.state.asianBooks));
+  }
+
+  sendSelfDevBooks = () =>{
+    sessionStorage.setItem('books', JSON.stringify(this.state.selfDevBooks));
+  }
+
+  sendCompTechBooks = () =>{
+    sessionStorage.setItem('books', JSON.stringify(this.state.compTechBooks));
   }
 
   sendNewBooks = () =>{
@@ -244,7 +241,15 @@ class Content extends Component {
             </div>
 
             <ul className="books">
-              {this.state.newBooks.slice(0, 6).map((d,i) => {
+              {this.state.newBooks.slice(0, 6).map((d) => {
+                if (d.bookDetailsEntity.bookTitle.length > 16) {
+                  d.bookDetailsEntity.bookTitle =
+                    d.bookDetailsEntity.bookTitle.substring(0, 16) + "  ...";
+                }
+                if (d.authorEntity.authorName.length > 20) {
+                  d.authorEntity.authorName =
+                    d.authorEntity.authorName.substring(0, 20) + "  ...";
+                }
                 return (
                   <Link to={{pathname: `/page/detailpage/${d.bookCode}`}}>
                     <li>
@@ -266,11 +271,6 @@ class Content extends Component {
                             <div className="row">
                               <div className="book-author">
                                 {d.authorEntity.authorName}
-                              </div>
-                            </div>
-                            <div className="row">
-                              <div className="book-rating text-muted">
-                                <i class="fa fa-star star-rate pr-1"><span className="text-muted" id={"bookRate" + i}></span></i>{this.review(d.bookDetailsEntity.bookDetailCode,i)}
                               </div>
                             </div>
                           </div>
@@ -307,7 +307,7 @@ class Content extends Component {
               {this.state.asianBooks.slice(0, 2).map((d) => {
                 if (d.bookDetailsEntity.description.length > 225) {
                   d.bookDetailsEntity.description =
-                    d.bookDetailsEntity.description.substring(0, 100) + "  ...";
+                    d.bookDetailsEntity.description.substring(0, 225) + "  ...";
                 }
                 return (
                   <div className="col">
@@ -337,14 +337,6 @@ class Content extends Component {
                                     </small>
                                   </p>
                                 </div>
-                                <div className="col d-flex justify-content-end">
-                                  <p className="card-text">
-                                    <small className="text-muted">
-                                      <i className="fa fa-star star-rate pr-1"></i>
-                                      5
-                                    </small>
-                                  </p>
-                                </div>
                               </div>
                             </div>
                           </div>
@@ -359,12 +351,12 @@ class Content extends Component {
         </section>
         {/* Asian */}
 
-        {/* Must Read */}
+        {/* Self-development */}
         <main className="main pt-5">
           <div className="content">
             <div className="row">
               <div className="col">
-                <h3>Your must read list</h3>
+                <h3>Self Development</h3>
               </div>
             </div>
             <div className="row">
@@ -372,14 +364,22 @@ class Content extends Component {
                 <p>Find your new favorite book</p>
               </div>
               <div className="col d-flex justify-content-end">
-                <Link to="/page/more/Best-Seller" onClick={this.sendBooks}>
+                <Link to="/page/more/Self-Development" onClick={this.sendSelfDevBooks}>
                   <span>See More</span>
                 </Link>
               </div>
             </div>
 
             <ul className="books">
-              {this.state.data.slice(0, 6).map((d) => {
+              {this.state.selfDevBooks.slice(0, 6).map((d) => {
+                if (d.bookDetailsEntity.bookTitle.length > 16) {
+                  d.bookDetailsEntity.bookTitle =
+                    d.bookDetailsEntity.bookTitle.substring(0, 16) + "  ...";
+                }
+                if (d.authorEntity.authorName.length > 20) {
+                  d.authorEntity.authorName =
+                    d.authorEntity.authorName.substring(0, 20) + "  ...";
+                }
                 return (
                   <Link to={{pathname: `/page/detailpage/${d.bookCode}`}}>
                     <li>
@@ -403,11 +403,6 @@ class Content extends Component {
                                 {d.authorEntity.authorName}
                               </div>
                             </div>
-                            <div className="row">
-                              <div className="book-rating text-muted">
-                                <i class="fa fa-star star-rate pr-1"></i>5
-                              </div>
-                            </div>
                           </div>
                         </div>
                       </div>
@@ -418,14 +413,14 @@ class Content extends Component {
             </ul>
           </div>
         </main>
-        {/* Must Read */}
+        {/* Self-development */}
 
-        {/* Best Seller */}
+        {/* Computer & Technology */}
         <main className="main pt-5 pb-3">
           <div className="content">
             <div className="row">
               <div className="col">
-                <h3>Best Seller</h3>
+                <h3>Computer & Technology</h3>
               </div>
             </div>
             <div className="row">
@@ -433,14 +428,22 @@ class Content extends Component {
                 <p>New Releases</p>
               </div>
               <div className="col d-flex justify-content-end">
-                <Link to="/page/more/Best-Seller" onClick={this.sendBooks}>
+                <Link to="/page/more/Computer&Technology" onClick={this.sendCompTechBooks}>
                   <span>See More</span>
                 </Link>
               </div>
             </div>
 
             <ul className="books">
-              {this.state.data.slice(0, 6).map((d) => {
+              {this.state.compTechBooks.slice(0, 6).map((d) => {
+                if (d.bookDetailsEntity.bookTitle.length > 16) {
+                  d.bookDetailsEntity.bookTitle =
+                    d.bookDetailsEntity.bookTitle.substring(0, 16) + "  ...";
+                }
+                if (d.authorEntity.authorName.length > 20) {
+                  d.authorEntity.authorName =
+                    d.authorEntity.authorName.substring(0, 20) + "  ...";
+                }
                 return (
                   <Link to={{pathname: `/page/detailpage/${d.bookCode}`}}>
                     <li>
@@ -464,11 +467,6 @@ class Content extends Component {
                                 {d.authorEntity.authorName}
                               </div>
                             </div>
-                            <div className="row">
-                              <div className="book-rating text-muted">
-                                <i class="fa fa-star star-rate pr-1"></i>5
-                              </div>
-                            </div>
                           </div>
                         </div>
                       </div>
@@ -479,7 +477,7 @@ class Content extends Component {
             </ul>
           </div>
         </main>
-        {/* Best Seller */}
+        {/* Computer & Technology */}
       </div>
     );
   }
