@@ -297,7 +297,8 @@ class DetailPage extends Component {
                   <div className="card-body">
                     {/* banner */}
                     <Jumbotron className="bannerDetail"
-                      style={{ backgroundImage: `url(${(!!bookData && !!bookDataImage) ? bookDataImage : "/assets/images/cover.png"})` }}
+                      style={{ backgroundImage: `url(${(!!bookData && AuthService.API_URL() + "getFile/" + bookDataImage) ? (AuthService.API_URL() + "getFile/" + bookDataImage) : "/assets/images/cover.png"})` }}
+                     
                       fluid>
                       <Container>
                       </Container>
@@ -325,7 +326,7 @@ class DetailPage extends Component {
                           </div>
                           <div className="col-lg col-sm-4 text-center align-self-center">
                             <img id='bookCover'
-                              src={bookDataImage ? bookDataImage : "/assets/images/cover.png"}
+                              src={(!!bookData && AuthService.API_URL() + "getFile/" + bookDataImage) ? AuthService.API_URL() + "getFile/" + bookDataImage : "/assets/images/cover.png"}
                               alt="cover" className="rounded novel" />
                           </div>
                         </div>
@@ -369,7 +370,7 @@ class DetailPage extends Component {
                                   >
                                     <div class="row">
                                       <div class="col text-right pt-2">
-                                        <img rounded height="80" src={pop.bookDetailsEntity.cover} alt=""/>
+                                        <img rounded height="80" src={(!!bookData && AuthService.API_URL() + "getFile/" + pop.bookDetailsEntity.cover) ? AuthService.API_URL() + "getFile/" + pop.bookDetailsEntity.cover : "/assets/images/cover.png"} alt=""/>
                                       </div>
                                       <div
                                         class="col"

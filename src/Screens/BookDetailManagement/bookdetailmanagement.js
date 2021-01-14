@@ -8,13 +8,14 @@ import 'datatables.net-responsive-dt/js/responsive.dataTables.js'
 import 'datatables.net-responsive-dt/css/responsive.dataTables.css'
 import $ from 'jquery'; 
 import Axios from "../../Services/axios-instance";
-import API from "../../api";
+import AuthService from "../../Services/auth.service";
  
 class BookDetailManagement extends Component {
   constructor(props) {
     super(props);
     this.state = {
       tabledata: [],
+      errors: [],
       showAdd: false,
       showEdit: false,
       showDelete: false,
@@ -23,60 +24,95 @@ class BookDetailManagement extends Component {
       bookTitle: "",
       bookSubtitle: "",
       description: "",
+      bc:"",
+
+      nameFileImage : "",
       cover: "",
+      selectedFiles: "",
+      currentFile: "",
+
       numberOfPages: "",
       language: "",
-      editClicked: false
+      editClicked: false,
     };
   }
 
   componentDidMount() {
     Axios.get('bookdetails').then((res) => {
       const tabledata = res.data.data
-        this.setState({ tabledata: tabledata })
-
-        $(function () {
-            $('#bookdetailmanagement').DataTable({
-                responsive: true
-            })
+        this.setState({ 
+          tabledata: tabledata,
+          cover: AuthService.API_URL() + "getFile/" + res.data.data.cover
+          })
+      $(function () {
+        $('#bookdetailmanagement').DataTable({
+            responsive: true
         })
+      })
     })
-}
-
-  // async componentDidMount() {
-    // DATA TABEL
-    // try {
-    //   const res = await 
-    //   axios.get(`bookdetails`,
-    //   {
-    //       headers: {
-    //       Accept: "*/*",
-    //       "Content-Type": "application/json",
-    //   }});
-    //   const tabledata = res.data.data;
-    //   this.setState({ tabledata: tabledata });
-    // } catch (error) {
-    //   console.log(error);
-    // }
-
-    // $(function () {
-    //   $('#publishermanagement').DataTable({
-    //       responsive: true
-    //   });
-    // });
-  // }development
+  }
 
   //modal add
   handleShowAdd = () => {
     this.setState({ showAdd: true })
   }
 
+  selectFile = (event) => {
+    this.setState({
+        selectedFiles: event.target.files,
+    });
+    console.log(this.state.selectedFiles)
+  }
+
   handleAddBookDetail = (e) => {
+
+    const { 
+      bookTitle,
+      description,
+      numberOfPages,
+      language
+     } = this.state;
+
+    const errors = this.validateForm(
+      bookTitle,
+      description,
+      numberOfPages,
+      language);
+
+    if (errors.length > 0) {
+      this.setState({ errors });
+      return;
+    }
+
+
+    //ngambil inputan
+    let currentFile = this.state.selectedFiles[0];
+    console.log(currentFile);
+        this.setState({
+            currentFile: currentFile,
+        });
+
+    //post file to dir
+    let formData = new FormData();
+    formData.append("file", currentFile);
+    var newFileName = "_bookCover_";
+    Axios.post("uploadFile/" + newFileName, formData, {
+      headers: {
+          "Content-Type": "multipart/form-data",
+      }
+    }).then((response) => {
+      console.log(response)
+      this.setState({
+        cover: AuthService.API_URL() + "getFile/" + newFileName + currentFile.name,
+        nameFileImage : newFileName + currentFile.name
+    });
+
+    //save filename to db
     Axios.post(`bookdetails`,
       {
         bookTitle: this.state.bookTitle,
         bookSubtitle: this.state.bookSubtitle,
-        cover: this.state.cover,
+        cover: this.state.nameFileImage,
         description: this.state.description,
         language: this.state.language,
         numberOfPages: this.state.numberOfPages
@@ -96,6 +132,9 @@ class BookDetailManagement extends Component {
         swal("Oops!", "Please try again", "error");
         console.log(error);
       });
+    }).catch(function (error) {
+      console.log(error);
+    })
   }
 
   //button edit
@@ -116,32 +155,82 @@ class BookDetailManagement extends Component {
 
   handleSaveEdit = () => {
     this.setState({ showEdit: false })
-    Axios.put(
-      `bookdetails/${this.state.bookDetailCode}`,
-      {
-        bookTitle: this.state.bookTitle,
-        bookSubtitle: this.state.bookSubtitle,
-        cover: this.state.cover,
-        description: this.state.description,
-        language: this.state.language,
-        numberOfPages: this.state.numberOfPages,
-        bookDetailCode: this.state.bookDetailCode
-      },
-        {
-          headers: {
-            Accept: "*/*",
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then(() => {
-        swal("Great!", "Publisher Has Been edited", "success");
-        this.setState({ bookDetailCode: "", editClicked: true })
-      })
-      .catch((error) => {
-        swal("Oops!", "Please try again", "error");
-        console.log(error);
-      });
+
+    let currentFile = this.state.selectedFiles[0];
+    this.setState({
+      currentFile: currentFile,
+    });
+
+    let formData = new FormData();
+        formData.append("file", currentFile);
+        var newFileName = this.state.bookDetailCode + "_bookCover_";
+
+    Axios.get('bookdetails/'+this.state.bookDetailCode).then((res) => {
+      const bookDetailCode = res.data.data.bookDetailCode
+      const cover = res.data.data.cover
+        this.setState({ 
+          bc: bookDetailCode,
+          nameFileImage: cover})
+    })
+
+    Axios.post("uploadFile/" + newFileName, formData, {
+      headers: {
+          "Content-Type": "multipart/form-data",
+      }
+
+      //then nya post
+    }).then((response) => {
+        console.log(response)
+        console.log(response.data.message)
+
+            Axios.delete("deleteFile/" + this.state.nameFileImage).then((resp) => {
+              console.log(resp)
+                this.setState({
+                  cover: AuthService.API_URL() + "getFile/" + newFileName + currentFile.name,
+                  nameFileImage : newFileName + currentFile.name
+                })
+
+                Axios.put(
+                  `bookdetails/${this.state.bookDetailCode}`,
+                  {
+                    bookTitle: this.state.bookTitle,
+                    bookSubtitle: this.state.bookSubtitle,
+                    cover: this.state.nameFileImage,
+                    description: this.state.description,
+                    language: this.state.language,
+                    numberOfPages: this.state.numberOfPages,
+                    bookDetailCode: this.state.bookDetailCode
+                  },
+                    {
+                      headers: {
+                        Accept: "*/*",
+                        "Content-Type": "application/json",
+                      },
+                    }
+                  )
+
+                  //then nya put
+                  .then(() => {
+                    swal("Great!", "Detail book Has Been edited", "success");
+                    this.setState({ bookDetailCode: "", editClicked: true })
+                  })
+
+                  //catchnya put
+                  .catch((error) => {
+                    swal("Oops!", "Please try again", "error");
+                    console.log(error);
+                  });
+
+              //catch nya delete
+            }).catch(function (error) {
+              console.log(error)
+            })
+
+    //catchnya post
+    }).catch(function (error) {
+      console.log(error)
+    })
+        
   }
 
   //button delete
@@ -159,12 +248,7 @@ class BookDetailManagement extends Component {
   //util
   handleCloseModal = () => {
     this.setState({ showAdd: false, showEdit: false, showDelete: false,
-      bookTitle: "",
-      bookSubtitle: "",
-      description: "",
-      cover: "",
-      numberOfPages: "",
-      language: ""
+      editClicked: true
     })
   }
 
@@ -180,15 +264,48 @@ class BookDetailManagement extends Component {
             "Content-Type": "application/json",
         }});
         const tabledata = res.data.data;
-        this.setState({ tabledata: tabledata, editClicked: false });
+        this.setState({ 
+          tabledata: tabledata, 
+          editClicked: false,
+          bookDetailCode: "",
+
+          bookTitle: "",
+          bookSubtitle: "",
+          description: "",
+          numberOfPages: "",
+          language: "",
+          errors: [],
+         });
       } catch (error) {
         console.log(error);
-      }; 
+      };
     }
   }
 
+  validateForm = () => {
+    const errors = [];
+  
+    if (this.state.bookTitle.length === 0) {
+      errors.push("title can't be empty");
+    }
+  
+    if (this.state.description.length === 0) {
+      errors.push("description can't be empty");
+    }
+
+    if (this.state.numberOfPages.length === 0) {
+      errors.push("pages can't be empty");
+    }
+
+    if (this.state.language.length === 0) {
+      errors.push("language can't be empty");
+    }
+  
+    return errors;
+}
+
   render() {
-    const { showAdd, showEdit, showDelete, tabledata, disableSubmitting, bookTitle, bookSubtitle, description, cover, numberOfPages, language } = this.state;
+    const { showAdd, showEdit, showDelete, tabledata, disableSubmitting, bookTitle, bookSubtitle, description, numberOfPages, language, errors } = this.state;
    
     return (
       // page content
@@ -245,7 +362,7 @@ class BookDetailManagement extends Component {
                                 <td>{pb.description}</td>
                                 <td>
                                   <img height="80"
-                                    src={pb.cover}
+                                    src={AuthService.API_URL() + "getFile/" + pb.cover}
                                     alt="bookimage"
                                   />
                                 </td>
@@ -267,6 +384,12 @@ class BookDetailManagement extends Component {
                         <div class='container'>
                           <div class="modal-body">
                             <form>
+                              {errors.map(error => (
+                                <div>
+                                  <label key={error} style={{color:"red"}} for="titleErr">Error: {error}</label>
+                                  <br/>
+                                </div>
+                              ))}
                               <div class="form-group row">
                                 <label for="addBookTitle" class="col-sm-2 col-form-label">Book Title</label>
                                 <div class="col-sm-10">
@@ -318,17 +441,15 @@ class BookDetailManagement extends Component {
                               <div class="form-group row">
                                 <label for="addCover" class="col-sm-2 col-form-label">Cover</label>
                                 <div class="col-sm-10">
+
                                   <input 
-                                  type="text" 
-                                  name="bookCover"
-                                  class="form-control" 
-                                  id="addBookCover" 
-                                  placeholder="Cover..." 
-                                  onChange={(e) => this.setState({cover : e.target.value})}
-                                  value={cover} 
-                                  data-attribute-name="Cover"
-                                  data-async
+                                    id="addBookCover" 
+                                    name="bookCover" 
+                                    onChange={this.selectFile} 
+                                    type="file" 
+                                    class="form-control"
                                   />
+                                  
                                 </div>
                               </div>
                               <div class="form-group row">
@@ -340,7 +461,7 @@ class BookDetailManagement extends Component {
                                   class="form-control" 
                                   id="addBookPages" 
                                   placeholder="Pages..." 
-                                  onChange={(e) => this.setState({numberOfPages : e.target.value})}
+                                  onChange={(e) => this.setState({numberOfPages : e.target.value.replace(/\D/,'')})}
                                   value={numberOfPages} 
                                   data-attribute-name="Pages"
                                   data-async
@@ -352,7 +473,7 @@ class BookDetailManagement extends Component {
                                 <div class="col-sm-10">
                                   <input 
                                   type="text" 
-                                  name="language"
+                                  name="language" 
                                   class="form-control" 
                                   id="addLanguage" 
                                   placeholder="Language..." 
@@ -438,16 +559,12 @@ class BookDetailManagement extends Component {
                               <div class="form-group row">
                                 <label for="addCover" class="col-sm-2 col-form-label">Cover</label>
                                 <div class="col-sm-10">
-                                  <input 
-                                  type="text" 
-                                  name="bookCover"
-                                  class="form-control" 
-                                  id="addBookCover" 
-                                  placeholder="Cover..." 
-                                  onChange={(e) => this.setState({cover : e.target.value})}
-                                  value={cover} 
-                                  data-attribute-name="Cover"
-                                  data-async
+                                <input 
+                                    id="addBookCover" 
+                                    name="bookCover" 
+                                    onChange={this.selectFile} 
+                                    type="file" 
+                                    class="form-control"
                                   />
                                 </div>
                               </div>

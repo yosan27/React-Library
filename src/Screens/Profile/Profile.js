@@ -89,7 +89,7 @@ export default class Profile extends Component {
             console.log(response)
             console.log(response.data.message)
             console.log(this.state.nameFileImage)
-            if (this.state.nameFileImage === "user.png") {
+            if (this.state.nameFileImage === "user.png" || this.state.nameFileImage == newFileName + currentFile.name) {
                 this.setState({
                     profilePict: AuthService.API_URL() + "getFile/" + newFileName + currentFile.name,
                     nameFileImage: newFileName + currentFile.name
@@ -106,8 +106,9 @@ export default class Profile extends Component {
                         .then((response) => {
                             console.log(response);
                         })
-                    swal("Successfully", "Changed profile", "success");
-                    window.location.reload()
+                    swal("Successfully", "Changed profile", "success").then(function () {
+                        window.location.reload()
+                    })
                 }
             } else {
                 Axios.delete("deleteFile/" + this.state.nameFileImage).then((resp) => {
@@ -128,8 +129,9 @@ export default class Profile extends Component {
                             .then((response) => {
                                 console.log(response);
                             })
-                        swal("Successfully", "Changed profile", "success");
-                        window.location.reload()
+                        swal("Successfully", "Changed profile", "success").then(function () {
+                            window.location.reload()
+                        })
                     }
                 }).catch(function (error) {
                     if (error.response) {
