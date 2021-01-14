@@ -65,6 +65,7 @@ class HeaderUser extends Component {
     else {
       this.props.history.push(`result/${this.state.searchInput}`);
     }
+    this.setState({searchInput: ""})
   };
 
   handleClick(e){
