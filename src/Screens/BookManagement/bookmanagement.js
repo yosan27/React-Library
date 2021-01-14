@@ -7,8 +7,8 @@ import 'datatables.net-dt/js/dataTables.dataTables'
 import 'datatables.net-dt/css/jquery.dataTables.min.css'
 import 'datatables.net-responsive-dt/js/responsive.dataTables.js'
 import 'datatables.net-responsive-dt/css/responsive.dataTables.css'
-import API from "../../api";
 import Axios from "../../Services/axios-instance";
+import AuthService from "../../Services/auth.service";
 import $ from 'jquery'; 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -26,13 +26,17 @@ class BookManagement extends Component {
       author: "",
       publisherName: "",
       publisherAddress: "",
-      urlImage: "",
       description: "",
       category: "",
       numberOfPages: "",
       startDate: new Date(),
       isbn: "",
       language: "",
+
+      nameFileImage : "",
+      urlImage: "",
+      selectedFiles: "",
+      currentFile: "",
 
       data:[],
       errors: [],
@@ -61,7 +65,10 @@ class BookManagement extends Component {
       const res = await Axios.get(`books`);
       const tabledata = res.data.data;
 
-      this.setState({ data: tabledata });
+      this.setState({ 
+        data: tabledata,
+        urlImage: AuthService.API_URL() + "getFile/" + res.data.data.cover 
+      });
 
       $(function () {
         $('#bookmanagement').DataTable({
@@ -75,28 +82,19 @@ class BookManagement extends Component {
     this.getCategory();
   }
 
-  // pickImage = (e) => {
-  //   const file = e.target.files[0];
-  //   if (file){
-  //     const reader = new FileReader();
-  //     reader.onload = this._handleReaderLoaded.bind(this)
-  //     reader.readAsDataURL(file)
-  //   }
-  // }
-
-  // _handleReaderLoaded = (e) => {
-  //   let binaryStr = e.target.result
-  //   this.setState({ baseImage: (binaryStr)})
-  //   console.log(this.state.baseImage)
-  // }
-
-
   handleExistOrNot = () => {
     this.setState({ showAddExist: true })
   }
 
   handleShowAdd = () => {
     this.setState({ showAddExist: false, showAdd1: true })
+  }
+
+  selectFile = (event) => {
+    this.setState({
+        selectedFiles: event.target.files,
+    });
+    console.log(this.state.selectedFiles)
   }
 
   handleAddBook = () => {
@@ -128,34 +126,59 @@ class BookManagement extends Component {
       return;
     }
 
-      Axios.post(
-        `newbooks`,
-        {
-          publisherName: this.state.publisherName,
-          address: this.state.publisherAddress,
-          bookTitle: this.state.title,
-          bookSubtitle: this.state.subtitle,
-          authorName: this.state.author,
-          cover: this.state.urlImage,
-          description: this.state.description,
-          categoryName: this.state.category,
-          numberOfPages: this.state.numberOfPages,
-          publishedDate: this.state.startDate,
-          isbn: this.state.isbn,
-          language: this.state.language
-        })
-        .then(() => {
-          this.setState({ 
-            showAdd1: false,
-            editClicked: true
-           })
-          swal("Success!", "Book Has Been Added", "success");
-        })
-        .catch((error) => {
-          swal("Oops!", "Please try again", "error");
-          console.log(error);
+    //ngambil inputan
+    let currentFile = this.state.selectedFiles[0];
+    console.log(currentFile);
+        this.setState({
+            currentFile: currentFile,
         });
-        this.setState({editClicked:true, showAdd1: false})
+
+    //post file to dir
+    let formData = new FormData();
+    formData.append("file", currentFile);
+    var newFileName = "_bookCover_";
+
+    Axios.post("uploadFile/" + newFileName, formData, {
+      headers: {
+          "Content-Type": "multipart/form-data",
+      }
+    }).then((response) => {
+        console.log(response)
+        this.setState({
+          urlImage: AuthService.API_URL() + "getFile/" + newFileName + currentFile.name,
+          nameFileImage : newFileName + currentFile.name
+        });
+
+        //save filename to db
+        Axios.post(
+          `newbooks`,
+          {
+            publisherName: this.state.publisherName,
+            address: this.state.publisherAddress,
+            bookTitle: this.state.title,
+            bookSubtitle: this.state.subtitle,
+            authorName: this.state.author,
+            cover: this.state.nameFileImage,
+            description: this.state.description,
+            categoryName: this.state.category,
+            numberOfPages: this.state.numberOfPages,
+            publishedDate: this.state.startDate,
+            isbn: this.state.isbn,
+            language: this.state.language
+          })
+          .then(() => {
+            this.setState({ 
+              showAdd1: false,
+              editClicked: true
+             })
+            swal("Success!", "Book Has Been Added", "success");
+          })
+          .catch((error) => {
+            swal("Oops!", "Please check again due to duplication data entry", "error");
+            console.log(error);
+          });
+          this.setState({editClicked:true, showAdd1: false})
+      })
     }
 
   handleShowAdd2 = () => {
@@ -211,6 +234,7 @@ class BookManagement extends Component {
 
   handleSaveEdit = () => {
     this.setState({ showEdit: false, })
+
     Axios.put(
       `book/${this.state.bookCode}`,
       {
@@ -377,12 +401,12 @@ class BookManagement extends Component {
         errors.push("pages can't be empty");
       }
 
-      if (this.state.isbn.length != 13) {
+      if (this.state.isbn.length !== 13) {
         errors.push("isbn 13 invalid");
       }
 
       if (this.state.language.length === 0) {
-        errors.push("isbn can't be empty");
+        errors.push("language can't be empty");
       }
     
       return errors;
@@ -390,7 +414,7 @@ class BookManagement extends Component {
   
 
   render() {
-    const { data, showAdd1, showAdd2, showAddExist, showEdit, showDelete, baseImage, errors } = this.state;
+    const { data, showAdd1, showAdd2, showAddExist, showEdit, showDelete, errors } = this.state;
 
     return (
       // page content
@@ -492,7 +516,7 @@ class BookManagement extends Component {
                                       if (key === "cover") {
                                         const cover = (book.bookDetailsEntity[key])
                                         return <img height="80"
-                                          src={cover}
+                                          src={AuthService.API_URL() + "getFile/" + cover}
                                           alt="bookimage" />
                                       }
                                     })
@@ -627,16 +651,12 @@ class BookManagement extends Component {
                               <div class="form-group row">
                                 <label for="addImage" class="col-sm-2 col-form-label">Url Image</label>
                                 <div class="col-sm-10">
-                                  <input
-                                    type="text"
-                                    name="urlImage"
+                                  <input 
+                                    id="addBookCover" 
+                                    name="bookCover" 
+                                    onChange={this.selectFile} 
+                                    type="file" 
                                     class="form-control"
-                                    id="addUrlImage"
-                                    placeholder="URL Image..."
-                                    onChange={(e) => this.setState({ urlImage: e.target.value })}
-                                    value={this.state.urlImage}
-                                    data-attribute-name="urlImage"
-                                    data-async
                                   />
                                 </div>
                               </div>
@@ -729,33 +749,6 @@ class BookManagement extends Component {
                                   />
                                 </div>
                               </div>
-                              {/* <div class="form-group row">
-                                <label for="addLang" class="col-sm-2 col-form-label">Cover</label>
-                                <div class="col-sm-4">
-                                <input 
-                                    style={{display:'none'}}
-                                    type="file" 
-                                    name="urlImage"
-                                    id="addImage" 
-                                    onBlur={this.form.handleBlurEvent}
-                                    // onChange={this.form.handleChangeEvent}
-                                    value={fields.urlImage} 
-                                    data-attribute-name="Url Image"
-                                    data-async
-                                    onChange={(e) => {
-                                      this.pickImage(e);
-                                    }}
-                                    accept=".jpeg, .png, .jpg"
-                                    ref={fileInput => this.fileInput = fileInput}
-                                  />
-                                  <Button onClick={() => this.fileInput.click()}>Pick Image</Button>
-                                  <br/><br/>
-                                  <img src={baseImage?baseImage:"assets/images/cover.png"} height="80vh" alt = 'cover'/> */}
-                              {/* <label className="error" style={{color: "red"}}>
-                                    {errors.urlImage ? errors.urlImage : ""}
-                                  </label> */}
-                              {/* </div>
-                              </div> */}
                             </form>
                           </div>
                         </div>

@@ -10,6 +10,7 @@ import Rating from '@material-ui/lab/Rating';
 import { withRouter } from 'react-router-dom';
 import Axios from "../../Services/axios-instance";
 import AuthService from "../../Services/auth.service";
+import axios from 'axios';
 
 class DetailPage extends Component {
 
@@ -36,8 +37,11 @@ class DetailPage extends Component {
       rate: '',
       review: '',
       date: '',
+      userCode: '',
+      id: '',
       bookCode: this.props.match.params.bookcode,
-      popular: []
+      popular: [],
+      errors: []
     }
   }
 
@@ -172,10 +176,36 @@ class DetailPage extends Component {
     }
     Axios.post('review', reviewData).then(() => {
       swal("Success!", "Review Data Has Been Added", "success").then(() => {
-        window.location.reload()
-        
+        window.location.reload()  
     })
     }) 
+    .catch((error) => {
+      swal("Oops!", "Please try again", "error");
+    })
+
+  }
+
+  handlePutReview = (e) => {
+        let edit ={
+          review: this.state.review,
+          rate: this.state.rate,
+          bookDetailCode: this.state.bookDetailsCode,
+          userCode: AuthService.getUserCode()
+        }
+        Axios.put(`review/${this.state.id}`, edit).then((e) => {
+          swal("Success!", "Review Data Has Been Added", "success").then(() => {
+            window.location.reload()  
+        })
+        })
+        
+  }
+
+  getById(id) {
+    Axios.get(`review/${id}`).then((res) => {
+      this.setState({
+        id: res.data.id
+      })
+    })
   }
 
 
@@ -253,6 +283,7 @@ class DetailPage extends Component {
 
   render() {
     const { popular, bookData, register, bookDataImage, bookAvailable, title, subtitle, author, category, publishedDate, show, pages, descriptions } = this.state;
+    let edit;
     return (
       <div className="right_col" role="main" style={{ minHeight: '100vh' }}>
         <section className="mt-5 pt-5">
@@ -266,7 +297,8 @@ class DetailPage extends Component {
                   <div className="card-body">
                     {/* banner */}
                     <Jumbotron className="bannerDetail"
-                      style={{ backgroundImage: `url(${(!!bookData && !!bookDataImage) ? bookDataImage : "/assets/images/cover.png"})` }}
+                      style={{ backgroundImage: `url(${(!!bookData && AuthService.API_URL() + "getFile/" + bookDataImage) ? (AuthService.API_URL() + "getFile/" + bookDataImage) : "/assets/images/cover.png"})` }}
+                     
                       fluid>
                       <Container>
                       </Container>
@@ -294,7 +326,7 @@ class DetailPage extends Component {
                           </div>
                           <div className="col-lg col-sm-4 text-center align-self-center">
                             <img id='bookCover'
-                              src={bookDataImage ? bookDataImage : "/assets/images/cover.png"}
+                              src={(!!bookData && AuthService.API_URL() + "getFile/" + bookDataImage) ? AuthService.API_URL() + "getFile/" + bookDataImage : "/assets/images/cover.png"}
                               alt="cover" className="rounded novel" />
                           </div>
                         </div>
@@ -338,7 +370,7 @@ class DetailPage extends Component {
                                   >
                                     <div class="row">
                                       <div class="col text-right pt-2">
-                                        <img rounded height="80" src={pop.bookDetailsEntity.cover} alt=""/>
+                                        <img rounded height="80" src={(!!bookData && AuthService.API_URL() + "getFile/" + pop.bookDetailsEntity.cover) ? AuthService.API_URL() + "getFile/" + pop.bookDetailsEntity.cover : "/assets/images/cover.png"} alt=""/>
                                       </div>
                                       <div
                                         class="col"
@@ -440,12 +472,19 @@ class DetailPage extends Component {
                                     return(
                                         <form key={index}>
                                                 <div class="form-group row">
-                                                <label for="editImage" class="col-sm-2 col-form-label">By {book.userEntity.userName}              
+                                                <label for="editImage" class="col-sm-3 col-form-label">By {book.userEntity.userName}              
                                                 <br />       
-                                                {this.setRate(book.rate)}         
+                                                {this.setRate(book.rate)} 
+                                               
                                                 </label>
-                                                <div class="col-sm-10" >
+                                                <div class="col-sm-7" >
                                                     {book.review}
+                                                </div>
+                                                <div class="col-sm-2" >
+                                               
+                                                { book.userEntity.userCode == AuthService.getUserCode()? <button type="button" className="btn-sm btn-secondary" data-toggle="modal" data-target="#reviewEdit" onClick={() => this.getById(book.id)}>Edit</button>
+                                                : <p></p>}
+                                            
                                                 </div>
                                                 </div>
                                                 <hr />
@@ -483,7 +522,7 @@ class DetailPage extends Component {
                                       </div>
                                       <div className="form-group row">
                                           <div className="col-sm-9">
-                                              <input className="form-control input" name="bookDetailsCode" readOnly
+                                              <input type="hidden" className="form-control input" name="bookDetailsCode" readOnly
                                               value={this.state.bookDetailsCode} />
                                           </div>
                                       </div>
@@ -518,6 +557,62 @@ class DetailPage extends Component {
                           </div>
                     </div>
                     {/* modal create review */}
+                    {/* Modal edit review */}
+                    <div className="modal fade" id="reviewEdit" tabIndex="-1" aria-labelledby="addLabel" aria-hidden="true">
+                          <div className="modal-dialog">
+                              <div className="modal-content">
+                                  <div className="modal-header">
+                                      <h5 className="modal-title" id="addLabel">Add Review</h5>
+                                      <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                          <span aria-hidden="true" className="modal-clear">&times;</span>
+                                      </button>
+                                  </div>
+                                  <div className="modal-body">
+                                      <form>
+                                      <div class="form-group row">
+                                          <div class="col-sm-12 text-center">
+                                          <img class="rounded novel" src={bookDataImage ? bookDataImage : 'https://res.cloudinary.com/todidewantoro/image/upload/v1604943658/bootcamp/covernya_ejy4v1.jpg'} alt=""/>
+                                          </div>
+                                      </div>
+                                      <div className="form-group row">
+                                          <div className="col-sm-9">
+                                              <input type="hidden" readOnly className="form-control-plain text" value={this.state.id} />      
+                              
+                                              <input type="hidden" className="form-control input" name="bookDetailsCode" readOnly
+                                              value={this.state.bookDetailsCode} />
+                                          </div>
+                                      </div>
+                                    <div class="form-group row">
+                                          <label for="rating" class="col-sm-2 col-form-label">Rating</label>
+                                          <div class="col-sm-10">
+                                          <Box component="fieldset" mb={3} borderColor="transparent">
+                                              <Rating
+                                              name="simple-controlled"
+                                              name="rate"
+                                              id="rate"
+                                              onChange={this.changeRateHandler}
+                                              value={this.state.rate}
+                                              />
+                                          </Box>           
+                                          </div>
+                                      </div>
+                                      <div class="form-group row">
+                                          <label for="editRev" class="col-sm-2 col-form-label">Review</label>
+                                          <div class="col-sm-10">
+                                          <input className="form-control input" name="review" id="review" placeholder="Review..."
+                                              value={this.state.review} onChange={this.changeReviewHandler} />
+                                          </div>
+                                    </div>
+                                      </form>
+                                  </div>
+                                  <div className="modal-footer">
+                                      <button className="btn btn-secondary modal-clear" data-dismiss="modal">Cancel</button>
+                                      <button className="btn btn-success" data-dismiss="modal" onClick={() => this.handlePutReview(AuthService.getUserCode())}>Edit</button>
+                                  </div>
+                              </div>
+                          </div>
+                    </div>
+                    {/* modal edit review */}
 
 
                   </div>
