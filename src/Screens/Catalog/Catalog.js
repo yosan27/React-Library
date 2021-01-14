@@ -44,6 +44,7 @@ class Catalog extends Component {
             userName: "",
             userCode: "",
             bookDetailsCode: '',
+            catalog: ''
         }
 
     };
@@ -232,7 +233,7 @@ class Catalog extends Component {
                                                                     <td>{Object.keys(user.bookDetailsEntity?user.bookDetailsEntity:"").map(key => {
                                                                         if (key === "cover"){
                                                                             const cover = (user.bookDetailsEntity[key])
-                                                                            return <img className='photoOfOrder text-center card-img-top img-book' src={cover} wrapped ui={false} style={{ width: '20%', height: 'auto', marginLeft: '40%' }} />
+                                                                            return <img className='photoOfOrder text-center card-img-top img-book' src={AuthService.API_URL() + "getFile/" + user.bookDetailsEntity.cover} wrapped ui={false} style={{ width: '50%', height: 'auto', marginLeft: '20%' }} />
                                                                                  
                                                                         }
                                                                         })}   

@@ -200,6 +200,29 @@ class DetailPage extends Component {
         
   }
 
+  handleDeleteReview = (id) => {
+    Axios.delete(`review/${id}`).then(() => {
+      swal({
+        title: "Are you sure?",
+        text: "Once deleted, you will not be able to recover this data!",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true
+      }).then((Delete) => {
+        if (Delete) {
+            swal("Deleted!", "Review Is Delete", "success").then(() => {
+                this.setState({ buttonClick: true })
+                window.location.reload()
+            })
+        } else {
+            swal("Canceled!", "Review Is Safe", "error")
+          }
+        }).catch(function(error){
+            swal("Failed!", error.response.data.message, "error");
+        })
+    })
+  }
+
   getById(id) {
     Axios.get(`review/${id}`).then((res) => {
       this.setState({
@@ -471,6 +494,7 @@ class DetailPage extends Component {
                                     {this.state.reviewData.map((book, index) => {
                                     return(
                                         <form key={index}>
+                                          
                                                 <div class="form-group row">
                                                 <label for="editImage" class="col-sm-3 col-form-label">By {book.userEntity.userName}              
                                                 <br />       
@@ -480,11 +504,11 @@ class DetailPage extends Component {
                                                 <div class="col-sm-7" >
                                                     {book.review}
                                                 </div>
-                                                <div class="col-sm-2" >
-                                               
+                                                <div class="col-sm-2" >                                         
                                                 { book.userEntity.userCode == AuthService.getUserCode()? <button type="button" className="btn-sm btn-secondary" data-toggle="modal" data-target="#reviewEdit" onClick={() => this.getById(book.id)}>Edit</button>
                                                 : <p></p>}
-                                            
+                                                { book.userEntity.userCode == AuthService.getUserCode()? <button type="button" className="btn-sm btn-danger"  onClick={() => this.handleDeleteReview(book.id)}>Delete</button>
+                                                : <p></p>}
                                                 </div>
                                                 </div>
                                                 <hr />
@@ -495,7 +519,8 @@ class DetailPage extends Component {
                                     
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button className="btn btn-primary btn-sm rounded-sm w-30 mr-1" data-toggle="modal" data-target="#reviewAdd">
+                                    
+                                    <button className="btn btn-primary rounded-sm w-30 mr-1" data-toggle="modal" data-target="#reviewAdd">
                                         <i className="fa fa-edit"></i>Add Review
                                     </button>
                                 </div>
