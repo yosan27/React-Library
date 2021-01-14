@@ -124,7 +124,8 @@ class Register extends Component {
                 <div class="container">
                     <div class="row no-gutters row-box">
                         <div class="col-lg-6">
-                            <img src="assets/images/cover4.jpg" class="img-fluid img-page" alt="" />
+                            <img src="assets/images/cover.jpg" class="img-fluid img-page" alt="" />
+
                         </div>
                         <div class="col-lg-6 px-5 pt-3">
                             <img class="img-right img-page" src="assets/images/book.png" alt="" />
