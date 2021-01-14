@@ -326,11 +326,11 @@ class Content extends Component {
         {/* Asian */}
 
         {/* Must Read */}
-        <section className="pt-5 pb-3">
+        <main className="main pt-5">
           <div className="content">
             <div className="row">
               <div className="col">
-                <h3>Your must-read list</h3>
+                <h3>Your must read list</h3>
               </div>
             </div>
             <div className="row">
@@ -338,33 +338,36 @@ class Content extends Component {
                 <p>Find your new favorite book</p>
               </div>
               <div className="col d-flex justify-content-end">
-                <Link to="/page/more">
+                <Link to="/page/more/Best-Seller" onClick={this.sendBooks}>
                   <span>See More</span>
                 </Link>
               </div>
             </div>
 
             <ul className="books">
-              {this.state.data.slice(0, 5).map((datas) => {
-                let d = datas.bookDetailsEntity;
+              {this.state.data.slice(0, 6).map((d) => {
                 return (
-                  <Link to="/page/detailpage">
+                  <Link to={{pathname: `/page/detailpage/${d.bookCode}`}}>
                     <li>
                       <div className="book">
                         <div className="row">
                           <img
-                            src={d.cover}
-                            alt={d.bookTitle}
+                            src={d.bookDetailsEntity.cover}
+                            alt={d.bookDetailsEntity.bookTitle}
                             className="book-image"
                           />
                         </div>
                         <div className="row">
                           <div className="col">
                             <div className="row">
-                              <div className="book-name">{d.bookTitle}</div>
+                              <div className="book-name">
+                                {d.bookDetailsEntity.bookTitle}
+                              </div>
                             </div>
                             <div className="row">
-                              <div className="book-author">Tere Liye</div>
+                              <div className="book-author">
+                                {d.authorEntity.authorName}
+                              </div>
                             </div>
                             <div className="row">
                               <div className="book-rating text-muted">
@@ -380,8 +383,69 @@ class Content extends Component {
               })}
             </ul>
           </div>
-        </section>
+        </main>
         {/* Must Read */}
+
+        {/* Best Seller */}
+        <main className="main pt-5 pb-3">
+          <div className="content">
+            <div className="row">
+              <div className="col">
+                <h3>Best Seller</h3>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col">
+                <p>New Releases</p>
+              </div>
+              <div className="col d-flex justify-content-end">
+                <Link to="/page/more/Best-Seller" onClick={this.sendBooks}>
+                  <span>See More</span>
+                </Link>
+              </div>
+            </div>
+
+            <ul className="books">
+              {this.state.data.slice(0, 6).map((d) => {
+                return (
+                  <Link to={{pathname: `/page/detailpage/${d.bookCode}`}}>
+                    <li>
+                      <div className="book">
+                        <div className="row">
+                          <img
+                            src={d.bookDetailsEntity.cover}
+                            alt={d.bookDetailsEntity.bookTitle}
+                            className="book-image"
+                          />
+                        </div>
+                        <div className="row">
+                          <div className="col">
+                            <div className="row">
+                              <div className="book-name">
+                                {d.bookDetailsEntity.bookTitle}
+                              </div>
+                            </div>
+                            <div className="row">
+                              <div className="book-author">
+                                {d.authorEntity.authorName}
+                              </div>
+                            </div>
+                            <div className="row">
+                              <div className="book-rating text-muted">
+                                <i class="fa fa-star star-rate pr-1"></i>5
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  </Link>
+                );
+              })}
+            </ul>
+          </div>
+        </main>
+        {/* Best Seller */}
       </div>
     );
   }
