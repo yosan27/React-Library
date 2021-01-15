@@ -1,3 +1,22 @@
+### Framework and Library
+- React JS
+- Spring Framework
+- Spring Boot
+- Spring Data JPA
+- Hibernate ORM
+- JWT
+- Postgresql
+- Herokku
+
+### Software Requirement
+- Java SDK Version 5
+- Maven Version 4.0.0
+- DBeaver Version 7.3.2
+
+### How To Run
+1. Run the react js application
+2. Open the browser to http://localhost:3000/
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
